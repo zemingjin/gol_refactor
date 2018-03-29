@@ -32,11 +32,8 @@ public class GameOfLifeTest {
     public void testTick() {
         GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 1|3");
 
-        gameOfLife.setLiveCells(gameOfLife.tick());
-        assertEquals("[1|2, 0|2, 2|2]", gameOfLife.getLiveCells().toString());
-        gameOfLife.setLiveCells(gameOfLife.tick());
-        assertEquals("[1|2, 1|1, 1|3]", gameOfLife.getLiveCells().toString());
-        gameOfLife.setLiveCells(gameOfLife.tick());
-        assertEquals("[1|2, 0|2, 2|2]", gameOfLife.getLiveCells().toString());
+        assertEquals("[1|2, 0|2, 2|2]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
+        assertEquals("[1|2, 1|1, 1|3]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
+        assertEquals("[1|2, 0|2, 2|2]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
     }
 }

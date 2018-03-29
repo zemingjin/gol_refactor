@@ -6,6 +6,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.ListUtils;
+
 public class GameOfLife {
     private List<Cell> liveCells = new ArrayList<>();
 
@@ -13,9 +15,9 @@ public class GameOfLife {
         return liveCells;
     }
 
-    public GameOfLife setLiveCells(List<Cell> liveCells) {
+    public List<Cell> setLiveCells(List<Cell> liveCells) {
         this.liveCells = liveCells;
-        return this;
+        return getLiveCells();
     }
 
     public GameOfLife seed(String values) {
@@ -25,10 +27,7 @@ public class GameOfLife {
     }
 
     public List<Cell> tick() {
-        List<Cell> list = getNextGenerationCells();
-
-        list.addAll(getReproductionCells());
-        return list;
+        return ListUtils.union(getNextGenerationCells(), getReproductionCells());
     }
 
     private List<Cell> getNextGenerationCells() {
