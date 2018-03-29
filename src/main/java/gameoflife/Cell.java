@@ -20,13 +20,13 @@ public class Cell {
 
     public List<Cell> getNeighbours() {
         return IntStream.rangeClosed(x > 0 ? x - 1 : 0, x + 1)
-                .mapToObj(this::getNeighboursByRow)
+                .mapToObj(this::getNeighboursByColumn)
                 .flatMap(s -> s)
                 .filter(cell -> !equals(cell))
                 .collect(Collectors.toList());
     }
 
-    private Stream<Cell> getNeighboursByRow(int row) {
+    private Stream<Cell> getNeighboursByColumn(int row) {
         return IntStream.rangeClosed(y > 0 ? y - 1 : 0, y + 1)
                 .mapToObj(i -> new Cell(row, i));
     }

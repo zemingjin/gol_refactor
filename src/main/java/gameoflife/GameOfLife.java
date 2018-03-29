@@ -31,7 +31,12 @@ public class GameOfLife {
     }
 
     private List<Cell> getNextGenerationCells() {
-        return filterCellList(getLiveCells(), cell -> 2 <= getNumberOfNeighbours(cell) && 3 >= getNumberOfNeighbours(cell));
+        return filterCellList(getLiveCells(),
+                              cell -> 2 <= getNumberOfNeighbours(cell) && 3 >= getNumberOfNeighbours(cell));
+    }
+
+    private List<Cell> getReproductionCells() {
+        return filterCellList(getDeadCells(), cell -> getNumberOfNeighbours(cell) == 3);
     }
 
     private List<Cell> filterCellList(List<Cell> list, Predicate<Cell> predicate) {
@@ -40,22 +45,22 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
-    private List<Cell> getReproductionCells() {
-        return filterCellList(getDeadCells(), cell -> getNumberOfNeighbours(cell) == 3);
-    }
-
     private long getNumberOfNeighbours(Cell cell) {
         return getLiveCells().stream()
-                .filter(c -> !cell.equals(c) && cell.isNeighbour(c))
+                .filter(cell::isNeighbour)
                 .count();
     }
 
-    public List<Cell> getDeadCells() {
+    List<Cell> getDeadCells() {
         return getLiveCells().stream()
                 .flatMap(cell -> cell.getNeighbours().stream())
                 .distinct()
-                .filter(cell -> !getLiveCells().contains(cell))
+                .filter(this::isDeadCell)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isDeadCell(Cell cell) {
+        return !getLiveCells().contains(cell);
     }
 
     private void addCell(String values) {
