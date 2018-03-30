@@ -34,10 +34,10 @@ public class GameOfLife {
     }
 
     public int getMaxIndex() {
-        return getDeadCells().stream()
+        return getLiveCells().stream()
                 .reduce((a, b) -> a.getMaxIndex() >= b.getMaxIndex() ? a : b)
                 .map(Cell::getMaxIndex)
-                .orElseThrow(() -> new RuntimeException("Invalid index value"));
+                .orElseThrow(() -> new RuntimeException("Invalid index value")) + 1;
     }
 
     public boolean isLiveCell(Cell cell) {
