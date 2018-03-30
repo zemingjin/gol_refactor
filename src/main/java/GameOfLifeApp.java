@@ -4,18 +4,16 @@ import gameoflife.GameOfLife;
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
-    private static final int EDGE_LEN = 50;
     private static final long WAIT_TIME = 400;
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
     private int maxIndex;
+    private int cellSize = 50;
+    private boolean continueFlag = true;
 
     private GameOfLifeApp(String[] params) {
         if (params.length > 0) {
@@ -27,32 +25,76 @@ public class GameOfLifeApp extends JComponent {
 
     private void setup(String seeds) {
         gameOfLife.seed(seeds);
+        maxIndex = gameOfLife.getMaxIndex() + 1;
+        cellSize = getCellSize();
         setPanelSize();
-        maxIndex = gameOfLife.getMaxIndex();
+        setFocusable(true);
+    }
+
+    private int getCellSize() {
+        return getScreenSize().height / 2 / maxIndex;
     }
 
     private void setPanelSize() {
-        int frameLength = gameOfLife.getMaxIndex() * EDGE_LEN;
+        int frameLength = getPanelLength();
         setSize(frameLength, frameLength);
         setupFrame(frameLength);
     }
 
+    private int getPanelLength() {
+        return maxIndex * cellSize;
+    }
+
     private void setupFrame(int panelLength) {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(panelLength, panelLength);
-        window.setBounds(100, 100, panelLength + 20, panelLength * 4 / 3);
         window.getContentPane().add(this);
         window.setVisible(true);
+        adjustFrameSize(panelLength);
+    }
+
+    private void adjustFrameSize(int panelLength) {
+        setSize(panelLength, panelLength);
+        window.setBounds(getFramePositionX(panelLength), getFramePositionY(panelLength),
+                         getFrameWidth(panelLength), getFrameHeight(panelLength));
+    }
+
+    private int getFramePositionY(int panelLength) {
+        return (getScreenSize().height - getFrameHeight(panelLength)) / 2;
+    }
+
+    private Dimension getScreenSize() {
+        return Toolkit.getDefaultToolkit().getScreenSize();
+    }
+
+    private int getFramePositionX(int panelLength) {
+        return (getScreenSize().width - getFrameWidth(panelLength)) / 2;
+    }
+
+    private int getFrameWidth(int panelLength) {
+        Insets insets = window.getInsets();
+        return panelLength + insets.left + insets.right;
+    }
+
+    private int getFrameHeight(int panelLength) {
+        Insets insets = window.getInsets();
+        return panelLength + insets.top + insets.bottom;
     }
 
     private void run() {
-        while (true) {
-            paint((a, b) -> paintGrid(getGraphics(), a, b));
-            paint((a, b) -> paintCell(getGraphics(), a, b));
+        while (continueFlag) {
+            repaint();
             waitAWhile();
             gameOfLife.setLiveCells(gameOfLife.tick());
             maxIndex = Math.max(gameOfLife.getMaxIndex(), maxIndex);
+            cellSize = getCellSize();
+            adjustFrameSize(getPanelLength());
         }
+    }
+
+    @Override
+    public void paint(Graphics graphics) {
+        paint((a, b) -> paintBorder(graphics, a, b));
+        paint((a, b) -> paintCell(graphics, a, b));
     }
 
     private void paint(BiConsumer<Integer, Integer> consumer) {
@@ -71,12 +113,12 @@ public class GameOfLifeApp extends JComponent {
 
     private void paintCell(Graphics graphics, int x, int y) {
         graphics.setColor(getColor(new Cell(x, y)));
-        graphics.fillRect(x * EDGE_LEN + 1, y * EDGE_LEN + 1, EDGE_LEN - 2, EDGE_LEN - 2);
+        graphics.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize - 2, cellSize - 2);
     }
 
-    private void paintGrid(Graphics  graphics, int x, int y) {
+    private void paintBorder(Graphics  graphics, int x, int y) {
         graphics.setColor(getForeground());
-        graphics.drawRect(x * EDGE_LEN, y * EDGE_LEN, EDGE_LEN, EDGE_LEN);
+        graphics.drawRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
 
     private Color getColor(Cell cell) {
