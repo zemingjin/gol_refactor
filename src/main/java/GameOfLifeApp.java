@@ -5,11 +5,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.stream.IntStream;
 
-public class GameOfLifeApp extends JPanel {
-    private static final int EDGE_LEN = 100;
-    private static final long WAIT_TIME = 100;
+public class GameOfLifeApp extends JComponent {
+    private static final int EDGE_LEN = 50;
+    private static final long WAIT_TIME = 250;
 
     private GameOfLife gameOfLife = new GameOfLife();
+    private JFrame window = new JFrame();
 
     private GameOfLifeApp(String[] params) {
         if (params.length > 0) {
@@ -28,10 +29,18 @@ public class GameOfLifeApp extends JPanel {
     private void setPanelSize() {
         int frameLength = gameOfLife.getMaxIndex() * EDGE_LEN;
         setSize(frameLength, frameLength);
+        setupFrame(frameLength);
+    }
+
+    private void setupFrame(int panelLength) {
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.setBounds(30, 30, panelLength, panelLength);
+        window.getContentPane().add(this);
+        window.setVisible(true);
     }
 
     private void run() {
-        for (boolean status = true; status; ) {
+        while (true) {
             repaint();
             gameOfLife.setLiveCells(gameOfLife.tick());
             waitAWhile();
@@ -50,6 +59,8 @@ public class GameOfLifeApp extends JPanel {
     }
 
     private void paint(Graphics graphics, int x, int y) {
+        graphics.setColor(getForeground());
+        graphics.drawRect(x * EDGE_LEN, y * EDGE_LEN, EDGE_LEN, EDGE_LEN);
         graphics.setColor(getColor(new Cell(x, y)));
         graphics.fillRect(x * EDGE_LEN, y * EDGE_LEN, EDGE_LEN, EDGE_LEN);
     }
