@@ -33,6 +33,17 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
+    public int getMaxIndex() {
+        return getDeadCells().stream()
+                .reduce((a, b) -> a.getMaxIndex() >= b.getMaxIndex() ? a : b)
+                .map(Cell::getMaxIndex)
+                .orElseThrow(() -> new RuntimeException("Invalid index value"));
+    }
+
+    public boolean isLiveCell(Cell cell) {
+        return getLiveCells().contains(cell);
+    }
+
     private List<Cell> getNextGenerationCells() {
         return filterCellList(getLiveCells(),
                               cell -> 2 <= getNumberOfNeighbours(cell) && 3 >= getNumberOfNeighbours(cell));

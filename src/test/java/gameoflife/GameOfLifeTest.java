@@ -64,4 +64,18 @@ public class GameOfLifeTest {
                      gameOfLife.setLiveCells(gameOfLife.tick()).toString());
     }
 
+    @Test
+    public void testGetMaxIndex() {
+        assertEquals(5, new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").getMaxIndex());
+    }
+
+    @Test
+    public void testIsLiveCell() {
+        GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
+
+        assertTrue(gameOfLife.isLiveCell(new Cell(1, 1)));
+        assertTrue(gameOfLife.isLiveCell(new Cell(4, 3)));
+        assertFalse(gameOfLife.isLiveCell(new Cell(1, 4)));
+    }
+
 }

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class Cell implements Comparable<Cell> {
     private int x, y;
 
-    Cell(int x, int y) {
+    public Cell(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -24,6 +24,10 @@ public class Cell implements Comparable<Cell> {
                 .flatMap(s -> s)
                 .filter(cell -> !equals(cell))
                 .collect(Collectors.toList());
+    }
+
+    public int getMaxIndex() {
+        return Math.max(x, y);
     }
 
     private Stream<Cell> getNeighboursByColumn(int row) {
