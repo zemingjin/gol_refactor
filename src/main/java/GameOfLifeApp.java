@@ -14,6 +14,7 @@ public class GameOfLifeApp extends JComponent {
     private int maxIndex;
     private int cellSize = 50;
     private boolean continueFlag = true;
+    private Cell offset;
 
     private GameOfLifeApp(String[] params) {
         if (params.length > 0) {
@@ -27,6 +28,7 @@ public class GameOfLifeApp extends JComponent {
         gameOfLife.seed(seeds);
         maxIndex = gameOfLife.getMaxIndex() + 1;
         cellSize = getCellSize();
+        offset = gameOfLife.getOffset();
         setPanelSize();
         setFocusable(true);
     }

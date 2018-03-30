@@ -30,6 +30,22 @@ public class Cell implements Comparable<Cell> {
         return Math.max(x, y);
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     private Stream<Cell> getNeighboursByColumn(int row) {
         return IntStream.rangeClosed(y > 0 ? y - 1 : 0, y + 1)
                 .mapToObj(i -> new Cell(row, i));

@@ -40,6 +40,17 @@ public class GameOfLife {
                 .orElseThrow(() -> new RuntimeException("Invalid index value")) + 1;
     }
 
+    public Cell getOffset() {
+        Cell offset = new Cell(Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+        getLiveCells()
+                .forEach(cell -> {
+                    offset.setX(Math.min(cell.getX(), offset.getX()));
+                    offset.setY(Math.min(cell.getY(), offset.getY()));
+                });
+        return offset;
+    }
+
     public boolean isLiveCell(Cell cell) {
         return getLiveCells().contains(cell);
     }
