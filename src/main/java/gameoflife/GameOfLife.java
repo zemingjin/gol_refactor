@@ -20,14 +20,17 @@ public class GameOfLife {
         return getLiveCells();
     }
 
-    public GameOfLife seed(String values) {
+    public synchronized GameOfLife seed(String values) {
+        getLiveCells().clear();
         Stream.of(values.split(", "))
                 .forEach(this::addCell);
         return this;
     }
 
     public List<Cell> tick() {
-        return ListUtils.union(getNextGenerationCells(), getReproductionCells());
+        return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private List<Cell> getNextGenerationCells() {

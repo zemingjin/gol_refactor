@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Cell {
+public class Cell implements Comparable<Cell> {
     private int x, y;
 
     Cell(int x, int y) {
@@ -48,5 +48,10 @@ public class Cell {
     @Override
     public String toString() {
         return String.format("%d|%d", x, y);
+    }
+
+    @Override
+    public int compareTo(Cell that) {
+        return toString().compareTo(that.toString());
     }
 }
