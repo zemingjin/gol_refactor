@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
     private static final long WAIT_TIME = 400;
+    private static final int MAX_CELL_SIZE = 100;
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
@@ -33,7 +34,8 @@ public class GameOfLifeApp extends JComponent {
     }
 
     private int getCellSize() {
-        return getScreenSize().height / 2 / Math.max(dimension.getY(), dimension.getY());
+        return Math.min(MAX_CELL_SIZE,
+                        getScreenSize().height / 2 / Math.max(dimension.getY(), dimension.getY()));
     }
 
     private void setPanelSize() {
