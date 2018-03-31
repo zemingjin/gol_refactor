@@ -3,7 +3,6 @@ import gameoflife.GameOfLife;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
@@ -97,22 +96,18 @@ public class GameOfLifeApp extends JComponent {
 
     @Override
     public void paint(Graphics graphics) {
-        paint((a, b) -> paintBorder(graphics, a, b));
-        paint((a, b) -> paintCell(graphics, a, b));
-    }
-
-    private void paint(BiConsumer<Integer, Integer> consumer) {
         IntStream.range(0, dimension.getX())
-                .forEach(x -> paint(consumer, x));
+                .forEach(x -> paint(graphics, x));
     }
 
-    private void paint(BiConsumer<Integer, Integer> consumer, int x) {
+    private void paint(Graphics graphics, int x) {
         IntStream.range(0, dimension.getY())
-                .forEach(y -> paint(consumer, x, y));
+                .forEach(y -> paint(graphics, x, y));
     }
 
-    private void paint(BiConsumer<Integer, Integer> consumer, int x, int y) {
-        consumer.accept(x, y);
+    private void paint(Graphics graphics, int x, int y) {
+        paintCell(graphics, x, y);
+        paintBorder(graphics, x, y);
     }
 
     private void paintCell(Graphics graphics, int x, int y) {
