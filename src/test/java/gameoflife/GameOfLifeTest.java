@@ -66,7 +66,7 @@ public class GameOfLifeTest {
 
     @Test
     public void testGetMaxIndex() {
-        assertEquals(5, new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").getMaxIndex());
+        assertEquals(new Cell(5, 5), new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").getDimension());
     }
 
     @Test

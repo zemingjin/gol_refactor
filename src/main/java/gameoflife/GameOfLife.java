@@ -2,16 +2,21 @@ package gameoflife;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.ListUtils;
 
 public class GameOfLife {
+    private static final BinaryOperator<Cell> MIN_X = (a, b) -> a.isLess(b, Cell::getX) ? a : b;
+    private static final BinaryOperator<Cell> MIN_Y = (a, b) -> a.isLess(b, Cell::getY) ? a : b;
+    private static final BinaryOperator<Cell> MAX_X = (a, b) -> !a.isLess(b, Cell::getX) ? a : b;
+    private static final BinaryOperator<Cell> MAX_Y = (a, b) -> !a.isLess(b, Cell::getY) ? a : b;
+
     private List<Cell> liveCells = new ArrayList<>();
 
-    public List<Cell> getLiveCells() {
+    List<Cell> getLiveCells() {
         return liveCells;
     }
 
@@ -33,22 +38,20 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
-    public int getMaxIndex() {
-        return getLiveCells().stream()
-                .reduce((a, b) -> a.getMaxIndex() >= b.getMaxIndex() ? a : b)
-                .map(Cell::getMaxIndex)
-                .orElseThrow(() -> new RuntimeException("Invalid index value")) + 1;
+    public Cell getOffset() {
+        return new Cell(getIndex(MIN_X, Cell::getX), getIndex(MIN_Y, Cell::getY));
     }
 
-    public Cell getOffset() {
-        Cell offset = new Cell(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    public Cell getDimension() {
+        Cell offset = getOffset();
+        Cell maximum = new Cell(getIndex(MAX_X, Cell::getX), getIndex(MAX_Y, Cell::getY));
+        return new Cell(maximum.getX() - offset.getX(), maximum.getY() - offset.getY());
+    }
 
-        getLiveCells()
-                .forEach(cell -> {
-                    offset.setX(Math.min(cell.getX(), offset.getX()));
-                    offset.setY(Math.min(cell.getY(), offset.getY()));
-                });
-        return offset;
+    private int getIndex(BinaryOperator<Cell> operator, Function<Cell, Integer> getter) {
+        return getter.apply(getDeadCells().stream()
+                .reduce(operator)
+                .orElseThrow(() -> new RuntimeException("Invalid Live Cells")));
     }
 
     public boolean isLiveCell(Cell cell) {
@@ -90,6 +93,6 @@ public class GameOfLife {
 
     private void addCell(String values) {
         String[] indices = values.split("\\|");
-        liveCells.add(new Cell(Integer.parseInt(indices[0]), Integer.parseInt(indices[1])));
+        liveCells.add(new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim())));
     }
 }

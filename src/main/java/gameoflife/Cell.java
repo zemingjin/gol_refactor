@@ -2,6 +2,7 @@ package gameoflife;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -14,6 +15,26 @@ public class Cell implements Comparable<Cell> {
         this.y = y;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public boolean isLess(Cell that, Function<Cell, Integer> supplier) {
+        return supplier.apply(this) < supplier.apply(that);
+    }
+
+    public Cell subtract(Cell that) {
+        return new Cell(getX() - that.getX(), getY() - that.getY());
+    }
+
+    public Cell max(Cell that) {
+        return new Cell(Math.max(getX(), that.getX()), Math.max(getY(), that.getY()));
+    }
+
     public boolean isNeighbour(Cell that) {
         return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
     }
@@ -24,26 +45,6 @@ public class Cell implements Comparable<Cell> {
                 .flatMap(s -> s)
                 .filter(cell -> !equals(cell))
                 .collect(Collectors.toList());
-    }
-
-    public int getMaxIndex() {
-        return Math.max(x, y);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     private Stream<Cell> getNeighboursByColumn(int row) {
