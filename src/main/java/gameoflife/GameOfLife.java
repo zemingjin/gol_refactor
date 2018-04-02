@@ -51,7 +51,10 @@ public class GameOfLife {
     private int getIndex(BinaryOperator<Cell> operator, Function<Cell, Integer> getter) {
         return getter.apply(getDeadCells().stream()
                 .reduce(operator)
-                .orElseThrow(() -> new RuntimeException("Invalid Live Cells")));
+                .orElseThrow(() -> {
+                    System.out.println(getDeadCells().toString());
+                    return new RuntimeException("Invalid Live Cells");
+                }));
     }
 
     public boolean isLiveCell(Cell cell) {
