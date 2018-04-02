@@ -6,12 +6,6 @@ import static org.junit.Assert.*;
 
 public class GameOfLifeTest {
     @Test
-    public void testInitialized() {
-        GameOfLife gameOfLife = new GameOfLife();
-        assertTrue(gameOfLife.getLiveCells().isEmpty());
-    }
-
-    @Test
     public void testSeed() {
         GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 1|3");
 

@@ -34,12 +34,11 @@ public class GameOfLife {
         return this;
     }
 
-    public synchronized GameOfLife seed(char[][] seeds) {
+    public synchronized void seed(char[][] seeds) {
         setLiveCells(IntStream.range(0, seeds.length)
                 .mapToObj(y -> getRowOfCells(seeds, y))
                 .flatMap(c -> c)
                 .collect(Collectors.toList()));
-        return this;
     }
 
     public List<Cell> tick() {
