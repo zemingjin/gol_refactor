@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
@@ -14,7 +15,7 @@ public class GameOfLifeApp extends JComponent {
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
-    private int cellSize = 50;
+    private int cellSize = 25;
     private boolean continueFlag = true;
     private Cell offset;
     private Cell dimension;
@@ -34,7 +35,6 @@ public class GameOfLifeApp extends JComponent {
         gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
-        cellSize = getCellSize();
         setPanelSize();
         setFocusable(true);
     }
@@ -50,13 +50,13 @@ public class GameOfLifeApp extends JComponent {
     }
 
     private int getCellSize() {
-        return Math.min(Math.min(getScreenSize().height / 2 / dimension.getY(),
-                                 getScreenSize().width / 2 / dimension.getX()),
+        return Math.min(Math.min(getScreenSize().height * 3 / 4 / dimension.getY(),
+                                 getScreenSize().width * 3 / 4 / dimension.getX()),
                         MAX_CELL_SIZE);
     }
 
     private void setPanelSize() {
-        int cellSize = getCellSize();
+        setCellSize(getCellSize());
         setSize(dimension.getX() * cellSize, dimension.getY() * cellSize);
         setupFrame();
     }
@@ -65,11 +65,13 @@ public class GameOfLifeApp extends JComponent {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.getContentPane().add(this);
         window.setVisible(true);
-        adjustFrameSize();
     }
 
     private void adjustFrameSize() {
-        int cellSize = getCellSize();
+        setCellSize(getCellSize());
+        dimension = dimension.max(gameOfLife.getDimension());
+        offset = gameOfLife.getOffset();
+
         int width = dimension.getX() * cellSize;
         int height = dimension.getY() * cellSize;
 
@@ -92,24 +94,23 @@ public class GameOfLifeApp extends JComponent {
     }
 
     private int getFrameWidth(int panelWidth) {
-        Insets insets = window.getInsets();
-        return panelWidth + insets.left + insets.right;
+        return panelWidth + getInset(insets -> insets.left + insets.right);
     }
 
     private int getFrameHeight(int panelHeight) {
-        Insets insets = window.getInsets();
-        return panelHeight + insets.top + insets.bottom;
+        return panelHeight + getInset(insets -> insets.top + insets.bottom);
+    }
+
+    private int getInset(Function<Insets, Integer> get) {
+        return get.apply(window.getInsets());
     }
 
     private void run() {
         while (continueFlag) {
+            adjustFrameSize();
             repaint();
             waitAWhile();
-            gameOfLife.setLiveCells(gameOfLife.tick());
-            dimension = dimension.max(gameOfLife.getDimension());
-            offset = gameOfLife.getOffset();
-            cellSize = Math.min(cellSize, getCellSize());
-            adjustFrameSize();
+            gameOfLife.evolve();
         }
     }
 
@@ -152,6 +153,10 @@ public class GameOfLifeApp extends JComponent {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void setCellSize(int value) {
+        this.cellSize = Math.min(cellSize, value);
     }
 
     public static void main(String[] params) {

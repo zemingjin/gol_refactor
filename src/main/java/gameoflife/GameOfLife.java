@@ -41,6 +41,10 @@ public class GameOfLife {
                 .collect(Collectors.toList()));
     }
 
+    public void evolve() {
+        setLiveCells(tick());
+    }
+
     public List<Cell> tick() {
         return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
                 .sorted()
