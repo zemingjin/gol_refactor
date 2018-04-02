@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
-    private static final long WAIT_TIME = 400;
+    private static final long WAIT_TIME = 100;
     private static final int MAX_CELL_SIZE = 100;
 
     private GameOfLife gameOfLife = new GameOfLife();
