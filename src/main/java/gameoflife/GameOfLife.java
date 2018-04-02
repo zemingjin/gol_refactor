@@ -2,6 +2,7 @@ package gameoflife;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -9,15 +10,15 @@ import java.util.stream.Stream;
 import org.apache.commons.collections4.ListUtils;
 
 public class GameOfLife {
-    private static final BinaryOperator<Cell> MIN_X = (a, b) -> a.isLess(b, Cell::getX) ? a : b;
-    private static final BinaryOperator<Cell> MIN_Y = (a, b) -> a.isLess(b, Cell::getY) ? a : b;
-    private static final BinaryOperator<Cell> MAX_X = (a, b) -> !a.isLess(b, Cell::getX) ? a : b;
-    private static final BinaryOperator<Cell> MAX_Y = (a, b) -> !a.isLess(b, Cell::getY) ? a : b;
+    private static final BinaryOperator<Integer> MIN = (a, b) -> a <= b ? a : b;
+    private static final BinaryOperator<Integer> MAX = (a, b) -> a > b ? a : b;
 
     private List<Cell> liveCells = new ArrayList<>();
 
     List<Cell> getLiveCells() {
-        return liveCells;
+        return Optional.of(liveCells)
+                .filter(cells -> !cells.isEmpty())
+                .orElseThrow(() -> new RuntimeException("No more living cells"));
     }
 
     public List<Cell> setLiveCells(List<Cell> liveCells) {
@@ -26,7 +27,7 @@ public class GameOfLife {
     }
 
     public synchronized GameOfLife seed(String values) {
-        getLiveCells().clear();
+        liveCells.clear();
         Stream.of(values.split(", "))
                 .forEach(this::addCell);
         return this;
@@ -39,22 +40,20 @@ public class GameOfLife {
     }
 
     public Cell getOffset() {
-        return new Cell(getIndex(MIN_X, Cell::getX), getIndex(MIN_Y, Cell::getY));
+        return new Cell(getIndex(MIN, Cell::getX), getIndex(MIN, Cell::getY));
     }
 
     public Cell getDimension() {
         Cell offset = getOffset();
-        Cell maximum = new Cell(getIndex(MAX_X, Cell::getX), getIndex(MAX_Y, Cell::getY));
+        Cell maximum = new Cell(getIndex(MAX, Cell::getX), getIndex(MAX, Cell::getY));
         return new Cell(maximum.getX() - offset.getX(), maximum.getY() - offset.getY());
     }
 
-    private int getIndex(BinaryOperator<Cell> operator, Function<Cell, Integer> getter) {
-        return getter.apply(getDeadCells().stream()
+    private int getIndex(BinaryOperator<Integer> operator, Function<Cell, Integer> getter) {
+        return getDeadCells().stream()
+                .map(getter)
                 .reduce(operator)
-                .orElseThrow(() -> {
-                    System.out.println(getDeadCells().toString());
-                    return new RuntimeException("Invalid Live Cells");
-                }));
+                .orElse(0);
     }
 
     public boolean isLiveCell(Cell cell) {
