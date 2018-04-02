@@ -10,3 +10,6 @@ The format of the seed file could be like the followings:
 
 
 where 1 indicates a living cell.
+
+execute: **mvn package assembly:single** - the executable jar would be created under the target directory, 
+named in the form of 'gameoflife-[version]-jar-with-dependencies.jar'.
