@@ -3,6 +3,9 @@ import gameoflife.GameOfLife;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
@@ -15,6 +18,9 @@ public class GameOfLifeApp extends JComponent {
     private Cell offset;
     private Cell dimension;
 
+    GameOfLifeApp() {
+    }
+
     private GameOfLifeApp(String[] params) {
         if (params.length > 0) {
             setup(params[0]);
@@ -23,13 +29,23 @@ public class GameOfLifeApp extends JComponent {
         }
     }
 
-    private void setup(String seeds) {
-        gameOfLife.seed(seeds);
+    private void setup(String path) {
+        gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
         cellSize = getCellSize();
         setPanelSize();
         setFocusable(true);
+    }
+
+    char[][] loadSeeds(String path) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            return reader.lines()
+                    .map(String::toCharArray)
+                    .toArray(char[][]::new);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private int getCellSize() {

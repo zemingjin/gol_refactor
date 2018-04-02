@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.ListUtils;
@@ -33,6 +34,14 @@ public class GameOfLife {
         return this;
     }
 
+    public synchronized GameOfLife seed(char[][] seeds) {
+        setLiveCells(IntStream.range(0, seeds.length)
+                .mapToObj(y -> getRowOfCells(seeds, y))
+                .flatMap(c -> c)
+                .collect(Collectors.toList()));
+        return this;
+    }
+
     public List<Cell> tick() {
         return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
                 .sorted()
@@ -54,6 +63,12 @@ public class GameOfLife {
                 .map(getter)
                 .reduce(operator)
                 .orElse(0);
+    }
+
+    private Stream<Cell> getRowOfCells(char[][] seeds, int y) {
+        return IntStream.range(0, seeds[y].length)
+                .filter(x -> seeds[y][x] == '1')
+                .mapToObj(x -> new Cell(x, y));
     }
 
     public boolean isLiveCell(Cell cell) {
