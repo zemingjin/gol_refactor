@@ -27,7 +27,7 @@ public class GameOfLife {
         return getLiveCells();
     }
 
-    public synchronized GameOfLife seed(String values) {
+    synchronized GameOfLife seed(String values) {
         liveCells.clear();
         Stream.of(values.split(", "))
                 .forEach(this::addCell);
@@ -52,9 +52,7 @@ public class GameOfLife {
     }
 
     public Cell getDimension() {
-        Cell offset = getOffset();
-        Cell maximum = new Cell(getIndex(MAX, Cell::getX), getIndex(MAX, Cell::getY));
-        return new Cell(maximum.getX() - offset.getX(), maximum.getY() - offset.getY());
+        return new Cell(getIndex(MAX, Cell::getX), getIndex(MAX, Cell::getY));
     }
 
     private int getIndex(BinaryOperator<Integer> operator, Function<Cell, Integer> getter) {
