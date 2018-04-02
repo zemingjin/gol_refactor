@@ -3,11 +3,13 @@ import gameoflife.GameOfLife;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent {
     private static final long WAIT_TIME = 400;
-    private static final int MAX_CELL_SIZE = 100;
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
@@ -15,6 +17,9 @@ public class GameOfLifeApp extends JComponent {
     private boolean continueFlag = true;
     private Cell offset;
     private Cell dimension;
+
+    GameOfLifeApp() {
+    }
 
     private GameOfLifeApp(String[] params) {
         if (params.length > 0) {
@@ -24,8 +29,8 @@ public class GameOfLifeApp extends JComponent {
         }
     }
 
-    private void setup(String seeds) {
-        gameOfLife.seed(seeds);
+    private void setup(String path) {
+        gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
         cellSize = getCellSize();
@@ -33,9 +38,19 @@ public class GameOfLifeApp extends JComponent {
         setFocusable(true);
     }
 
+    char[][] loadSeeds(String path) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            return reader.lines()
+                    .map(String::toCharArray)
+                    .toArray(char[][]::new);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     private int getCellSize() {
-        return Math.min(MAX_CELL_SIZE,
-                        getScreenSize().height / 2 / Math.max(dimension.getY(), dimension.getY()));
+        return Math.min(getScreenSize().height / 2 / dimension.getY(),
+                        getScreenSize().width / 2 / dimension.getX());
     }
 
     private void setPanelSize() {

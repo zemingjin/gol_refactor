@@ -27,28 +27,36 @@ public class Cell implements Comparable<Cell> {
         return supplier.apply(this) < supplier.apply(that);
     }
 
-    public Cell subtract(Cell that) {
-        return new Cell(getX() - that.getX(), getY() - that.getY());
-    }
-
     public Cell max(Cell that) {
         return new Cell(Math.max(getX(), that.getX()), Math.max(getY(), that.getY()));
     }
 
     public boolean isNeighbour(Cell that) {
-        return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
+        return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
 
     public List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(x > 0 ? x - 1 : 0, x + 1)
+        return IntStream.rangeClosed(decrementIndex(x), x + 1)
                 .mapToObj(this::getNeighboursByColumn)
                 .flatMap(s -> s)
-                .filter(cell -> !equals(cell))
+                .filter(this::isNotThis)
                 .collect(Collectors.toList());
     }
 
+    private boolean isSameOrAdjacent(int a, int b) {
+        return Math.abs(a - b) <= 1;
+    }
+
+    private int decrementIndex(int i) {
+        return i > 0 ? i - 1 : 0;
+    }
+
+    private boolean isNotThis(Cell that) {
+        return !this.equals(that);
+    }
+
     private Stream<Cell> getNeighboursByColumn(int row) {
-        return IntStream.rangeClosed(y > 0 ? y - 1 : 0, y + 1)
+        return IntStream.rangeClosed(decrementIndex(y), y + 1)
                 .mapToObj(i -> new Cell(row, i));
     }
 
