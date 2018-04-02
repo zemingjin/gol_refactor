@@ -49,7 +49,8 @@ public class GameOfLifeApp extends JComponent {
     }
 
     private int getCellSize() {
-        return getScreenSize().height / 2 / Math.max(dimension.getY(), dimension.getY());
+        return Math.min(getScreenSize().height / 2 / dimension.getY(),
+                        getScreenSize().width / 2 / dimension.getX());
     }
 
     private void setPanelSize() {
