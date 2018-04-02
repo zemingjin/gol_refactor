@@ -1,3 +1,12 @@
 This project contains a Java implementation of Conway's Game of Life with a very crude UI. 
-The application takes one parameter, a comma delimited string of number pairs in the form of x|y,
-where x and y designated as the indices of a live cell, such as "1|1, 2|1, 3|1".
+The application takes one parameter, the path to the seed file.
+
+The format of the seed file could be like the followings:
+00100
+01110
+01010
+01110
+00100
+
+
+where 1 indicates a living cell.
