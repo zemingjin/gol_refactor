@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 public class GameOfLifeAppTest {
     private static final String BEACON_FILE = "src/main/resources/beacon.seed";
-    private static final String BEACON = "[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 1, 1], [0, 0, 1, 1]";
+    private static final String BEACON = "[O, O, ., .], [O, O, ., .], [., ., O, O], [., ., O, O]";
 
 
     @Test

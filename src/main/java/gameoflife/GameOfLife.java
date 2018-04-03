@@ -13,7 +13,7 @@ import org.apache.commons.collections4.ListUtils;
 public class GameOfLife {
     private static final BinaryOperator<Integer> MIN = (a, b) -> a <= b ? a : b;
     private static final BinaryOperator<Integer> MAX = (a, b) -> a > b ? a : b;
-    private static final char LIVE_CELL = '1';
+    static final char LIVE_CELL = 'O';
 
     private List<Cell> liveCells = new ArrayList<>();
 
