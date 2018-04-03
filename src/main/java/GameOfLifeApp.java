@@ -35,7 +35,7 @@ public class GameOfLifeApp extends JComponent {
         gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
-        setPanelSize();
+        setupFrame();
         setFocusable(true);
     }
 
@@ -53,12 +53,6 @@ public class GameOfLifeApp extends JComponent {
         return Math.min(Math.min(getScreenSize().height * 3 / 4 / dimension.getY(),
                                  getScreenSize().width * 3 / 4 / dimension.getX()),
                         MAX_CELL_SIZE);
-    }
-
-    private void setPanelSize() {
-        setCellSize(getCellSize());
-        setSize(dimension.getX() * cellSize, dimension.getY() * cellSize);
-        setupFrame();
     }
 
     private void setupFrame() {

@@ -13,6 +13,7 @@ import org.apache.commons.collections4.ListUtils;
 public class GameOfLife {
     private static final BinaryOperator<Integer> MIN = (a, b) -> a <= b ? a : b;
     private static final BinaryOperator<Integer> MAX = (a, b) -> a > b ? a : b;
+    private static final char LIVE_CELL = '1';
 
     private List<Cell> liveCells = new ArrayList<>();
 
@@ -22,7 +23,7 @@ public class GameOfLife {
                 .orElseThrow(() -> new RuntimeException("No more living cells"));
     }
 
-    public List<Cell> setLiveCells(List<Cell> liveCells) {
+    List<Cell> setLiveCells(List<Cell> liveCells) {
         this.liveCells = liveCells;
         return getLiveCells();
     }
@@ -45,7 +46,7 @@ public class GameOfLife {
         setLiveCells(tick());
     }
 
-    public List<Cell> tick() {
+    List<Cell> tick() {
         return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
                 .sorted()
                 .collect(Collectors.toList());
@@ -66,19 +67,22 @@ public class GameOfLife {
                 .orElse(0);
     }
 
-    private Stream<Cell> getRowOfCells(char[][] seeds, int y) {
-        return IntStream.range(0, seeds[y].length)
-                .filter(x -> seeds[y][x] == '1')
-                .mapToObj(x -> new Cell(x, y));
-    }
-
     public boolean isLiveCell(Cell cell) {
         return getLiveCells().contains(cell);
     }
 
+    private Stream<Cell> getRowOfCells(char[][] seeds, int y) {
+        return IntStream.range(0, seeds[y].length)
+                .filter(x -> seeds[y][x] == LIVE_CELL)
+                .mapToObj(x -> new Cell(x, y));
+    }
+
     private List<Cell> getNextGenerationCells() {
-        return filterCellList(getLiveCells(),
-                              cell -> 2 <= getNumberOfNeighbours(cell) && 3 >= getNumberOfNeighbours(cell));
+        return filterCellList(getLiveCells(), this::isNextGenerationCell);
+    }
+
+    private boolean isNextGenerationCell(Cell cell) {
+        return 2 <= getNumberOfNeighbours(cell) && getNumberOfNeighbours(cell) <= 3;
     }
 
     private List<Cell> getReproductionCells() {
