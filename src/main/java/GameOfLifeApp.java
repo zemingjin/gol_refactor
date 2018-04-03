@@ -16,7 +16,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
-    private int cellSize = 25;
+    private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
     private int evolveToggle = 0;
     private boolean automata = true;
