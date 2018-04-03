@@ -3,13 +3,14 @@ import gameoflife.GameOfLife;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-public class GameOfLifeApp extends JComponent {
+public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     private static final long WAIT_TIME = 100;
     private static final int MAX_CELL_SIZE = 100;
 
@@ -17,6 +18,8 @@ public class GameOfLifeApp extends JComponent {
     private JFrame window = new JFrame();
     private int cellSize = 25;
     private boolean continueFlag = true;
+    private int evolveToggle = 0;
+    private boolean automata = true;
     private Cell offset;
     private Cell dimension;
 
@@ -37,6 +40,13 @@ public class GameOfLifeApp extends JComponent {
         offset = gameOfLife.getOffset();
         setupFrame();
         setFocusable(true);
+        setupKeyboardListener();
+    }
+
+    private void setupKeyboardListener() {
+        KeyboardFocusManager
+                .getCurrentKeyboardFocusManager()
+                .addKeyEventPostProcessor(this);
     }
 
     char[][] loadSeeds(String path) {
@@ -104,7 +114,14 @@ public class GameOfLifeApp extends JComponent {
             adjustFrameSize();
             repaint();
             waitAWhile();
+            evolve();
+        }
+    }
+
+    private void evolve() {
+        if (automata || evolveToggle == 0) {
             gameOfLife.evolve();
+            evolveToggle++;
         }
     }
 
@@ -151,6 +168,24 @@ public class GameOfLifeApp extends JComponent {
 
     private void setCellSize(int value) {
         this.cellSize = Math.min(cellSize, value);
+    }
+
+    @Override
+    public boolean postProcessKeyEvent(KeyEvent e) {
+        boolean result = false;
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_ESCAPE:
+                continueFlag = false;
+                System.exit(0);
+                break;
+            case KeyEvent.VK_SPACE:
+                automata = e.isControlDown();
+                evolveToggle = (evolveToggle < 2) ? evolveToggle + 1 : 0;
+                e.consume();
+                result = true;
+                break;
+        }
+        return result;
     }
 
     public static void main(String[] params) {
