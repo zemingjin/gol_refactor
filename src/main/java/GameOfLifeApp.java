@@ -20,8 +20,10 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     private boolean continueFlag = true;
     private int evolveToggle = 0;
     private boolean automata = true;
+    private String path;
     private Cell offset;
     private Cell dimension;
+    private int iteration = 0;
 
     GameOfLifeApp() {
     }
@@ -35,6 +37,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     }
 
     private void setup(String path) {
+        this.path = path;
         gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
@@ -122,6 +125,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         if (automata || evolveToggle == 0) {
             gameOfLife.evolve();
             evolveToggle++;
+            window.setTitle(String.format("%s - #%d", path, iteration++));
         }
     }
 

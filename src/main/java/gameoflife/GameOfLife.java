@@ -14,7 +14,9 @@ public class GameOfLife {
     private static final BinaryOperator<Integer> MIN = (a, b) -> a <= b ? a : b;
     private static final BinaryOperator<Integer> MAX = (a, b) -> a > b ? a : b;
     private static final char LIVE_CELL = 'O';
+    private static final String INDICES_DELIMITER = "\\|";
 
+    private Cell boundary;
     private List<Cell> liveCells = new ArrayList<>();
 
     List<Cell> getLiveCells() {
@@ -43,18 +45,31 @@ public class GameOfLife {
     }
 
     public Cell getDimension() {
-        return new Cell(getIndex(MAX, Cell::getX), getIndex(MAX, Cell::getY));
+        return boundary;
     }
 
-    synchronized GameOfLife seed(String values) {
+    synchronized GameOfLife seed(String values, Cell boundary) {
         liveCells.clear();
+        this.boundary = boundary;
         Stream.of(values.split(", "))
                 .forEach(this::addCell);
         return this;
     }
 
     public synchronized void seed(String[] seeds) {
-        setLiveCells(seedsToLiveCells(seeds));
+        setLiveCells(seedsToLiveCells(seedsToBoundary(seeds)));
+    }
+
+    private String[] seedsToBoundary(String[] seeds) {
+        boundary =  getBoundary(seeds[0]);
+        String[] copy = new String[seeds.length - 1];
+        System.arraycopy(seeds, 1, copy, 0, seeds.length - 1);
+        return copy;
+    }
+
+    private Cell getBoundary(String info) {
+        String[] indices = info.split(" ")[1].split(INDICES_DELIMITER);
+        return new Cell(Integer.parseInt(indices[0]), Integer.parseInt(indices[1]));
     }
 
     private List<Cell> seedsToLiveCells(String[] seeds) {
@@ -67,7 +82,7 @@ public class GameOfLife {
     private Stream<Cell> getRowOfCells(String[] seeds, int y) {
         return IntStream.range(0, seeds[y].length())
                 .filter(x -> seeds[y].charAt(x) == LIVE_CELL)
-                .mapToObj(x -> new Cell(x, y));
+                .mapToObj(x -> new Cell(x, y, boundary));
     }
 
     private int getIndex(BinaryOperator<Integer> operator, Function<Cell, Integer> getter) {
@@ -119,7 +134,7 @@ public class GameOfLife {
     }
 
     private void addCell(String values) {
-        String[] indices = values.split("\\|");
-        liveCells.add(new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim())));
+        String[] indices = values.split(INDICES_DELIMITER);
+        liveCells.add(new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()), boundary));
     }
 }

@@ -2,17 +2,23 @@ package gameoflife;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
     private int x, y;
+    private Cell boundary;
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    Cell(int x, int y, Cell boundary) {
+        this(x, y);
+        this.boundary = boundary;
     }
 
     public int getX() {
@@ -21,10 +27,6 @@ public class Cell implements Comparable<Cell> {
 
     public int getY() {
         return y;
-    }
-
-    public boolean isLess(Cell that, Function<Cell, Integer> supplier) {
-        return supplier.apply(this) < supplier.apply(that);
     }
 
     public Cell max(Cell that) {
@@ -36,7 +38,7 @@ public class Cell implements Comparable<Cell> {
     }
 
     public List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(decrementIndex(x), x + 1)
+        return IntStream.rangeClosed(decrementIndex(x), incrementIndex(x, boundary::getX))
                 .mapToObj(this::getNeighboursByColumn)
                 .flatMap(s -> s)
                 .filter(this::isNotThis)
@@ -48,7 +50,11 @@ public class Cell implements Comparable<Cell> {
     }
 
     private int decrementIndex(int i) {
-        return i > 0 ? i - 1 : 0;
+        return Math.max(i - 1, 0);
+    }
+
+    private int incrementIndex(int i, Supplier<Integer> getter) {
+        return Math.min(i + 1, getter.get() - 1);
     }
 
     private boolean isNotThis(Cell that) {
@@ -56,8 +62,8 @@ public class Cell implements Comparable<Cell> {
     }
 
     private Stream<Cell> getNeighboursByColumn(int row) {
-        return IntStream.rangeClosed(decrementIndex(y), y + 1)
-                .mapToObj(i -> new Cell(row, i));
+        return IntStream.rangeClosed(decrementIndex(y), incrementIndex(y, boundary::getY))
+                .mapToObj(i -> new Cell(row, i, boundary));
     }
 
     @Override
