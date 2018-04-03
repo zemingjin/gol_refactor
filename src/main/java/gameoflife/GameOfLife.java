@@ -25,7 +25,7 @@ public class GameOfLife {
 
     List<Cell> setLiveCells(List<Cell> liveCells) {
         this.liveCells = liveCells;
-        return getLiveCells();
+        return liveCells;
     }
 
     public void evolve() {
