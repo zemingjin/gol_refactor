@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class GameOfLifeAppTest {
     private static final String BEACON_FILE = "src/main/resources/beacon.seed";
-    private static final String BEACON = "[OO.., OO.., ..OO, ..OO]";
+    private static final String BEACON = "[#P 4|4, OO.., OO.., ..OO, ..OO]";
 
 
     @Test
