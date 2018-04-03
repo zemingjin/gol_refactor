@@ -28,20 +28,6 @@ public class GameOfLife {
         return getLiveCells();
     }
 
-    synchronized GameOfLife seed(String values) {
-        liveCells.clear();
-        Stream.of(values.split(", "))
-                .forEach(this::addCell);
-        return this;
-    }
-
-    public synchronized void seed(char[][] seeds) {
-        setLiveCells(IntStream.range(0, seeds.length)
-                .mapToObj(y -> getRowOfCells(seeds, y))
-                .flatMap(c -> c)
-                .collect(Collectors.toList()));
-    }
-
     public void evolve() {
         setLiveCells(tick());
     }
@@ -60,6 +46,30 @@ public class GameOfLife {
         return new Cell(getIndex(MAX, Cell::getX), getIndex(MAX, Cell::getY));
     }
 
+    synchronized GameOfLife seed(String values) {
+        liveCells.clear();
+        Stream.of(values.split(", "))
+                .forEach(this::addCell);
+        return this;
+    }
+
+    public synchronized void seed(char[][] seeds) {
+        setLiveCells(seedsToCells(seeds));
+    }
+
+    private List<Cell> seedsToCells(char[][] seeds) {
+        return IntStream.range(0, seeds.length)
+                .mapToObj(y -> getRowOfCells(seeds, y))
+                .flatMap(c -> c)
+                .collect(Collectors.toList());
+    }
+
+    private Stream<Cell> getRowOfCells(char[][] seeds, int y) {
+        return IntStream.range(0, seeds[y].length)
+                .filter(x -> seeds[y][x] == LIVE_CELL)
+                .mapToObj(x -> new Cell(x, y));
+    }
+
     private int getIndex(BinaryOperator<Integer> operator, Function<Cell, Integer> getter) {
         return getDeadCells().stream()
                 .map(getter)
@@ -71,18 +81,13 @@ public class GameOfLife {
         return getLiveCells().contains(cell);
     }
 
-    private Stream<Cell> getRowOfCells(char[][] seeds, int y) {
-        return IntStream.range(0, seeds[y].length)
-                .filter(x -> seeds[y][x] == LIVE_CELL)
-                .mapToObj(x -> new Cell(x, y));
-    }
-
     private List<Cell> getNextGenerationCells() {
         return filterCellList(getLiveCells(), this::isNextGenerationCell);
     }
 
     private boolean isNextGenerationCell(Cell cell) {
-        return 2 <= getNumberOfNeighbours(cell) && getNumberOfNeighbours(cell) <= 3;
+        long numberOfNeighbours = getNumberOfNeighbours(cell);
+        return 2 <= numberOfNeighbours && numberOfNeighbours <= 3;
     }
 
     private List<Cell> getReproductionCells() {
