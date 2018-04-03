@@ -13,7 +13,7 @@ import org.apache.commons.collections4.ListUtils;
 public class GameOfLife {
     private static final BinaryOperator<Integer> MIN = (a, b) -> a <= b ? a : b;
     private static final BinaryOperator<Integer> MAX = (a, b) -> a > b ? a : b;
-    static final char LIVE_CELL = 'O';
+    private static final char LIVE_CELL = 'O';
 
     private List<Cell> liveCells = new ArrayList<>();
 
@@ -53,20 +53,20 @@ public class GameOfLife {
         return this;
     }
 
-    public synchronized void seed(char[][] seeds) {
-        setLiveCells(seedsToCells(seeds));
+    public synchronized void seed(String[] seeds) {
+        setLiveCells(seedsToLiveCells(seeds));
     }
 
-    private List<Cell> seedsToCells(char[][] seeds) {
+    private List<Cell> seedsToLiveCells(String[] seeds) {
         return IntStream.range(0, seeds.length)
                 .mapToObj(y -> getRowOfCells(seeds, y))
                 .flatMap(c -> c)
                 .collect(Collectors.toList());
     }
 
-    private Stream<Cell> getRowOfCells(char[][] seeds, int y) {
-        return IntStream.range(0, seeds[y].length)
-                .filter(x -> seeds[y][x] == LIVE_CELL)
+    private Stream<Cell> getRowOfCells(String[] seeds, int y) {
+        return IntStream.range(0, seeds[y].length())
+                .filter(x -> seeds[y].charAt(x) == LIVE_CELL)
                 .mapToObj(x -> new Cell(x, y));
     }
 

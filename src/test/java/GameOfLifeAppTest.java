@@ -1,24 +1,16 @@
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
 
 public class GameOfLifeAppTest {
     private static final String BEACON_FILE = "src/main/resources/beacon.seed";
-    private static final String BEACON = "[O, O, ., .], [O, O, ., .], [., ., O, O], [., ., O, O]";
+    private static final String BEACON = "[OO.., OO.., ..OO, ..OO]";
 
 
     @Test
     public void testLoadSeeds() {
-        assertEquals(BEACON, toString(new GameOfLifeApp().loadSeeds(BEACON_FILE)));
-    }
-
-    private String toString(char[][] chars) {
-        return Stream.of(chars)
-                .map(Arrays::toString)
-                .collect(Collectors.joining(", "));
+        assertEquals(BEACON, Arrays.toString(new GameOfLifeApp().loadSeeds(BEACON_FILE)));
     }
 }

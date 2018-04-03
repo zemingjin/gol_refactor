@@ -49,11 +49,10 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
                 .addKeyEventPostProcessor(this);
     }
 
-    char[][] loadSeeds(String path) {
+    String[] loadSeeds(String path) {
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             return reader.lines()
-                    .map(String::toCharArray)
-                    .toArray(char[][]::new);
+                    .toArray(String[]::new);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -71,7 +70,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         window.setVisible(true);
     }
 
-    private void adjustFrameSize() {
+    private void adjustFrame() {
         setCellSize(getCellSize());
         dimension = dimension.max(gameOfLife.getDimension());
         offset = gameOfLife.getOffset();
@@ -111,7 +110,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
 
     private void run() {
         while (continueFlag) {
-            adjustFrameSize();
+            adjustFrame();
             repaint();
             waitAWhile();
             evolve();
