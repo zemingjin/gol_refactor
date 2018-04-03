@@ -38,6 +38,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
+        window.setTitle(getTitle(path));
         setupFrame();
         setFocusable(true);
         setupKeyboardListener();
@@ -185,6 +186,10 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
                 break;
         }
         return result;
+    }
+
+    private String getTitle(String path) {
+        return String.format("Seed: %s", path);
     }
 
     public static void main(String[] params) {
