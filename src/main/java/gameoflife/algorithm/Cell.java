@@ -10,7 +10,7 @@ public class Cell implements Comparable<Cell> {
     private final int x, y;
     private String string;
 
-    public Cell(int x, int y) {
+    Cell(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -21,18 +21,6 @@ public class Cell implements Comparable<Cell> {
 
     public int getY() {
         return y;
-    }
-
-    boolean isNeighbour(Cell that) {
-        return !equals(that) && isAdjacent(that);
-    }
-
-    private boolean isAdjacent(Cell that) {
-        return isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
-    }
-
-    private boolean isSameOrAdjacent(int a, int b) {
-        return Math.abs(a - b) <= 1;
     }
 
     List<Cell> getNeighbours() {
@@ -46,6 +34,18 @@ public class Cell implements Comparable<Cell> {
         return IntStream.rangeClosed(getX() - 1, getX() + 1)
                 .mapToObj(x -> new Cell(x, y))
                 .filter(this::isNotThis);
+    }
+
+    boolean isNeighbour(Cell that) {
+        return !equals(that) && isAdjacent(that);
+    }
+
+    private boolean isAdjacent(Cell that) {
+        return isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
+    }
+
+    private boolean isSameOrAdjacent(int a, int b) {
+        return Math.abs(a - b) <= 1;
     }
 
     private boolean isNotThis(Cell that) {
@@ -66,6 +66,7 @@ public class Cell implements Comparable<Cell> {
         return getString().hashCode();
     }
 
+    @Override
     public String toString() {
         return getString();
     }
@@ -76,7 +77,10 @@ public class Cell implements Comparable<Cell> {
     }
 
     private String getString() {
-        return Optional.ofNullable(string)
-                .orElseGet(() -> string = String.format("%d|%d", x, y));
+        return string == null ? string = getString(x, y) : string;
+    }
+
+    static String getString(int x, int y) {
+        return String.format("%d|%d", x, y);
     }
 }

@@ -15,7 +15,7 @@ public final class IOHelper {
     }
 
     public static String format(final long time) {
-        return String.format("%tM:%tS:%tL", time, time, time);
+        return String.format("%tM:%tS.%tL", time, time, time);
     }
 
     private IOHelper() {

@@ -1,7 +1,6 @@
 package gameoflife.app;
 
 import gameoflife.algorithm.Boundary;
-import gameoflife.algorithm.Cell;
 import gameoflife.algorithm.GameOfLife;
 import gameoflife.helper.IOHelper;
 
@@ -164,7 +163,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void fillCell(Graphics graphics, int x, int y) {
-        graphics.setColor(getColor(new Cell(x, y)));
+        graphics.setColor(getColor(x, y));
         graphics.fillRect(x * cellSize + 1,y * cellSize + 1, cellSize - 2, cellSize - 2);
     }
 
@@ -173,8 +172,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         graphics.drawRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
 
-    private Color getColor(Cell cell) {
-        return gameOfLife.isLiveCell(cell) ? getForeground() : getBackground();
+    private Color getColor(int x, int y) {
+        return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
     }
 
     private void waitAWhile() {

@@ -77,9 +77,9 @@ public class GameOfLifeTest {
     public void testIsLiveCell() {
         final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", "5|5");
 
-        assertTrue(gameOfLife.isLiveCell(new Cell(1, 1)));
-        assertTrue(gameOfLife.isLiveCell(new Cell(4, 3)));
-        assertFalse(gameOfLife.isLiveCell(new Cell(1, 4)));
+        assertTrue(gameOfLife.isLiveCell(1, 1));
+        assertTrue(gameOfLife.isLiveCell(4, 3));
+        assertFalse(gameOfLife.isLiveCell(1, 4));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class GameOfLifeTest {
 
     private void testRow(GameOfLife gameOfLife, int y, int max) {
         IntStream.range(0, max)
-                .forEach(x -> gameOfLife.isLiveCell(new Cell(x, y)));
+                .forEach(x -> gameOfLife.isLiveCell(x, y));
     }
 
 }
