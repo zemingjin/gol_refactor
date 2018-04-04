@@ -71,15 +71,19 @@ public class GameOfLife {
 
     private List<Cell> seedsToLiveCells(String[] seeds) {
         return IntStream.range(0, seeds.length)
-                .mapToObj(y -> getRowOfCells(seeds, y))
+                .mapToObj(y -> getLiveCellsFromRow(seeds, y))
                 .flatMap(c -> c)
                 .collect(Collectors.toList());
     }
 
-    private Stream<Cell> getRowOfCells(String[] seeds, int y) {
+    private Stream<Cell> getLiveCellsFromRow(String[] seeds, int y) {
         return IntStream.range(0, seeds[y].length())
-                .filter(x -> seeds[y].charAt(x) == LIVE_CELL)
+                .filter(x -> isLiveCell(seeds[y], x))
                 .mapToObj(x -> new Cell(x, y));
+    }
+
+    private boolean isLiveCell(String line, int x) {
+        return line.charAt(x) == LIVE_CELL;
     }
 
     public boolean isLiveCell(Cell cell) {

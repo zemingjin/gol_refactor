@@ -27,21 +27,21 @@ public class Cell implements Comparable<Cell> {
         return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
 
+    private boolean isSameOrAdjacent(int a, int b) {
+        return Math.abs(a - b) <= 1;
+    }
+
     List<Cell> getNeighbours() {
         return IntStream.rangeClosed(y - 1, y + 1)
                 .mapToObj(this::getNeighboursByRow)
                 .flatMap(s -> s)
-                .filter(this::isNotThis)
                 .collect(Collectors.toList());
     }
 
     private Stream<Cell> getNeighboursByRow(int y) {
-        return IntStream.rangeClosed(x - 1, x + 1)
-                .mapToObj(i -> new Cell(i, y));
-    }
-
-    private boolean isSameOrAdjacent(int a, int b) {
-        return Math.abs(a - b) <= 1;
+        return IntStream.rangeClosed(getX() - 1, getX() + 1)
+                .mapToObj(x -> new Cell(x, y))
+                .filter(this::isNotThis);
     }
 
     private boolean isNotThis(Cell that) {
