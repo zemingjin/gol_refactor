@@ -69,8 +69,7 @@ public class GameOfLife {
     }
 
     private Cell getBoundary(String info) {
-        String[] indices = info.split(" ")[1].split(INDICES_DELIMITER);
-        return new Cell(Integer.parseInt(indices[0]), Integer.parseInt(indices[1]));
+        return getCell(info.split(" ")[1]);
     }
 
     private List<Cell> seedsToLiveCells(String[] seeds) {
@@ -131,7 +130,7 @@ public class GameOfLife {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !getLiveCells().contains(cell);
+        return !isLiveCell(cell);
     }
 
     private Cell getCell(String values) {
