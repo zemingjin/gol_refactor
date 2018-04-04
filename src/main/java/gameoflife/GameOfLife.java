@@ -12,7 +12,7 @@ public class GameOfLife {
     private static final char LIVE_CELL = 'O';
     private static final String INDICES_DELIMITER = "\\|";
 
-    private Cell boundary;
+    private Boundary boundary;
     private List<Cell> liveCells = new ArrayList<>();
     private Map<String, Cell> cellMap;
 
@@ -47,11 +47,11 @@ public class GameOfLife {
         return new Cell(getIndex(Cell::getX), getIndex(Cell::getY));
     }
 
-    public Cell getDimension() {
+    public Boundary getDimension() {
         return boundary;
     }
 
-    synchronized GameOfLife seed(String values, Cell boundary) {
+    synchronized GameOfLife seed(String values, Boundary boundary) {
         this.boundary = boundary;
         setLiveCells(seedsToLiveCells(values));
         return this;
@@ -69,7 +69,7 @@ public class GameOfLife {
         return this;
     }
 
-    private Cell getBoundary(String info) {
+    private Boundary getBoundary(String info) {
         return getCell(info.split(" ")[1]);
     }
 
@@ -135,8 +135,8 @@ public class GameOfLife {
         return !isLiveCell(cell);
     }
 
-    private Cell getCell(String values) {
+    private Boundary getCell(String values) {
         String[] indices = values.split(INDICES_DELIMITER);
-        return new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
+        return new Boundary(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 }

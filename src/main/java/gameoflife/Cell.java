@@ -28,10 +28,6 @@ public class Cell implements Comparable<Cell> {
         return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
 
-    boolean isInBound(Cell that) {
-        return 0 <= that.x && that.x < x && 0 <= that.y && that.y < y;
-    }
-
     List<Cell> getNeighbours() {
         return IntStream.rangeClosed(y - 1, y + 1)
                 .mapToObj(this::getNeighboursByRow)

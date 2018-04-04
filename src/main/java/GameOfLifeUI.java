@@ -1,3 +1,4 @@
+import gameoflife.Boundary;
 import gameoflife.Cell;
 import gameoflife.GameOfLife;
 import gameoflife.IOHelper;
@@ -25,7 +26,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private boolean automata = true;
     private String path;
     private Cell offset;
-    private Cell dimension;
+    private Boundary dimension;
     private int iteration = 0;
     private int waitTime;
 
