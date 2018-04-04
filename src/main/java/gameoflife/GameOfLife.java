@@ -87,7 +87,7 @@ public class GameOfLife {
     }
 
     private int getIndex(Function<Cell, Integer> getter) {
-        return getDeadCells().stream()
+        return getNeighbouringCells().stream()
                 .map(getter)
                 .reduce(Math::min)
                 .orElse(0);
@@ -103,11 +103,11 @@ public class GameOfLife {
 
     private boolean isNextGenerationCell(Cell cell) {
         long numberOfNeighbours = getNumberOfNeighbours(cell);
-        return 2 <= numberOfNeighbours && numberOfNeighbours <= 3;
+        return 2 == numberOfNeighbours || numberOfNeighbours == 3;
     }
 
     private List<Cell> getReproductionCells() {
-        return filterCellList(getDeadCells(), cell -> getNumberOfNeighbours(cell) == 3);
+        return filterCellList(getNeighbouringCells(), cell -> getNumberOfNeighbours(cell) == 3);
     }
 
     private List<Cell> filterCellList(List<Cell> list, Predicate<Cell> predicate) {
@@ -122,7 +122,7 @@ public class GameOfLife {
                 .count();
     }
 
-    List<Cell> getDeadCells() {
+    List<Cell> getNeighbouringCells() {
         return getLiveCells().stream()
                 .flatMap(cell -> cell.getNeighbours().stream())
                 .distinct()
