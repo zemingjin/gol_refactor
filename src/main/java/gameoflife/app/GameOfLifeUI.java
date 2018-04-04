@@ -1,13 +1,17 @@
-import gameoflife.Boundary;
-import gameoflife.Cell;
-import gameoflife.GameOfLife;
-import gameoflife.IOHelper;
+package gameoflife.app;
+
+import gameoflife.algorithm.Boundary;
+import gameoflife.algorithm.Cell;
+import gameoflife.algorithm.GameOfLife;
+import gameoflife.helper.IOHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -17,17 +21,18 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private static final int MIN_CELL_SIZE = 6;
     private static final String OPT_STEP = "-s";
     private static final String OPT_WAIT = "-w";
+    private static final Logger LOG = Logger.getLogger(GameOfLifeUI.class.getName());
 
-    private GameOfLife gameOfLife = new GameOfLife();
-    private JFrame window = new JFrame();
+
+    private final GameOfLife gameOfLife = new GameOfLife();
+    private final JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
     private int evolveToggle = 1;
     private boolean automata = true;
     private String path;
-    private Cell offset;
     private Boundary dimension;
-    private int iteration = 0;
+    private int iteration;
     private int waitTime;
 
     private GameOfLifeUI(String[] params) {
@@ -40,16 +45,12 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private void setup(String[] params) {
         path = params[0];
+        automata = isAutomata(params);
         waitTime = getWaitTime(params);
         gameOfLife.seed(IOHelper.loadSeeds(path));
         dimension = gameOfLife.getDimension();
-        offset = gameOfLife.getOffset();
-        automata = isAutomata(params);
-        window.setTitle(getTitle(path));
-        window.setResizable(false);
-        setupFrame();
-        setFocusable(true);
         setupKeyboardListener();
+        setupFrame();
     }
 
     private int getWaitTime(String[] params) {
@@ -80,14 +81,16 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private void setupFrame() {
         setCellSize(getCellSize());
 
-        int width = dimension.getX() * cellSize;
-        int height = dimension.getY() * cellSize;
+        final int width = dimension.getX() * cellSize;
+        final int height = dimension.getY() * cellSize;
 
         setSize(width, height);
+        setFocusable(true);
+        window.setTitle(getTitle(path));
+        window.setResizable(false);
         window.setVisible(true);
         window.setBounds(getHorizontalPosition(width), getVerticalPosition(height),
                          getFrameWidth(width), getFrameHeight(height));
-
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.getContentPane().add(this);
     }
@@ -105,56 +108,59 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private int getFrameWidth(int panelWidth) {
-        return panelWidth + getInset(insets -> insets.left + insets.right);
+        return panelWidth + getInsetValue(insets -> insets.left + insets.right);
     }
 
     private int getFrameHeight(int panelHeight) {
-        return panelHeight + getInset(insets -> insets.top + insets.bottom);
+        return panelHeight + getInsetValue(insets -> insets.top + insets.bottom);
     }
 
-    private int getInset(Function<Insets, Integer> get) {
-        return get.apply(window.getInsets());
+    private int getInsetValue(Function<Insets, Integer> getter) {
+        return getter.apply(window.getInsets());
     }
 
     private void run() {
         while (continueFlag) {
             repaint();
             waitAWhile();
-            evolve();
+            if (isContinueToEvolve()) {
+                evolve();
+            }
         }
     }
 
     private void evolve() {
-        if (automata || evolveToggle == 0) {
-            gameOfLife.evolve();
-            evolveToggle++;
-            window.setTitle(String.format("%s - #%d", path, iteration++));
-        }
+        gameOfLife.evolve();
+        evolveToggle++;
+        window.setTitle(String.format("%s - #%d", path, iteration++));
+    }
+
+    private boolean isContinueToEvolve() {
+        return automata || evolveToggle == 0;
     }
 
     @Override
     public void paint(Graphics graphics) {
-        IntStream.range(0, dimension.getX())
-                .forEach(x -> paint(graphics, x));
-    }
-
-    private void paint(Graphics graphics, int x) {
         IntStream.range(0, dimension.getY())
-                .forEach(y -> paint(graphics, x, y));
+                .forEach(y -> paintRow(graphics, y));
     }
 
-    private void paint(Graphics graphics, int x, int y) {
-        paintCell(graphics, x, y);
-        paintBorder(graphics, x, y);
+    private void paintRow(Graphics graphics, int y) {
+        IntStream.range(0, dimension.getX())
+                .forEach(x -> paintCell(graphics, x, y));
     }
 
     private void paintCell(Graphics graphics, int x, int y) {
-        graphics.setColor(getColor(new Cell(x, y)));
-        graphics.fillRect(x * cellSize + 1,
-                          y * cellSize + 1, cellSize - 2, cellSize - 2);
+        fillCell(graphics, x, y);
+        drawGrid(graphics, x, y);
     }
 
-    private void paintBorder(Graphics  graphics, int x, int y) {
+    private void fillCell(Graphics graphics, int x, int y) {
+        graphics.setColor(getColor(new Cell(x, y)));
+        graphics.fillRect(x * cellSize + 1,y * cellSize + 1, cellSize - 2, cellSize - 2);
+    }
+
+    private void drawGrid(Graphics  graphics, int x, int y) {
         graphics.setColor(getForeground());
         graphics.drawRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
@@ -169,7 +175,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                 wait(waitTime);
             }
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -180,17 +186,13 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     @Override
     public boolean postProcessKeyEvent(KeyEvent e) {
         boolean result = false;
-        switch(e.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE:
-                continueFlag = false;
-                System.exit(0);
-                break;
-            case KeyEvent.VK_SPACE:
-                automata = e.isControlDown();
-                evolveToggle = (evolveToggle < 2) ? evolveToggle + 1 : 0;
-                e.consume();
-                result = true;
-                break;
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            continueFlag = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            automata = e.isControlDown();
+            evolveToggle = (evolveToggle < 2) ? evolveToggle + 1 : 0;
+            e.consume();
+            result = true;
         }
         return result;
     }

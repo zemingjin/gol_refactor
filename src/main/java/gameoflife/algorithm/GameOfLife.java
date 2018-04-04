@@ -1,4 +1,4 @@
-package gameoflife;
+package gameoflife.algorithm;
 
 import java.util.*;
 import java.util.function.*;
@@ -43,15 +43,11 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
-    public Cell getOffset() {
-        return new Cell(getIndex(Cell::getX), getIndex(Cell::getY));
-    }
-
     public Boundary getDimension() {
         return boundary;
     }
 
-    synchronized GameOfLife seed(String values, Boundary boundary) {
+    GameOfLife seed(String values, Boundary boundary) {
         this.boundary = boundary;
         setLiveCells(seedsToLiveCells(values));
         return this;
@@ -63,7 +59,7 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
-    public synchronized GameOfLife seed(String[] seeds) {
+    public GameOfLife seed(String[] seeds) {
         boundary =  getBoundary(seeds[0]);
         setLiveCells(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
@@ -86,13 +82,6 @@ public class GameOfLife {
                 .mapToObj(x -> new Cell(x, y));
     }
 
-    private int getIndex(Function<Cell, Integer> getter) {
-        return getNeighbouringCells().stream()
-                .map(getter)
-                .reduce(Math::min)
-                .orElse(0);
-    }
-
     public boolean isLiveCell(Cell cell) {
         return cellMap.get(cell.toString()) != null;
     }
@@ -102,7 +91,7 @@ public class GameOfLife {
     }
 
     private boolean isNextGenerationCell(Cell cell) {
-        long numberOfNeighbours = getNumberOfNeighbours(cell);
+        final long numberOfNeighbours = getNumberOfNeighbours(cell);
         return 2 == numberOfNeighbours || numberOfNeighbours == 3;
     }
 
@@ -136,7 +125,7 @@ public class GameOfLife {
     }
 
     private Boundary getCell(String values) {
-        String[] indices = values.split(INDICES_DELIMITER);
+        final String[] indices = values.split(INDICES_DELIMITER);
         return new Boundary(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 }

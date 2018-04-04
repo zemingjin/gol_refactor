@@ -1,4 +1,4 @@
-package gameoflife;
+package gameoflife.algorithm;
 
 import org.junit.Test;
 

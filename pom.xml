@@ -22,9 +22,72 @@
         </dependency>
     </dependencies>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <build>
         <plugins>
-            <!-- Forces Maven to use Java 1.6 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.5</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-core</artifactId>
+                        <version>5.3.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-java</artifactId>
+                        <version>5.3.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.expedia.www.platform</groupId>
+                        <artifactId>platform-build-tools</artifactId>
+                        <version>0.9.0</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <targetJdk>1.8</targetJdk>
+                    <includeTests>true</includeTests>
+                    <skip>false</skip>
+                    <sourceEncoding>UTF-8</sourceEncoding>
+                    <rulesets>
+                        <ruleset>buildtools/pmd/ruleset.xml</ruleset>
+                    </rulesets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>cpd-report</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.0</version>
@@ -53,7 +116,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>GameOfLifeUI</mainClass>
+                            <mainClass>gameoflife.app.GameOfLifeUI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

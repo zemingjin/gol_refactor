@@ -1,10 +1,10 @@
-package gameoflife;
+package gameoflife.helper;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class IOHelper {
+public final class IOHelper {
     public static String[] loadSeeds(String path) {
         try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             return reader.lines()
@@ -16,6 +16,9 @@ public class IOHelper {
 
     public static String format(final long time) {
         return String.format("%tM:%tS:%tL", time, time, time);
+    }
+
+    private IOHelper() {
     }
 
 }

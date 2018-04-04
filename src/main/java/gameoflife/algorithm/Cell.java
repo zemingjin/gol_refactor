@@ -1,14 +1,13 @@
-package gameoflife;
+package gameoflife.algorithm;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
-    private int x, y;
+    private final int x, y;
     private String string;
 
     public Cell(int x, int y) {
