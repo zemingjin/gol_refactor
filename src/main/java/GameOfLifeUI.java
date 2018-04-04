@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
-    private static final int WAIT_TIME = 200;
+    private static final int WAIT_TIME = 100;
     private static final int MAX_CELL_SIZE = 100;
     private static final int MIN_CELL_SIZE = 6;
     private static final String OPT_STEP = "-s";
