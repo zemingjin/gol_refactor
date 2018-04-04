@@ -11,8 +11,6 @@ import java.util.stream.Stream;
 import org.apache.commons.collections4.ListUtils;
 
 public class GameOfLife {
-    private static final BinaryOperator<Integer> MIN = (a, b) -> a <= b ? a : b;
-    private static final BinaryOperator<Integer> MAX = (a, b) -> a > b ? a : b;
     private static final char LIVE_CELL = 'O';
     private static final String INDICES_DELIMITER = "\\|";
 
@@ -41,7 +39,7 @@ public class GameOfLife {
     }
 
     public Cell getOffset() {
-        return new Cell(getIndex(MIN, Cell::getX), getIndex(MIN, Cell::getY));
+        return new Cell(getIndex(Cell::getX), getIndex(Cell::getY));
     }
 
     public Cell getDimension() {
@@ -85,10 +83,10 @@ public class GameOfLife {
                 .mapToObj(x -> new Cell(x, y, boundary));
     }
 
-    private int getIndex(BinaryOperator<Integer> operator, Function<Cell, Integer> getter) {
+    private int getIndex(Function<Cell, Integer> getter) {
         return getDeadCells().stream()
                 .map(getter)
-                .reduce(operator)
+                .reduce(Math::min)
                 .orElse(0);
     }
 
