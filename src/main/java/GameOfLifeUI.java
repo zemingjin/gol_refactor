@@ -5,17 +5,15 @@ import gameoflife.IOHelper;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
+public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private static final int WAIT_TIME = 200;
     private static final int MAX_CELL_SIZE = 100;
+    private static final int MIN_CELL_SIZE = 6;
     private static final String OPT_STEP = "-s";
     private static final String OPT_WAIT = "-w";
 
@@ -31,10 +29,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     private int iteration = 0;
     private int waitTime;
 
-    GameOfLifeApp() {
-    }
-
-    private GameOfLifeApp(String[] params) {
+    private GameOfLifeUI(String[] params) {
         if (params.length > 0) {
             setup(params);
         } else {
@@ -75,19 +70,13 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     }
 
     private int getCellSize() {
-        return Math.min(Math.min(getScreenSize().height * 3 / 4 / dimension.getY(),
-                                 getScreenSize().width * 3 / 4 / dimension.getX()),
-                        MAX_CELL_SIZE);
+        return Math.max(Math.min(Math.min(getScreenSize().height * 3 / 4 / dimension.getY(),
+                                          getScreenSize().width * 3 / 4 / dimension.getX()),
+                                 MAX_CELL_SIZE),
+                MIN_CELL_SIZE);
     }
 
     private void setupFrame() {
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.getContentPane().add(this);
-        window.setVisible(true);
-        adjustFrame();
-    }
-
-    private void adjustFrame() {
         setCellSize(getCellSize());
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
@@ -96,16 +85,19 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         int height = dimension.getY() * cellSize;
 
         setSize(width, height);
-
-        window.setBounds(getFramePositionX(width), getFramePositionY(height),
+        window.setBounds(getHorizontalPosition(width), getVerticalPosition(height),
                          getFrameWidth(width), getFrameHeight(height));
+
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.getContentPane().add(this);
+        window.setVisible(true);
     }
 
-    private int getFramePositionX(int panelWidth) {
+    private int getHorizontalPosition(int panelWidth) {
         return (getScreenSize().width - getFrameWidth(panelWidth)) / 2;
     }
 
-    private int getFramePositionY(int panelHeight) {
+    private int getVerticalPosition(int panelHeight) {
         return (getScreenSize().height - getFrameHeight(panelHeight)) / 2;
     }
 
@@ -209,6 +201,6 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     }
 
     public static void main(String[] params) {
-        new GameOfLifeApp(params).run();
+        new GameOfLifeUI(params).run();
     }
 }

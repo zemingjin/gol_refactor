@@ -53,7 +53,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>GameOfLifeApp</mainClass>
+                            <mainClass>GameOfLifeUI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
