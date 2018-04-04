@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
-    private static final long WAIT_TIME = 200;
+    private static final int WAIT_TIME = 200;
     private static final int MAX_CELL_SIZE = 100;
     private static final String OPT_STEP = "-s";
+    private static final String OPT_WAIT = "-w";
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
@@ -26,6 +28,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     private Cell offset;
     private Cell dimension;
     private int iteration = 0;
+    private int waitTime;
 
     GameOfLifeApp() {
     }
@@ -39,7 +42,8 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     }
 
     private void setup(String[] params) {
-        this.path = params[0];
+        path = params[0];
+        waitTime = getWaitTime(params);
         gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
@@ -49,6 +53,14 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         setupFrame();
         setFocusable(true);
         setupKeyboardListener();
+    }
+
+    private int getWaitTime(String[] params) {
+        return Stream.of(params)
+                .filter(param -> param.startsWith(OPT_WAIT))
+                .map(param -> Integer.parseInt(param.substring(OPT_WAIT.length())))
+                .findFirst()
+                .orElse(WAIT_TIME);
     }
 
     private boolean isAutomata(String[] params) {
@@ -171,7 +183,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     private void waitAWhile() {
         try {
             synchronized (this) {
-                wait(WAIT_TIME);
+                wait(waitTime);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();

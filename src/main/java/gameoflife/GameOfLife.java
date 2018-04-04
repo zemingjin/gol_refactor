@@ -1,6 +1,7 @@
 package gameoflife;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
@@ -47,22 +48,20 @@ public class GameOfLife {
     }
 
     synchronized GameOfLife seed(String values, Cell boundary) {
-        liveCells.clear();
         this.boundary = boundary;
-        Stream.of(values.split(", "))
-                .forEach(this::addCell);
+        setLiveCells(seedsToLiveCells(values));
         return this;
     }
 
-    public synchronized void seed(String[] seeds) {
-        setLiveCells(seedsToLiveCells(seedsToBoundary(seeds)));
+    private List<Cell> seedsToLiveCells(String values) {
+        return Stream.of(values.split(", "))
+                .map(this::getCell)
+                .collect(Collectors.toList());
     }
 
-    private String[] seedsToBoundary(String[] seeds) {
+    public synchronized void seed(String[] seeds) {
         boundary =  getBoundary(seeds[0]);
-        String[] copy = new String[seeds.length - 1];
-        System.arraycopy(seeds, 1, copy, 0, seeds.length - 1);
-        return copy;
+        setLiveCells(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
     }
 
     private Cell getBoundary(String info) {
@@ -131,8 +130,8 @@ public class GameOfLife {
         return !getLiveCells().contains(cell);
     }
 
-    private void addCell(String values) {
+    private Cell getCell(String values) {
         String[] indices = values.split(INDICES_DELIMITER);
-        liveCells.add(new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()), boundary));
+        return new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()), boundary);
     }
 }
