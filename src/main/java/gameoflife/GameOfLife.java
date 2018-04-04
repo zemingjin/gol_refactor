@@ -1,9 +1,6 @@
 package gameoflife;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -17,6 +14,7 @@ public class GameOfLife {
 
     private Cell boundary;
     private List<Cell> liveCells = new ArrayList<>();
+    private Map<String, Cell> cellMap;
 
     List<Cell> getLiveCells() {
         return Optional.of(liveCells)
@@ -26,7 +24,13 @@ public class GameOfLife {
 
     List<Cell> setLiveCells(List<Cell> liveCells) {
         this.liveCells = liveCells;
+        cellMap = getCellMap(liveCells);
         return liveCells;
+    }
+
+    private Map<String, Cell> getCellMap(List<Cell> liveCells) {
+        return liveCells.stream()
+                .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     public void evolve() {
@@ -90,7 +94,7 @@ public class GameOfLife {
     }
 
     public boolean isLiveCell(Cell cell) {
-        return getLiveCells().contains(cell);
+        return cellMap.get(cell.toString()) != null;
     }
 
     private List<Cell> getNextGenerationCells() {
