@@ -71,26 +71,24 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int getCellSize() {
         return Math.max(Math.min(Math.min(getScreenSize().height * 3 / 4 / dimension.getY(),
-                                          getScreenSize().width * 3 / 4 / dimension.getX()),
+                                          getScreenSize().width  * 3 / 4 / dimension.getX()),
                                  MAX_CELL_SIZE),
-                MIN_CELL_SIZE);
+                        MIN_CELL_SIZE);
     }
 
     private void setupFrame() {
         setCellSize(getCellSize());
-        dimension = gameOfLife.getDimension();
-        offset = gameOfLife.getOffset();
 
         int width = dimension.getX() * cellSize;
         int height = dimension.getY() * cellSize;
 
         setSize(width, height);
+        window.setVisible(true);
         window.setBounds(getHorizontalPosition(width), getVerticalPosition(height),
                          getFrameWidth(width), getFrameHeight(height));
 
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.getContentPane().add(this);
-        window.setVisible(true);
     }
 
     private int getHorizontalPosition(int panelWidth) {
