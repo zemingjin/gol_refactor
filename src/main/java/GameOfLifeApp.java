@@ -7,18 +7,20 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
-    private static final long WAIT_TIME = 100;
+    private static final long WAIT_TIME = 200;
     private static final int MAX_CELL_SIZE = 100;
+    private static final String OPT_STEP = "-s";
 
     private GameOfLife gameOfLife = new GameOfLife();
     private JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
-    private int evolveToggle = 0;
+    private int evolveToggle = 1;
     private boolean automata = true;
     private String path;
     private Cell offset;
@@ -30,21 +32,27 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
 
     private GameOfLifeApp(String[] params) {
         if (params.length > 0) {
-            setup(params[0]);
+            setup(params);
         } else {
             throw new RuntimeException("Missing seeds");
         }
     }
 
-    private void setup(String path) {
-        this.path = path;
+    private void setup(String[] params) {
+        this.path = params[0];
         gameOfLife.seed(loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
+        automata = isAutomata(params);
         window.setTitle(getTitle(path));
+        window.setResizable(false);
         setupFrame();
         setFocusable(true);
         setupKeyboardListener();
+    }
+
+    private boolean isAutomata(String[] params) {
+        return !Arrays.asList(params).contains(OPT_STEP);
     }
 
     private void setupKeyboardListener() {
@@ -72,6 +80,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.getContentPane().add(this);
         window.setVisible(true);
+        adjustFrame();
     }
 
     private void adjustFrame() {
@@ -114,7 +123,6 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
 
     private void run() {
         while (continueFlag) {
-            adjustFrame();
             repaint();
             waitAWhile();
             evolve();
