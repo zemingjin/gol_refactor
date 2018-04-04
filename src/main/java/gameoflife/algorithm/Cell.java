@@ -24,7 +24,11 @@ public class Cell implements Comparable<Cell> {
     }
 
     boolean isNeighbour(Cell that) {
-        return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
+        return !equals(that) && isAdjacent(that);
+    }
+
+    private boolean isAdjacent(Cell that) {
+        return isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
 
     private boolean isSameOrAdjacent(int a, int b) {
@@ -32,7 +36,7 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(y - 1, y + 1)
+        return IntStream.rangeClosed(getY() - 1, getY() + 1)
                 .mapToObj(this::getNeighboursByRow)
                 .flatMap(s -> s)
                 .collect(Collectors.toList());

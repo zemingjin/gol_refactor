@@ -10,7 +10,6 @@ import static org.junit.Assert.*;
 
 public class GameOfLifeTest {
     private static final int ITERATIONS = 1;
-    private static final Boundary BOUNDARY = new Boundary(2, 4);
     private static final String PERF_SEEDS = "src/main/resources/sidecar_gun.seed";
     private static final Logger LOG = Logger.getLogger(GameOfLifeTest.class.getName());
 
@@ -21,7 +20,7 @@ public class GameOfLifeTest {
 
     @Test
     public void testSeed() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 1|3", BOUNDARY);
+        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 1|3", "3|4");
 
         assertEquals(3, gameOfLife.getLiveCells().size());
         assertEquals("[1|1, 1|2, 1|3]", gameOfLife.getLiveCells().toString());
@@ -29,7 +28,7 @@ public class GameOfLifeTest {
 
     @Test
     public void testGetDeadCells() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("1|0, 1|1, 1|2", new Boundary(3, 3));
+        final GameOfLife gameOfLife = new GameOfLife().seed("1|0, 1|1, 1|2", "3|3");
 
         assertEquals(6, gameOfLife.getNeighbouringCells().size());
         assertEquals("[0|0, 2|0, 0|1, 2|1, 0|2, 2|2]", gameOfLife.getNeighbouringCells().toString());
@@ -37,48 +36,46 @@ public class GameOfLifeTest {
 
     @Test
     public void testBlinker() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("1|0, 1|1, 1|2", new Boundary(3, 3));
+        final GameOfLife gameOfLife = new GameOfLife().seed("1|0, 1|1, 1|2", "3|3");
 
-        assertEquals("[0|1, 1|1, 2|1]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
-        assertEquals("[1|0, 1|1, 1|2]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
+        assertEquals("[0|1, 1|1, 2|1]", gameOfLife.evolve().toString());
+        assertEquals("[1|0, 1|1, 1|2]", gameOfLife.evolve().toString());
     }
 
     @Test
     public void testBloker() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 2|2", BOUNDARY);
+        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 2|2", "3|3");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", gameOfLife.evolve().toString());
     }
 
     @Test
     public void testToad() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("2|2, 2|3, 2|4, 3|1, 3|2, 3|3", new Boundary(4, 4));
+        final GameOfLife gameOfLife = new GameOfLife().seed("2|2, 2|3, 2|4, 3|1, 3|2, 3|3", "4|4");
 
-        assertEquals("[1|3, 2|1, 2|4, 3|1]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
-        assertEquals("[2|2]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
-        assertEquals("[]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
+        assertEquals("[1|3, 2|1, 2|4, 3|1]", gameOfLife.evolve().toString());
+        assertEquals("[2|2]", gameOfLife.evolve().toString());
+        assertEquals("[]", gameOfLife.evolve().toString());
     }
 
     @Test
     public void testBeacon() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", new Boundary(5, 5));
+        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", "5|5");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]",
-                     gameOfLife.setLiveCells(gameOfLife.tick()).toString());
-        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", gameOfLife.setLiveCells(gameOfLife.tick()).toString());
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]",
-                     gameOfLife.setLiveCells(gameOfLife.tick()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.evolve().toString());
     }
 
     @Test
     public void testGetMaxIndex() {
         assertEquals(new Cell(5, 5), new GameOfLife()
-                .seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", new Boundary(5, 5)).getDimension());
+                .seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", "5|5").getDimension());
     }
 
     @Test
     public void testIsLiveCell() {
-        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", new Boundary(5, 5));
+        final GameOfLife gameOfLife = new GameOfLife().seed("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", "5|5");
 
         assertTrue(gameOfLife.isLiveCell(new Cell(1, 1)));
         assertTrue(gameOfLife.isLiveCell(new Cell(4, 3)));
