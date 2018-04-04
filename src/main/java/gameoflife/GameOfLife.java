@@ -83,7 +83,7 @@ public class GameOfLife {
     private Stream<Cell> getRowOfCells(String[] seeds, int y) {
         return IntStream.range(0, seeds[y].length())
                 .filter(x -> seeds[y].charAt(x) == LIVE_CELL)
-                .mapToObj(x -> new Cell(x, y, boundary));
+                .mapToObj(x -> new Cell(x, y));
     }
 
     private int getIndex(Function<Cell, Integer> getter) {
@@ -126,6 +126,7 @@ public class GameOfLife {
         return getLiveCells().stream()
                 .flatMap(cell -> cell.getNeighbours().stream())
                 .distinct()
+                .filter(boundary::isInBound)
                 .filter(this::isDeadCell)
                 .collect(Collectors.toList());
     }
@@ -136,6 +137,6 @@ public class GameOfLife {
 
     private Cell getCell(String values) {
         String[] indices = values.split(INDICES_DELIMITER);
-        return new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()), boundary);
+        return new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 }

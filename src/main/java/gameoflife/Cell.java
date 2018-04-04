@@ -9,17 +9,11 @@ import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
     private int x, y;
-    private Cell boundary;
     private String string;
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    Cell(int x, int y, Cell boundary) {
-        this(x, y);
-        this.boundary = boundary;
     }
 
     public int getX() {
@@ -34,29 +28,25 @@ public class Cell implements Comparable<Cell> {
         return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
 
+    boolean isInBound(Cell that) {
+        return 0 <= that.x && that.x < x && 0 <= that.y && that.y < y;
+    }
+
     List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(decrementIndex(x), incrementIndex(x, boundary::getX))
-                .mapToObj(this::getNeighboursByColumn)
+        return IntStream.rangeClosed(y - 1, y + 1)
+                .mapToObj(this::getNeighboursByRow)
                 .flatMap(s -> s)
                 .filter(this::isNotThis)
                 .collect(Collectors.toList());
     }
 
-    private Stream<Cell> getNeighboursByColumn(int row) {
-        return IntStream.rangeClosed(decrementIndex(y), incrementIndex(y, boundary::getY))
-                .mapToObj(i -> new Cell(row, i, boundary));
+    private Stream<Cell> getNeighboursByRow(int y) {
+        return IntStream.rangeClosed(x - 1, x + 1)
+                .mapToObj(i -> new Cell(i, y));
     }
 
     private boolean isSameOrAdjacent(int a, int b) {
         return Math.abs(a - b) <= 1;
-    }
-
-    private int decrementIndex(int i) {
-        return Math.max(i - 1, 0);
-    }
-
-    private int incrementIndex(int i, Supplier<Integer> getter) {
-        return Math.min(i + 1, getter.get() - 1);
     }
 
     private boolean isNotThis(Cell that) {
