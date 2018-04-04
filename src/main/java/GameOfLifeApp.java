@@ -1,5 +1,6 @@
 import gameoflife.Cell;
 import gameoflife.GameOfLife;
+import gameoflife.IOHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,7 +45,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
     private void setup(String[] params) {
         path = params[0];
         waitTime = getWaitTime(params);
-        gameOfLife.seed(loadSeeds(path));
+        gameOfLife.seed(IOHelper.loadSeeds(path));
         dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
         automata = isAutomata(params);
@@ -71,15 +72,6 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
         KeyboardFocusManager
                 .getCurrentKeyboardFocusManager()
                 .addKeyEventPostProcessor(this);
-    }
-
-    String[] loadSeeds(String path) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
-            return reader.lines()
-                    .toArray(String[]::new);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     private int getCellSize() {

@@ -63,9 +63,10 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
-    public synchronized void seed(String[] seeds) {
+    public synchronized GameOfLife seed(String[] seeds) {
         boundary =  getBoundary(seeds[0]);
         setLiveCells(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
+        return this;
     }
 
     private Cell getBoundary(String info) {

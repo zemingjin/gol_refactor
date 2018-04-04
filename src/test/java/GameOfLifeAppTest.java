@@ -1,3 +1,4 @@
+import gameoflife.IOHelper;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -11,6 +12,6 @@ public class GameOfLifeAppTest {
 
     @Test
     public void testLoadSeeds() {
-        assertEquals(BEACON, Arrays.toString(new GameOfLifeApp().loadSeeds(BEACON_FILE)));
+        assertEquals(BEACON, Arrays.toString(IOHelper.loadSeeds(BEACON_FILE)));
     }
 }

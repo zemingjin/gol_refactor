@@ -2,10 +2,14 @@ package gameoflife;
 
 import org.junit.Test;
 
+import java.util.stream.IntStream;
+
 import static org.junit.Assert.*;
 
 public class GameOfLifeTest {
     private static final Cell BOUNDARY = new Cell(2, 4);
+    private static final String PERF_SEEDS = "src/main/resources/sidecar_gun.seed";
+
     @Test(expected = RuntimeException.class)
     public void testInit() {
         new GameOfLife().getLiveCells();
@@ -76,5 +80,33 @@ public class GameOfLifeTest {
         assertTrue(gameOfLife.isLiveCell(new Cell(4, 3)));
         assertFalse(gameOfLife.isLiveCell(new Cell(1, 4)));
     }
+
+    private static final int iterations = 10;
+
+    @Test
+    public void testPerformance() {
+        GameOfLife gameOfLife = new GameOfLife().seed(IOHelper.loadSeeds(PERF_SEEDS));
+        long time = System.currentTimeMillis();
+
+        IntStream.range(0, iterations)
+                .forEach(i -> test(gameOfLife));
+        System.out.println("Finished in " + IOHelper.format(System.currentTimeMillis() - time));
+    }
+
+    private void test(GameOfLife gameOfLife) {
+        gameOfLife.evolve();
+        Cell boundary = gameOfLife.getDimension();
+        IntStream.range(0, boundary.getY())
+                .forEach(y -> testRow(gameOfLife, y, boundary.getX()));
+    }
+
+    private void testRow(GameOfLife gameOfLife, int y, int max) {
+        IntStream.range(0, max)
+                .forEach(x -> gameOfLife.isLiveCell(new Cell(x, y)));
+    }
+
+
+
+
 
 }

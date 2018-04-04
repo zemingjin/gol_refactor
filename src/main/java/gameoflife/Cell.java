@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 public class Cell implements Comparable<Cell> {
     private int x, y;
     private Cell boundary;
+    private String string;
 
     public Cell(int x, int y) {
         this.x = x;
@@ -73,16 +74,20 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return getString().hashCode();
     }
 
-    @Override
     public String toString() {
-        return String.format("%d|%d", x, y);
+        return getString();
     }
 
     @Override
     public int compareTo(Cell that) {
         return toString().compareTo(that.toString());
+    }
+
+    private String getString() {
+        return Optional.ofNullable(string)
+                .orElseGet(() -> string = String.format("%d|%d", x, y));
     }
 }
