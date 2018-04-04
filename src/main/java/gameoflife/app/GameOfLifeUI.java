@@ -49,8 +49,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         waitTime = getWaitTime(params);
         gameOfLife.seed(IOHelper.loadSeeds(path));
         dimension = gameOfLife.getDimension();
-        setupKeyboardListener();
-        setupFrame();
     }
 
     private int getWaitTime(String[] params) {
@@ -63,6 +61,26 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private boolean isAutomata(String[] params) {
         return !Arrays.asList(params).contains(OPT_STEP);
+    }
+
+    private void run() {
+        setupKeyboardListener();
+        setupFrame();
+
+        while (continueFlag) {
+            repaint();
+            waitAWhile();
+            if (isContinueToEvolve()) {
+                evolve();
+            }
+        }
+
+        close();
+    }
+
+    private void close() {
+        window.setVisible(false);
+        window.dispose();
     }
 
     private void setupKeyboardListener() {
@@ -117,16 +135,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int getInsetValue(Function<Insets, Integer> getter) {
         return getter.apply(window.getInsets());
-    }
-
-    private void run() {
-        while (continueFlag) {
-            repaint();
-            waitAWhile();
-            if (isContinueToEvolve()) {
-                evolve();
-            }
-        }
     }
 
     private void evolve() {
