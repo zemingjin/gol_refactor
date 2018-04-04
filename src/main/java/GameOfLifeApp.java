@@ -97,7 +97,7 @@ public class GameOfLifeApp extends JComponent implements KeyEventPostProcessor {
 
     private void adjustFrame() {
         setCellSize(getCellSize());
-        dimension = dimension.max(gameOfLife.getDimension());
+        dimension = gameOfLife.getDimension();
         offset = gameOfLife.getOffset();
 
         int width = dimension.getX() * cellSize;

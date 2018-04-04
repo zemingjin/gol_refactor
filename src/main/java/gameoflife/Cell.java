@@ -29,10 +29,6 @@ public class Cell implements Comparable<Cell> {
         return y;
     }
 
-    public Cell max(Cell that) {
-        return new Cell(Math.max(getX(), that.getX()), Math.max(getY(), that.getY()));
-    }
-
     boolean isNeighbour(Cell that) {
         return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
