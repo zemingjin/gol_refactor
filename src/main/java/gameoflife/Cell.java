@@ -33,16 +33,21 @@ public class Cell implements Comparable<Cell> {
         return new Cell(Math.max(getX(), that.getX()), Math.max(getY(), that.getY()));
     }
 
-    public boolean isNeighbour(Cell that) {
+    boolean isNeighbour(Cell that) {
         return !equals(that) && isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
     }
 
-    public List<Cell> getNeighbours() {
+    List<Cell> getNeighbours() {
         return IntStream.rangeClosed(decrementIndex(x), incrementIndex(x, boundary::getX))
                 .mapToObj(this::getNeighboursByColumn)
                 .flatMap(s -> s)
                 .filter(this::isNotThis)
                 .collect(Collectors.toList());
+    }
+
+    private Stream<Cell> getNeighboursByColumn(int row) {
+        return IntStream.rangeClosed(decrementIndex(y), incrementIndex(y, boundary::getY))
+                .mapToObj(i -> new Cell(row, i, boundary));
     }
 
     private boolean isSameOrAdjacent(int a, int b) {
@@ -59,11 +64,6 @@ public class Cell implements Comparable<Cell> {
 
     private boolean isNotThis(Cell that) {
         return !this.equals(that);
-    }
-
-    private Stream<Cell> getNeighboursByColumn(int row) {
-        return IntStream.rangeClosed(decrementIndex(y), incrementIndex(y, boundary::getY))
-                .mapToObj(i -> new Cell(row, i, boundary));
     }
 
     @Override
