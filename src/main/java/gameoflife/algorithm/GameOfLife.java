@@ -16,8 +16,12 @@ public class GameOfLife {
     private List<Cell> liveCells = new ArrayList<>();
     private Map<String, Cell> cellMap;
 
-    GameOfLife seed(String seeds, String boundary) {
+    GameOfLife setBoundary(String boundary) {
         this.boundary = getCellFromString(boundary, Boundary::new);
+        return this;
+    }
+
+    GameOfLife convertSeeds(String seeds) {
         setLiveCellsWithMap(seedsToLiveCells(seeds));
         return this;
     }
@@ -28,7 +32,7 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
-    public GameOfLife seed(String[] seeds) {
+    public GameOfLife convertSeeds(String[] seeds) {
         this.boundary =  getBoundaryFromHeader(seeds[0]);
         setLiveCellsWithMap(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
@@ -91,7 +95,7 @@ public class GameOfLife {
     }
 
     private List<Cell> getNextGenerationCells() {
-        return filterCellList(getLiveCells(), this::isNextGenerationCell);
+        return filterCells(getLiveCells(), this::isNextGenerationCell);
     }
 
     private boolean isNextGenerationCell(Cell cell) {
@@ -100,10 +104,10 @@ public class GameOfLife {
     }
 
     private List<Cell> getReproductionCells() {
-        return filterCellList(getNeighbouringCells(), cell -> getNumberOfNeighbours(cell) == 3);
+        return filterCells(getNeighbouringCells(), cell -> getNumberOfNeighbours(cell) == 3);
     }
 
-    private List<Cell> filterCellList(List<Cell> list, Predicate<Cell> isCellToKeep) {
+    private List<Cell> filterCells(List<Cell> list, Predicate<Cell> isCellToKeep) {
         return list.stream()
                 .filter(isCellToKeep)
                 .collect(Collectors.toList());

@@ -46,7 +46,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         path = params[0];
         automata = isAutomata(params);
         waitTime = getWaitTime(params);
-        gameOfLife.seed(IOHelper.loadSeeds(path));
+        gameOfLife.convertSeeds(IOHelper.loadSeeds(path));
         dimension = gameOfLife.getDimension();
     }
 
