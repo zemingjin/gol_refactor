@@ -33,13 +33,13 @@ public class GameOfLife {
     }
 
     public GameOfLife convertSeeds(String[] seeds) {
-        this.boundary =  getBoundaryFromHeader(seeds[0]);
+        this.boundary =  getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
         setLiveCellsWithMap(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
 
-    private Boundary getBoundaryFromHeader(String info) {
-        return getCellFromString(info.split(" ")[1], Boundary::new);
+    private String getBoundaryFromHeader(String seed) {
+        return seed.split(" ")[1];
     }
 
     private List<Cell> seedsToLiveCells(String[] seeds) {
