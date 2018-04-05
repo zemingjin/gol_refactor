@@ -18,7 +18,7 @@ public class GameOfLife {
 
     GameOfLife seed(String seeds, String boundary) {
         this.boundary = getCellFromString(boundary, Boundary::new);
-        setLiveCells(seedsToLiveCells(seeds));
+        setLiveCellsWithMap(seedsToLiveCells(seeds));
         return this;
     }
 
@@ -30,7 +30,7 @@ public class GameOfLife {
 
     public GameOfLife seed(String[] seeds) {
         this.boundary =  getBoundaryFromHeader(seeds[0]);
-        setLiveCells(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
+        setLiveCellsWithMap(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
 
@@ -51,8 +51,16 @@ public class GameOfLife {
                 .mapToObj(x -> new Cell(x, y));
     }
 
+    public Boundary getDimension() {
+        return boundary;
+    }
+
     private boolean isLiveCell(char c) {
         return c == LIVE_CELL;
+    }
+
+    public boolean isLiveCell(int x, int y) {
+        return cellMap.get(Cell.getString(x, y)) != null;
     }
 
     List<Cell> getLiveCells() {
@@ -61,7 +69,7 @@ public class GameOfLife {
                 .orElseThrow(() -> new RuntimeException("No more living cells"));
     }
 
-    private List<Cell> setLiveCells(List<Cell> liveCells) {
+    private List<Cell> setLiveCellsWithMap(List<Cell> liveCells) {
         this.liveCells = liveCells;
         cellMap = getCellMap(liveCells);
         return liveCells;
@@ -73,21 +81,13 @@ public class GameOfLife {
     }
 
     public List<Cell> evolve() {
-        return setLiveCells(tick());
+        return setLiveCellsWithMap(tick());
     }
 
     private List<Cell> tick() {
         return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
                 .sorted()
                 .collect(Collectors.toList());
-    }
-
-    public Boundary getDimension() {
-        return boundary;
-    }
-
-    public boolean isLiveCell(int x, int y) {
-        return cellMap.get(Cell.getString(x, y)) != null;
     }
 
     private List<Cell> getNextGenerationCells() {
