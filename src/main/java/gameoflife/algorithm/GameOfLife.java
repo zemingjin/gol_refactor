@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.ListUtils;
-
 public class GameOfLife {
     private static final char LIVE_CELL = 'O';
     private static final String INDICES_DELIMITER = "\\|";
@@ -21,20 +19,25 @@ public class GameOfLife {
         return this;
     }
 
-    GameOfLife convertSeeds(String seeds) {
-        setLiveCellsWithMap(seedsToLiveCells(seeds));
+    /**
+     * This method is used only by tests
+     * @param seeds the given seeds in the format of "1|1, 1|2, 1|3"
+     * @return self
+     */
+    GameOfLife seedGame(String seeds) {
+        setLiveCellsWithMap(seedLiveCells(seeds));
         return this;
     }
 
-    private List<Cell> seedsToLiveCells(String seeds) {
+    private List<Cell> seedLiveCells(String seeds) {
         return Stream.of(seeds.split(", "))
                 .map(seed -> getCellFromString(seed, Cell::new))
                 .collect(Collectors.toList());
     }
 
-    public GameOfLife convertSeeds(String[] seeds) {
+    public GameOfLife seedGame(String[] seeds) {
         this.boundary =  getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
-        setLiveCellsWithMap(seedsToLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
+        setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
 
@@ -42,7 +45,7 @@ public class GameOfLife {
         return seed.split(" ")[1];
     }
 
-    private List<Cell> seedsToLiveCells(String[] seeds) {
+    private List<Cell> seedLiveCells(String[] seeds) {
         return IntStream.range(0, seeds.length)
                 .mapToObj(y -> getLiveCellsFromRow(seeds[y], y))
                 .flatMap(c -> c)
@@ -89,7 +92,7 @@ public class GameOfLife {
     }
 
     private List<Cell> tick() {
-        return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
+        return Stream.concat(getNextGenerationCells().stream(), getReproductionCells().stream())
                 .sorted()
                 .collect(Collectors.toList());
     }

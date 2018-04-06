@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,32 +23,31 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private static final String OPT_WAIT = "-w";
     private static final Logger LOG = Logger.getLogger(GameOfLifeUI.class.getName());
 
-
     private final GameOfLife gameOfLife = new GameOfLife();
     private final JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
     private int evolveToggle = 1;
-    private boolean automata = true;
+    private boolean automaton = true;
     private String path;
     private Boundary dimension;
     private int iteration;
     private int waitTime;
 
     private GameOfLifeUI(String[] params) {
-        if (params.length > 0) {
-            setup(params);
-        } else {
-            throw new RuntimeException("Missing seeds");
-        }
+        Optional.of(params)
+                .filter(p -> p.length > 0)
+                .map(this::setup)
+                .orElseThrow(() -> new RuntimeException("Missing seeds"));
     }
 
-    private void setup(String[] params) {
+    private GameOfLifeUI setup(String[] params) {
         path = params[0];
-        automata = isAutomata(params);
+        gameOfLife.seedGame(IOHelper.loadSeeds(path));
+        automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
-        gameOfLife.convertSeeds(IOHelper.loadSeeds(path));
         dimension = gameOfLife.getDimension();
+        return this;
     }
 
     private int getWaitTime(String[] params) {
@@ -58,7 +58,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                 .orElse(WAIT_TIME);
     }
 
-    private boolean isAutomata(String[] params) {
+    private boolean isAutomaton(String[] params) {
         return !Arrays.asList(params).contains(OPT_STEP);
     }
 
@@ -143,7 +143,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private boolean isContinueToEvolve() {
-        return automata || evolveToggle == 0;
+        return automaton || evolveToggle == 0;
     }
 
     @Override
@@ -164,12 +164,24 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private void fillCell(Graphics graphics, int x, int y) {
         graphics.setColor(getColor(x, y));
-        graphics.fillRect(x * cellSize + 1,y * cellSize + 1, cellSize - 2, cellSize - 2);
+        graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
     }
 
-    private void drawGrid(Graphics  graphics, int x, int y) {
+    private int getFillPosition(int at) {
+        return getCellPosition(at) + 1;
+    }
+
+    private int getFillSize() {
+        return cellSize - 2;
+    }
+
+    private void drawGrid(Graphics graphics, int x, int y) {
         graphics.setColor(getForeground());
-        graphics.drawRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
+    }
+
+    private int getCellPosition(int at) {
+        return at * cellSize;
     }
 
     private Color getColor(int x, int y) {
@@ -187,7 +199,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void setCellSize(int value) {
-        this.cellSize = Math.min(cellSize, value);
+        this.cellSize = Math.min(MIN_CELL_SIZE, value);
     }
 
     @Override
@@ -196,7 +208,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             continueFlag = false;
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            automata = e.isControlDown();
+            automaton = e.isControlDown();
             evolveToggle = (evolveToggle < 2) ? evolveToggle + 1 : 0;
             e.consume();
             result = true;
