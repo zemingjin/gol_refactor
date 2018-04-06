@@ -32,6 +32,7 @@ public class GameOfLife {
     private List<Cell> seedLiveCells(String seeds) {
         return Stream.of(seeds.split(", "))
                 .map(seed -> getCellFromString(seed, Cell::new))
+                .filter(boundary::isInBound)
                 .collect(Collectors.toList());
     }
 
@@ -46,16 +47,20 @@ public class GameOfLife {
     }
 
     private List<Cell> seedLiveCells(String[] seeds) {
-        return IntStream.range(0, seeds.length)
+        return IntStream.range(0, getRange(seeds.length, boundary::getY))
                 .mapToObj(y -> getLiveCellsFromRow(seeds[y], y))
-                .flatMap(c -> c)
+                .flatMap(stream -> stream)
                 .collect(Collectors.toList());
     }
 
     private Stream<Cell> getLiveCellsFromRow(String line, int y) {
-        return IntStream.range(0, line.length())
+        return IntStream.range(0, getRange(line.length(), boundary::getX))
                 .filter(x -> isLiveCell(line.charAt(x)))
                 .mapToObj(x -> new Cell(x, y));
+    }
+
+    private int getRange(int length, Supplier<Integer> range) {
+        return Math.min(length, range.get());
     }
 
     public Boundary getDimension() {
@@ -125,9 +130,9 @@ public class GameOfLife {
     List<Cell> getNeighbouringCells() {
         return getLiveCells().stream()
                 .flatMap(cell -> cell.getNeighbours().stream())
-                .distinct()
                 .filter(boundary::isInBound)
                 .filter(this::isDeadCell)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

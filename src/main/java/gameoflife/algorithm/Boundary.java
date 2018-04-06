@@ -6,11 +6,12 @@ public class Boundary extends Cell {
     }
 
     boolean isInBound(Cell that) {
-        return isInBound(getX(), that.getX()) && isInBound(getY(), that.getY());
+        return checkBoundary(that.getX(), getX()) && checkBoundary(that.getY(), getY());
     }
 
-    private static boolean isInBound(int limit, int value) {
-        return 0 <= value && value < limit;
+    private static boolean checkBoundary(int value, int boundary) {
+        return 0 <= value && value < boundary;
     }
 
 }
+

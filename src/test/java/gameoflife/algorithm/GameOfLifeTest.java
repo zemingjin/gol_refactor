@@ -51,10 +51,9 @@ public class GameOfLifeTest {
 
     @Test
     public void testToad() {
-        final GameOfLife gameOfLife = new GameOfLife().setBoundary("4|4").seedGame("2|2, 2|3, 2|4, 3|1, 3|2, 3|3");
+        final GameOfLife gameOfLife = new GameOfLife().setBoundary("4|4").seedGame("2|2, 2|3, 3|1, 3|2, 3|3");
 
-        assertEquals("[1|3, 2|1, 2|4, 3|1]", gameOfLife.evolve().toString());
-        assertEquals("[2|2]", gameOfLife.evolve().toString());
+        assertEquals("[2|1, 2|3, 3|1, 3|3]", gameOfLife.evolve().toString());
         assertEquals("[]", gameOfLife.evolve().toString());
     }
 
@@ -70,16 +69,17 @@ public class GameOfLifeTest {
     @Test
     public void testGetMaxIndex() {
         assertEquals(new Cell(5, 5), new GameOfLife()
-                .setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").getDimension());
+                .setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 8|8").getDimension());
     }
 
     @Test
     public void testIsLiveCell() {
-        final GameOfLife gameOfLife = new GameOfLife().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
+        final GameOfLife gameOfLife = new GameOfLife().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 5|5");
 
         assertTrue(gameOfLife.isLiveCell(1, 1));
         assertTrue(gameOfLife.isLiveCell(4, 3));
         assertFalse(gameOfLife.isLiveCell(1, 4));
+        assertFalse(gameOfLife.isLiveCell(5, 5));
     }
 
     @Test
