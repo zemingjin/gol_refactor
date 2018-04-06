@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,23 +84,15 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void setupKeyboardListener() {
-        KeyboardFocusManager
-                .getCurrentKeyboardFocusManager()
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventPostProcessor(this);
     }
 
-    private int getCellSize() {
-        return Math.max(Math.min(Math.min(getScreenSize().height * 3 / 4 / dimension.getY(),
-                                          getScreenSize().width  * 3 / 4 / dimension.getX()),
-                                 MAX_CELL_SIZE),
-                        MIN_CELL_SIZE);
-    }
-
     private void setupFrame() {
-        setCellSize(getCellSize());
+        setCellSize(calculateCellSize());
 
-        final int width = dimension.getX() * cellSize;
-        final int height = dimension.getY() * cellSize;
+        final int width = calculatePanelSize(dimension.getX());
+        final int height = calculatePanelSize(dimension.getY());
 
         setSize(width, height);
         setFocusable(true);
@@ -112,12 +105,32 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         window.getContentPane().add(this);
     }
 
+    private int calculateCellSize() {
+        final Dimension screenSize = getScreenSize();
+        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, dimension.getY()),
+                                          calculateCellSize(screenSize.width, dimension.getX())),
+                                 MAX_CELL_SIZE),
+                        MIN_CELL_SIZE);
+    }
+
+    private int calculateCellSize(int screenSize, int numberOfCells) {
+        return screenSize * 3 / 4 / numberOfCells;
+    }
+
+    private int calculatePanelSize(int position) {
+        return position * cellSize;
+    }
+
     private int getHorizontalPosition(int panelWidth) {
-        return (getScreenSize().width - getFrameWidth(panelWidth)) / 2;
+        return calculatePosition(getScreenSize().width, getFrameWidth(panelWidth));
     }
 
     private int getVerticalPosition(int panelHeight) {
-        return (getScreenSize().height - getFrameHeight(panelHeight)) / 2;
+        return calculatePosition(getScreenSize().height, getFrameHeight(panelHeight));
+    }
+
+    private int calculatePosition(int screenSize, int frameSize) {
+        return (screenSize - frameSize) / 2;
     }
 
     private Dimension getScreenSize() {
@@ -125,14 +138,14 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private int getFrameWidth(int panelWidth) {
-        return panelWidth + getInsetValue(insets -> insets.left + insets.right);
+        return panelWidth + calculateInsertsValue(insets -> insets.left + insets.right);
     }
 
     private int getFrameHeight(int panelHeight) {
-        return panelHeight + getInsetValue(insets -> insets.top + insets.bottom);
+        return panelHeight + calculateInsertsValue(insets -> insets.top + insets.bottom);
     }
 
-    private int getInsetValue(Function<Insets, Integer> getter) {
+    private int calculateInsertsValue(Function<Insets, Integer> getter) {
         return getter.apply(window.getInsets());
     }
 
@@ -146,25 +159,14 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         return automaton || evolveToggle == 0;
     }
 
-    @Override
-    public void paint(Graphics graphics) {
-        IntStream.range(0, dimension.getY())
-                .forEach(y -> paintRow(graphics, y));
-    }
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell =
+            graphics -> y -> x -> {
+                graphics.setColor(getColor(x, y));
+                graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+            };
 
-    private void paintRow(Graphics graphics, int y) {
-        IntStream.range(0, dimension.getX())
-                .forEach(x -> paintCell(graphics, x, y));
-    }
-
-    private void paintCell(Graphics graphics, int x, int y) {
-        fillCell(graphics, x, y);
-        drawGrid(graphics, x, y);
-    }
-
-    private void fillCell(Graphics graphics, int x, int y) {
-        graphics.setColor(getColor(x, y));
-        graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+    private Color getColor(int x, int y) {
+        return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
     }
 
     private int getFillPosition(int at) {
@@ -175,17 +177,28 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         return cellSize - 2;
     }
 
-    private void drawGrid(Graphics graphics, int x, int y) {
-        graphics.setColor(getForeground());
-        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-    }
-
     private int getCellPosition(int at) {
         return at * cellSize;
     }
 
-    private Color getColor(int x, int y) {
-        return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder =
+            graphics -> y -> x -> {
+                graphics.setColor(getForeground());
+                graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
+            };
+
+    @Override
+    public void paint(Graphics graphics) {
+        IntStream.range(0, dimension.getY())
+                .forEach(y -> {
+                    paintRow(fillCell.apply(graphics).apply(y));
+                    paintRow(drawBorder.apply(graphics).apply(y));
+                });
+    }
+
+    private void paintRow(Consumer<Integer> paint) {
+        IntStream.range(0, dimension.getX())
+                .forEach(paint::accept);
     }
 
     private void waitAWhile() {

@@ -37,14 +37,10 @@ public class Cell implements Comparable<Cell> {
     }
 
     boolean isNeighbour(Cell that) {
-        return !equals(that) && isAdjacent(that);
+        return !equals(that) && isNeighbouringIndices(x, that.x) && isNeighbouringIndices(y, that.y);
     }
 
-    private boolean isAdjacent(Cell that) {
-        return isSameOrAdjacent(x, that.x) && isSameOrAdjacent(y, that.y);
-    }
-
-    private boolean isSameOrAdjacent(int a, int b) {
+    private boolean isNeighbouringIndices(int a, int b) {
         return Math.abs(a - b) <= 1;
     }
 
@@ -57,7 +53,7 @@ public class Cell implements Comparable<Cell> {
         return Optional.ofNullable(obj)
                 .filter(Cell.class::isInstance)
                 .map(that -> (Cell)that)
-                .filter(that -> x == that.x && y == that.y)
+                .filter(that -> getX() == that.getX() && getY() == that.getY())
                 .isPresent();
     }
 
