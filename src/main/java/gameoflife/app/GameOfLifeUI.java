@@ -199,7 +199,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void setCellSize(int value) {
-        this.cellSize = Math.min(MIN_CELL_SIZE, value);
+        this.cellSize = value;
     }
 
     @Override
