@@ -169,16 +169,16 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
     }
 
-    private int getFillPosition(int at) {
-        return getCellPosition(at) + 1;
+    private int getFillPosition(int index) {
+        return getCellPosition(index) + 1;
     }
 
     private int getFillSize() {
         return cellSize - 2;
     }
 
-    private int getCellPosition(int at) {
-        return at * cellSize;
+    private int getCellPosition(int index) {
+        return index * cellSize;
     }
 
     private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder =
