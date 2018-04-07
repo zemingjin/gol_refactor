@@ -38,8 +38,8 @@ public class GameOfLifeTest {
     public void testBlinker() {
         final GameOfLife gameOfLife = new GameOfLife().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
 
-        assertEquals("[0|1, 1|1, 2|1]", gameOfLife.evolve().toString());
-        assertEquals("[1|0, 1|1, 1|2]", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 0|1, 2|1]", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|0, 1|2]", gameOfLife.evolve().toString());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class GameOfLifeTest {
     public void testToad() {
         final GameOfLife gameOfLife = new GameOfLife().setBoundary("4|4").seedGame("2|2, 2|3, 3|1, 3|2, 3|3");
 
-        assertEquals("[2|1, 2|3, 3|1, 3|3]", gameOfLife.evolve().toString());
+        assertEquals("[2|3, 3|1, 3|3, 2|1]", gameOfLife.evolve().toString());
         assertEquals("[]", gameOfLife.evolve().toString());
     }
 
@@ -61,9 +61,9 @@ public class GameOfLifeTest {
     public void testBeacon() {
         final GameOfLife gameOfLife = new GameOfLife().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 2|2, 3|3]", gameOfLife.evolve().toString());
         assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", gameOfLife.evolve().toString());
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 2|2, 3|3]", gameOfLife.evolve().toString());
     }
 
     @Test

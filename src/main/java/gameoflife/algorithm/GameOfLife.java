@@ -10,7 +10,7 @@ public class GameOfLife {
 
     private Boundary boundary;
     private List<Cell> liveCells = new ArrayList<>();
-    private Map<String, Cell> cellMap;
+    private Map<String, Cell> liveCellsMap;
 
     GameOfLife setBoundary(String boundary) {
         this.boundary = getBoundaryFromString(boundary);
@@ -54,6 +54,7 @@ public class GameOfLife {
 
         for (int y = 0; y < Math.min(seeds.length, boundary.getY()); y++) {
             final String line = seeds[y];
+
             for (int x = 0; x < Math.min(line.length(), boundary.getX()); x++) {
                 if (isLiveCell(line.charAt(x))) {
                     list.add(new Cell(x, y));
@@ -71,8 +72,8 @@ public class GameOfLife {
         return c == LIVE_CELL;
     }
 
-    public boolean isLiveCell(int x, int y) {
-        return cellMap.get(Cell.getString(x, y)) != null;
+    public boolean isLiveCell(String key) {
+        return liveCellsMap.get(key) != null;
     }
 
     List<Cell> getLiveCells() {
@@ -84,11 +85,11 @@ public class GameOfLife {
 
     private List<Cell> setLiveCellsWithMap(List<Cell> liveCells) {
         this.liveCells = liveCells;
-        cellMap = getCellMap(liveCells);
+        liveCellsMap = getLiveCellsMap(liveCells);
         return liveCells;
     }
 
-    private Map<String, Cell> getCellMap(List<Cell> liveCells) {
+    private Map<String, Cell> getLiveCellsMap(List<Cell> liveCells) {
         final Map<String, Cell> map = new HashMap<>();
 
         for (final Cell cell : liveCells) {
@@ -102,16 +103,14 @@ public class GameOfLife {
     }
 
     private List<Cell> tick() {
-        final List<Cell> list = ListUtils.union(getNextGenerationCells(), getReproductionCells());
-
-        list.sort(Comparator.naturalOrder());
-        return list;
+        return ListUtils.union(getNextGenerationCells(), getReproductionCells());
     }
 
     private List<Cell> getNextGenerationCells() {
         final List<Cell> list = new ArrayList<>();
+
         for (final Cell cell : getLiveCells()) {
-            final int numberOfNeighbours = getNumberOfNeighbours(cell);
+            final int numberOfNeighbours = getNumberOfLiveNeighbours(cell);
 
             if (boundary.isInBound(cell) && 2 <= numberOfNeighbours && numberOfNeighbours <= 3) {
                 list.add(cell);
@@ -124,14 +123,14 @@ public class GameOfLife {
         final List<Cell> list = new ArrayList<>();
 
         for (final Cell cell : getNeighbouringCells()) {
-            if (boundary.isInBound(cell) && getNumberOfNeighbours(cell) == 3) {
+            if (boundary.isInBound(cell) && getNumberOfLiveNeighbours(cell) == 3) {
                 list.add(cell);
             }
         }
         return list;
     }
 
-    private int getNumberOfNeighbours(Cell that) {
+    private int getNumberOfLiveNeighbours(Cell that) {
         int count = 0;
         for (final Cell cell : getLiveCells()) {
             if (cell.isNeighbour(that)) {
@@ -155,7 +154,7 @@ public class GameOfLife {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.getX(), cell.getY());
+        return !isLiveCell(cell.toString());
     }
 
     private Boundary getBoundaryFromString(String values) {
