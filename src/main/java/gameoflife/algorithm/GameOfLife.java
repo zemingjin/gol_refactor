@@ -1,10 +1,8 @@
 package gameoflife.algorithm;
 
+import org.apache.commons.collections4.ListUtils;
+
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class GameOfLife {
     private static final char LIVE_CELL = 'O';
@@ -15,7 +13,7 @@ public class GameOfLife {
     private Map<String, Cell> cellMap;
 
     GameOfLife setBoundary(String boundary) {
-        this.boundary = getCellFromString(boundary, Boundary::new);
+        this.boundary = getBoundaryFromString(boundary);
         return this;
     }
 
@@ -30,14 +28,16 @@ public class GameOfLife {
     }
 
     private List<Cell> seedLiveCells(String seeds) {
-        return Stream.of(seeds.split(", "))
-                .map(seed -> getCellFromString(seed, Cell::new))
-                .filter(boundary::isInBound)
-                .collect(Collectors.toList());
+        final List<Cell> list = new ArrayList<>();
+
+        for (final String elements : seeds.split(", ")) {
+            list.add(getCellFromString(elements));
+        }
+        return list;
     }
 
     public GameOfLife seedGame(String[] seeds) {
-        this.boundary =  getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
+        this.boundary =  getBoundaryFromString(getBoundaryFromHeader(seeds[0]));
         setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
@@ -47,20 +47,17 @@ public class GameOfLife {
     }
 
     private List<Cell> seedLiveCells(String[] seeds) {
-        return IntStream.range(0, getRange(seeds.length, boundary::getY))
-                .mapToObj(y -> getLiveCellsFromRow(seeds[y], y))
-                .flatMap(stream -> stream)
-                .collect(Collectors.toList());
-    }
+        final List<Cell> list = new ArrayList<>();
 
-    private Stream<Cell> getLiveCellsFromRow(String line, int y) {
-        return IntStream.range(0, getRange(line.length(), boundary::getX))
-                .filter(x -> isLiveCell(line.charAt(x)))
-                .mapToObj(x -> new Cell(x, y));
-    }
-
-    private int getRange(int length, Supplier<Integer> range) {
-        return Math.min(length, range.get());
+        for (int y = 0; y < seeds.length; y++) {
+            final String line = seeds[y];
+            for (int x = 0; x < line.length(); x ++) {
+                if (isLiveCell(line.charAt(x))) {
+                    list.add(new Cell(x, y));
+                }
+            }
+        }
+        return list;
     }
 
     public Boundary getDimension() {
@@ -76,9 +73,10 @@ public class GameOfLife {
     }
 
     List<Cell> getLiveCells() {
-        return Optional.of(liveCells)
-                .filter(cells -> !cells.isEmpty())
-                .orElseThrow(() -> new RuntimeException("No more living cells"));
+        if (liveCells.isEmpty()) {
+            throw new RuntimeException("No more living cells");
+        }
+        return liveCells;
     }
 
     private List<Cell> setLiveCellsWithMap(List<Cell> liveCells) {
@@ -88,8 +86,12 @@ public class GameOfLife {
     }
 
     private Map<String, Cell> getCellMap(List<Cell> liveCells) {
-        return liveCells.stream()
-                .collect(Collectors.toMap(Cell::toString, cell -> cell));
+        final Map<String, Cell> map = new HashMap<>();
+
+        for (final Cell cell : liveCells) {
+            map.put(cell.toString(), cell);
+        }
+        return map;
     }
 
     public List<Cell> evolve() {
@@ -97,52 +99,69 @@ public class GameOfLife {
     }
 
     private List<Cell> tick() {
-        return Stream.concat(getNextGenerationCells().stream(), getReproductionCells().stream())
-                .sorted()
-                .collect(Collectors.toList());
+        final List<Cell> list = ListUtils.union(getNextGenerationCells(), getReproductionCells());
+
+        list.sort(Comparator.naturalOrder());
+        return list;
     }
 
     private List<Cell> getNextGenerationCells() {
-        return filterCells(getLiveCells(), this::isNextGenerationCell);
-    }
+        final List<Cell> list = new ArrayList<>();
+        for (final Cell cell : getLiveCells()) {
+            final int numberOfNeighbours = getNumberOfNeighbours(cell);
 
-    private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = getNumberOfNeighbours(cell);
-        return 2 == numberOfNeighbours || numberOfNeighbours == 3;
+            if (2 <= numberOfNeighbours && numberOfNeighbours <= 3 && boundary.isInBound(cell)) {
+                list.add(cell);
+            }
+        }
+        return list;
     }
 
     private List<Cell> getReproductionCells() {
-        return filterCells(getNeighbouringCells(), cell -> getNumberOfNeighbours(cell) == 3);
+        final List<Cell> list = new ArrayList<>();
+
+        for (final Cell cell : getNeighbouringCells()) {
+            if (getNumberOfNeighbours(cell) == 3 && boundary.isInBound(cell)) {
+                list.add(cell);
+            }
+        }
+        return list;
     }
 
-    private List<Cell> filterCells(List<Cell> list, Predicate<Cell> isCellToKeep) {
-        return list.stream()
-                .filter(isCellToKeep)
-                .collect(Collectors.toList());
-    }
-
-    private long getNumberOfNeighbours(Cell cell) {
-        return getLiveCells().stream()
-                .filter(cell::isNeighbour)
-                .count();
+    private int getNumberOfNeighbours(Cell that) {
+        int count = 0;
+        for (final Cell cell : getLiveCells()) {
+            if (cell.isNeighbour(that)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     List<Cell> getNeighbouringCells() {
-        return getLiveCells().stream()
-                .flatMap(cell -> cell.getNeighbours().stream())
-                .filter(boundary::isInBound)
-                .filter(this::isDeadCell)
-                .distinct()
-                .collect(Collectors.toList());
+        final List<Cell> list = new ArrayList<>();
+
+        for (final Cell cell : getLiveCells()) {
+            for (final Cell neighbour : cell.getNeighbours()) {
+                if (boundary.isInBound(neighbour) && isDeadCell(neighbour) && !list.contains(neighbour)) {
+                    list.add(neighbour);
+                }
+            }
+        }
+        return list;
     }
 
     private boolean isDeadCell(Cell cell) {
         return !isLiveCell(cell.getX(), cell.getY());
     }
 
-    private <T extends Cell> T getCellFromString(String values,
-                                                 BiFunction<Integer, Integer, T> supplier) {
+    private Boundary getBoundaryFromString(String values) {
         final String[] indices = values.split(INDICES_DELIMITER);
-        return supplier.apply(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
+        return new Boundary(Integer.parseInt(indices[0]), Integer.parseInt(indices[1]));
+    }
+
+    private Cell getCellFromString(String values) {
+        final String[] indices = values.split(INDICES_DELIMITER);
+        return new Cell(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 }
