@@ -153,9 +153,32 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         return automaton || evolveToggle == 0;
     }
 
+    @Override
+    public void paint(Graphics graphics) {
+        for (int y = 0; y < dimension.getY(); y++) {
+            paintRow(graphics, y);
+        }
+    }
+
+    private void paintRow(Graphics graphics, int y) {
+        for (int x = 0; x < dimension.getX(); x++) {
+            paintCell(graphics, x, y);
+        }
+    }
+
+    private void paintCell(Graphics graphics, int x, int y) {
+        fillCell(graphics, x, y);
+        drawBorder(graphics, x, y);
+    }
+
     private void fillCell(Graphics graphics, int x, int y) {
         graphics.setColor(getColor(x, y));
         graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+    }
+
+    private void drawBorder(Graphics graphics, int x, int y) {
+        graphics.setColor(getForeground());
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
     }
 
     private Color getColor(int x, int y) {
@@ -172,29 +195,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int getCellPosition(int index) {
         return index * cellSize;
-    }
-
-    private void drawBorder(Graphics graphics, int x, int y) {
-        graphics.setColor(getForeground());
-        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-    }
-
-    @Override
-    public void paint(Graphics graphics) {
-        for (int y = 0; y < dimension.getY(); y++) {
-            paintRow(graphics, y);
-        }
-    }
-
-    private void paintRow(Graphics graphics, int y) {
-        for (int x = 0; x < dimension.getX(); x++) {
-            paintCell(graphics, y, x);
-        }
-    }
-
-    private void paintCell(Graphics graphics, int y, int x) {
-        fillCell(graphics, x, y);
-        drawBorder(graphics, x, y);
     }
 
     private void waitAWhile() {

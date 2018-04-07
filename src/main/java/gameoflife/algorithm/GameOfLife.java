@@ -32,7 +32,6 @@ public class GameOfLife {
 
         for (final String elements : seeds.split(", ")) {
             final Cell cell = getCellFromString(elements);
-
             if (boundary.isInBound(cell)) {
                 list.add(cell);
             }
@@ -55,7 +54,7 @@ public class GameOfLife {
 
         for (int y = 0; y < Math.min(seeds.length, boundary.getY()); y++) {
             final String line = seeds[y];
-            for (int x = 0; x < Math.min(line.length(), boundary.getX()); x ++) {
+            for (int x = 0; x < Math.min(line.length(), boundary.getX()); x++) {
                 if (isLiveCell(line.charAt(x))) {
                     list.add(new Cell(x, y));
                 }
@@ -114,7 +113,7 @@ public class GameOfLife {
         for (final Cell cell : getLiveCells()) {
             final int numberOfNeighbours = getNumberOfNeighbours(cell);
 
-            if (2 <= numberOfNeighbours && numberOfNeighbours <= 3 && boundary.isInBound(cell)) {
+            if (boundary.isInBound(cell) && 2 <= numberOfNeighbours && numberOfNeighbours <= 3) {
                 list.add(cell);
             }
         }
@@ -125,7 +124,7 @@ public class GameOfLife {
         final List<Cell> list = new ArrayList<>();
 
         for (final Cell cell : getNeighbouringCells()) {
-            if (getNumberOfNeighbours(cell) == 3 && boundary.isInBound(cell)) {
+            if (boundary.isInBound(cell) && getNumberOfNeighbours(cell) == 3) {
                 list.add(cell);
             }
         }
