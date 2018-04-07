@@ -72,8 +72,8 @@ public class GameOfLife {
         return c == LIVE_CELL;
     }
 
-    public boolean isLiveCell(String key) {
-        return liveCellsMap.get(key) != null;
+    public boolean isLiveCell(int x, int y) {
+        return liveCellsMap.get(Cell.getString(x, y)) != null;
     }
 
     List<Cell> getLiveCells() {
@@ -154,7 +154,7 @@ public class GameOfLife {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.toString());
+        return !isLiveCell(cell.getX(), cell.getY());
     }
 
     private Boundary getBoundaryFromString(String values) {
