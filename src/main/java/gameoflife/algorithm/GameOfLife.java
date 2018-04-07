@@ -31,7 +31,11 @@ public class GameOfLife {
         final List<Cell> list = new ArrayList<>();
 
         for (final String elements : seeds.split(", ")) {
-            list.add(getCellFromString(elements));
+            final Cell cell = getCellFromString(elements);
+
+            if (boundary.isInBound(cell)) {
+                list.add(cell);
+            }
         }
         return list;
     }
@@ -49,9 +53,9 @@ public class GameOfLife {
     private List<Cell> seedLiveCells(String[] seeds) {
         final List<Cell> list = new ArrayList<>();
 
-        for (int y = 0; y < seeds.length; y++) {
+        for (int y = 0; y < Math.min(seeds.length, boundary.getY()); y++) {
             final String line = seeds[y];
-            for (int x = 0; x < line.length(); x ++) {
+            for (int x = 0; x < Math.min(line.length(), boundary.getX()); x ++) {
                 if (isLiveCell(line.charAt(x))) {
                     list.add(new Cell(x, y));
                 }
