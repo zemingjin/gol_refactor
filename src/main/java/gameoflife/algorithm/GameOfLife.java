@@ -12,8 +12,13 @@ public class GameOfLife {
 
     private Boundary boundary;
     private List<Cell> liveCells = new ArrayList<>();
-    private Map<String, Cell> cellMap;
+    private Map<String, Cell> liveCellsMap;
 
+    /**
+     * This method is only called by tests
+     * @param boundary the given boundary in the format of "width|height".
+     * @return this
+     */
     GameOfLife setBoundary(String boundary) {
         this.boundary = getCellFromString(boundary, Boundary::new);
         return this;
@@ -36,6 +41,12 @@ public class GameOfLife {
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param seeds the first line contains the size info, such as "#P width|height".
+     *              the rest is in the format of ".....OO.O" where the capital 'O' indicate live cell(s).
+     * @return this
+     */
     public GameOfLife seedGame(String[] seeds) {
         this.boundary =  getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
         setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
@@ -47,20 +58,16 @@ public class GameOfLife {
     }
 
     private List<Cell> seedLiveCells(String[] seeds) {
-        return IntStream.range(0, getRange(seeds.length, boundary::getY))
+        return IntStream.range(0, Math.min(seeds.length, boundary.getY()))
                 .mapToObj(y -> getLiveCellsFromRow(seeds[y], y))
                 .flatMap(stream -> stream)
                 .collect(Collectors.toList());
     }
 
     private Stream<Cell> getLiveCellsFromRow(String line, int y) {
-        return IntStream.range(0, getRange(line.length(), boundary::getX))
+        return IntStream.range(0, Math.min(line.length(), boundary.getX()))
                 .filter(x -> isLiveCell(line.charAt(x)))
                 .mapToObj(x -> new Cell(x, y));
-    }
-
-    private int getRange(int length, Supplier<Integer> range) {
-        return Math.min(length, range.get());
     }
 
     public Boundary getDimension() {
@@ -72,7 +79,7 @@ public class GameOfLife {
     }
 
     public boolean isLiveCell(int x, int y) {
-        return cellMap.get(Cell.getString(x, y)) != null;
+        return liveCellsMap.get(Cell.getString(x, y)) != null;
     }
 
     List<Cell> getLiveCells() {
@@ -83,11 +90,11 @@ public class GameOfLife {
 
     private List<Cell> setLiveCellsWithMap(List<Cell> liveCells) {
         this.liveCells = liveCells;
-        cellMap = getCellMap(liveCells);
+        liveCellsMap = getLiveCellsMap(liveCells);
         return liveCells;
     }
 
-    private Map<String, Cell> getCellMap(List<Cell> liveCells) {
+    private Map<String, Cell> getLiveCellsMap(List<Cell> liveCells) {
         return liveCells.stream()
                 .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
@@ -97,13 +104,12 @@ public class GameOfLife {
     }
 
     private List<Cell> tick() {
-        return Stream.concat(getNextGenerationCells().stream(), getReproductionCells().stream())
-                .sorted()
+        return Stream.concat(getNextGenerationCells(), getReproductionCells())
                 .collect(Collectors.toList());
     }
 
-    private List<Cell> getNextGenerationCells() {
-        return filterCells(getLiveCells(), this::isNextGenerationCell);
+    private Stream<Cell> getNextGenerationCells() {
+        return getLiveCells().stream().filter(this::isNextGenerationCell);
     }
 
     private boolean isNextGenerationCell(Cell cell) {
@@ -111,14 +117,8 @@ public class GameOfLife {
         return 2 == numberOfNeighbours || numberOfNeighbours == 3;
     }
 
-    private List<Cell> getReproductionCells() {
-        return filterCells(getNeighbouringCells(), cell -> getNumberOfNeighbours(cell) == 3);
-    }
-
-    private List<Cell> filterCells(List<Cell> list, Predicate<Cell> isCellToKeep) {
-        return list.stream()
-                .filter(isCellToKeep)
-                .collect(Collectors.toList());
+    private Stream<Cell> getReproductionCells() {
+        return getNeighbouringDeadCells().filter(cell -> getNumberOfNeighbours(cell) == 3);
     }
 
     private long getNumberOfNeighbours(Cell cell) {
@@ -127,13 +127,12 @@ public class GameOfLife {
                 .count();
     }
 
-    List<Cell> getNeighbouringCells() {
+    Stream<Cell> getNeighbouringDeadCells() {
         return getLiveCells().stream()
-                .flatMap(cell -> cell.getNeighbours().stream())
+                .flatMap(Cell::getNeighbours)
                 .filter(boundary::isInBound)
                 .filter(this::isDeadCell)
-                .distinct()
-                .collect(Collectors.toList());
+                .distinct();
     }
 
     private boolean isDeadCell(Cell cell) {

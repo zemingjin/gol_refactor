@@ -1,8 +1,6 @@
 package gameoflife.algorithm;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -23,11 +21,10 @@ public class Cell implements Comparable<Cell> {
         return y;
     }
 
-    List<Cell> getNeighbours() {
+    Stream<Cell> getNeighbours() {
         return IntStream.rangeClosed(getY() - 1, getY() + 1)
                 .mapToObj(this::getNeighboursByRow)
-                .flatMap(s -> s)
-                .collect(Collectors.toList());
+                .flatMap(s -> s);
     }
 
     private Stream<Cell> getNeighboursByRow(int y) {
