@@ -79,6 +79,10 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         close();
     }
 
+    private boolean isContinueToEvolve() {
+        return automaton || evolveToggle == 0;
+    }
+
     private void close() {
         window.setVisible(false);
         window.dispose();
@@ -156,8 +160,13 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         window.setTitle(String.format("%s - #%d", path, iteration++));
     }
 
-    private boolean isContinueToEvolve() {
-        return automaton || evolveToggle == 0;
+    @Override
+    public void paint(Graphics graphics) {
+        IntStream.range(0, dimension.getY())
+                .forEach(y -> {
+                    paintRow(fillCell.apply(graphics, y));
+                    paintRow(drawBorder.apply(graphics, y));
+                });
     }
 
     private final BiFunction<Graphics, Integer, Consumer<Integer>> fillCell =
@@ -187,15 +196,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                 graphics.setColor(getForeground());
                 graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
             };
-
-    @Override
-    public void paint(Graphics graphics) {
-        IntStream.range(0, dimension.getY())
-                .forEach(y -> {
-                    paintRow(fillCell.apply(graphics, y));
-                    paintRow(drawBorder.apply(graphics, y));
-                });
-    }
 
     private void paintRow(Consumer<Integer> actor) {
         IntStream.range(0, dimension.getX())
