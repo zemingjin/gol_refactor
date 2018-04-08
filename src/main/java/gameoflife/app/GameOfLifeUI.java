@@ -76,6 +76,10 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         close();
     }
 
+    private boolean isContinueToEvolve() {
+        return automaton || evolveToggle == 0;
+    }
+
     private void close() {
         window.setVisible(false);
         window.dispose();
@@ -151,10 +155,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         gameOfLife.evolve();
         evolveToggle++;
         window.setTitle(String.format("%s - #%d", path, iteration++));
-    }
-
-    private boolean isContinueToEvolve() {
-        return automaton || evolveToggle == 0;
     }
 
     @Override
