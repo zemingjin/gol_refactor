@@ -113,15 +113,15 @@ public class GameOfLife {
     }
 
     private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = getNumberOfNeighbours(cell);
+        final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
         return 2 == numberOfNeighbours || numberOfNeighbours == 3;
     }
 
     private Stream<Cell> getReproductionCells() {
-        return getNeighbouringDeadCells().filter(cell -> getNumberOfNeighbours(cell) == 3);
+        return getNeighbouringDeadCells().filter(cell -> getNumberOfLiveNeighbours(cell) == 3);
     }
 
-    private long getNumberOfNeighbours(Cell cell) {
+    private long getNumberOfLiveNeighbours(Cell cell) {
         return getLiveCells().stream()
                 .filter(cell::isNeighbour)
                 .count();
