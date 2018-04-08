@@ -105,10 +105,14 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int calculateCellSize() {
         final Dimension screenSize = getScreenSize();
-        return Math.max(Math.min(Math.min(screenSize.height * 3 / 4 / dimension.getY(),
-                                          screenSize.width * 3 / 4 / dimension.getX()),
+        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, dimension.getY()),
+                                          calculateCellSize(screenSize.width, dimension.getX())),
                                  MAX_CELL_SIZE),
                         MIN_CELL_SIZE);
+    }
+
+    private int calculateCellSize(int screenSize, int numberOfCells) {
+        return screenSize * 3 / 4 / numberOfCells;
     }
 
     private int calculatePanelSize(int position) {
