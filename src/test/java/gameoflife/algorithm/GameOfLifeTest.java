@@ -30,8 +30,8 @@ public class GameOfLifeTest {
     public void testGetDeadCells() {
         final GameOfLife gameOfLife = new GameOfLife().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
 
-        assertEquals(6, gameOfLife.getNeighbouringCells().size());
-        assertEquals("[0|0, 2|0, 0|1, 2|1, 0|2, 2|2]", gameOfLife.getNeighbouringCells().toString());
+        assertEquals(6, gameOfLife.getNeighbouringDeadCells().size());
+        assertEquals("[0|0, 2|0, 0|1, 2|1, 0|2, 2|2]", gameOfLife.getNeighbouringDeadCells().toString());
     }
 
     @Test

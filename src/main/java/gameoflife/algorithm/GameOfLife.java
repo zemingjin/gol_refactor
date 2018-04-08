@@ -12,6 +12,11 @@ public class GameOfLife {
     private List<Cell> liveCells = new ArrayList<>();
     private Map<String, Cell> liveCellsMap;
 
+    /**
+     * This method is only called by tests
+     * @param boundary the given boundary in the format of "width|height".
+     * @return this
+     */
     GameOfLife setBoundary(String boundary) {
         this.boundary = getBoundaryFromString(boundary);
         return this;
@@ -39,6 +44,12 @@ public class GameOfLife {
         return list;
     }
 
+    /**
+     *
+     * @param seeds the first line contains the size info, such as "#P width|height".
+     *              the rest is in the format of ".....OO.O" where the capital 'O' indicate live cell(s).
+     * @return this
+     */
     public GameOfLife seedGame(String[] seeds) {
         this.boundary =  getBoundaryFromString(getBoundaryFromHeader(seeds[0]));
         setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
@@ -110,19 +121,22 @@ public class GameOfLife {
         final List<Cell> list = new ArrayList<>();
 
         for (final Cell cell : getLiveCells()) {
-            final int numberOfNeighbours = getNumberOfLiveNeighbours(cell);
-
-            if (boundary.isInBound(cell) && 2 <= numberOfNeighbours && numberOfNeighbours <= 3) {
+            if (isNextGenerationCell(cell)) {
                 list.add(cell);
             }
         }
         return list;
     }
 
+    private boolean isNextGenerationCell(Cell cell) {
+        final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
+        return 2 <= numberOfNeighbours && numberOfNeighbours <= 3;
+    }
+
     private List<Cell> getReproductionCells() {
         final List<Cell> list = new ArrayList<>();
 
-        for (final Cell cell : getNeighbouringCells()) {
+        for (final Cell cell : getNeighbouringDeadCells()) {
             if (boundary.isInBound(cell) && getNumberOfLiveNeighbours(cell) == 3) {
                 list.add(cell);
             }
@@ -130,8 +144,8 @@ public class GameOfLife {
         return list;
     }
 
-    private int getNumberOfLiveNeighbours(Cell that) {
-        int count = 0;
+    private long getNumberOfLiveNeighbours(Cell that) {
+        long count = 0;
         for (final Cell cell : getLiveCells()) {
             if (cell.isNeighbour(that)) {
                 count++;
@@ -140,7 +154,7 @@ public class GameOfLife {
         return count;
     }
 
-    List<Cell> getNeighbouringCells() {
+    List<Cell> getNeighbouringDeadCells() {
         final List<Cell> list = new ArrayList<>();
 
         for (final Cell cell : getLiveCells()) {
