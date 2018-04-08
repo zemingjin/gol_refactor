@@ -1,5 +1,4 @@
-This project contains a Java implementation of Conway's Game of Life with a very crude UI. 
-The application takes one parameter, the path to the seed file.
+This project is an implementation of Conway's Game of Life with a very crude UI in Java. 
 
 The format of the seed file could be like the followings:
 ```
