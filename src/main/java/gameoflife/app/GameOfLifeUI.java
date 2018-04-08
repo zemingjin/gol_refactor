@@ -36,7 +36,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private int iteration;
     private int waitTime;
 
-    private GameOfLifeUI(String[] params) {
+    GameOfLifeUI(String[] params) {
         Optional.of(params)
                 .filter(p -> p.length > 0)
                 .map(this::setup)
@@ -64,11 +64,15 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         return !Arrays.asList(params).contains(OPT_STEP);
     }
 
-    private void run() {
+    public boolean isContinueFlag() {
+        return continueFlag;
+    }
+
+    void run() {
         setupKeyboardListener();
         setupFrame();
 
-        while (continueFlag) {
+        while (isContinueFlag()) {
             repaint();
             waitAWhile();
             if (isContinueToEvolve()) {
