@@ -34,15 +34,11 @@ public class Cell implements Comparable<Cell> {
     }
 
     boolean isNeighbour(Cell that) {
-        return !equals(that) && isNeighbouringIndices(x, that.x) && isNeighbouringIndices(y, that.y);
-    }
-
-    private boolean isNeighbouringIndices(int a, int b) {
-        return Math.abs(a - b) <= 1;
+        return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
     }
 
     private boolean isNotThis(Cell that) {
-        return !this.equals(that);
+        return !equals(that);
     }
 
     @Override
@@ -70,7 +66,8 @@ public class Cell implements Comparable<Cell> {
     }
 
     private String getString() {
-        return string == null ? string = getString(x, y) : string;
+        return Optional.ofNullable(string)
+               .orElseGet(() -> string = getString(x, y));
     }
 
     static String getString(int x, int y) {
