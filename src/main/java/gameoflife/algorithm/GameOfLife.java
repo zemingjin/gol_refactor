@@ -139,9 +139,8 @@ public class GameOfLife {
         return !isLiveCell(cell.getX(), cell.getY());
     }
 
-    private <T extends Cell> T getCellFromString(String values,
-                                                 BiFunction<Integer, Integer, T> supplier) {
+    private <T extends Cell> T getCellFromString(String values, BiFunction<Integer, Integer, T> construct) {
         final String[] indices = values.split(INDICES_DELIMITER);
-        return supplier.apply(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
+        return construct.apply(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 }
