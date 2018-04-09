@@ -2,8 +2,6 @@ package gameoflife.algorithm;
 
 import org.junit.Test;
 
-import java.util.stream.Collectors;
-
 import static org.junit.Assert.*;
 
 public class CellTest {
@@ -17,10 +15,10 @@ public class CellTest {
     @Test
     public void testGetNeighbours() {
         assertEquals("[0|0, 1|0, 2|0, 0|1, 2|1, 0|2, 1|2, 2|2]",
-                     new Cell(1, 1).getNeighbours().collect(Collectors.toList()).toString());
+                     new Cell(1, 1).getNeighbours().toString());
         assertEquals("[-1|0, 0|0, 1|0, -1|1, 1|1, -1|2, 0|2, 1|2]",
-                     new Cell(0, 1).getNeighbours().collect(Collectors.toList()).toString());
+                     new Cell(0, 1).getNeighbours().toString());
         assertEquals("[-1|-1, 0|-1, 1|-1, -1|0, 1|0, -1|1, 0|1, 1|1]",
-                     new Cell(0, 0).getNeighbours().collect(Collectors.toList()).toString());
+                     new Cell(0, 0).getNeighbours().toString());
     }
 }
