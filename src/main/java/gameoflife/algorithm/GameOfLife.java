@@ -64,12 +64,17 @@ public class GameOfLife {
         final List<Cell> list = new ArrayList<>();
 
         for (int y = 0; y < Math.min(seeds.length, boundary.getY()); y++) {
-            final String line = seeds[y];
+            list.addAll(getRowOfCells(y, seeds[y]));
+        }
+        return list;
+    }
 
-            for (int x = 0; x < Math.min(line.length(), boundary.getX()); x++) {
-                if (isLiveCell(line.charAt(x))) {
-                    list.add(new Cell(x, y));
-                }
+    private List<Cell> getRowOfCells(int y, String line) {
+        List<Cell> list = new ArrayList<>();
+
+        for (int x = 0; x < Math.min(line.length(), boundary.getX()); x++) {
+            if (isLiveCell(line.charAt(x))) {
+                list.add(new Cell(x, y));
             }
         }
         return list;
