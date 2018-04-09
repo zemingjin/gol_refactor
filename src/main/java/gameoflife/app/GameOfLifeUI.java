@@ -8,14 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private static final int WAIT_TIME = 100;
@@ -37,27 +32,29 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private int waitTime;
 
     GameOfLifeUI(String[] params) {
-        Optional.of(params)
-                .filter(p -> p.length > 0)
-                .map(this::setup)
-                .orElseThrow(() -> new RuntimeException("Missing seeds"));
+        if (params.length > 0) {
+            setup(params);
+        }
+        else {
+            throw new RuntimeException("Missing seeds");
+        }
     }
 
-    private GameOfLifeUI setup(String[] params) {
+    private void setup(String[] params) {
         path = params[0];
         gameOfLife.seedGame(IOHelper.loadSeeds(path));
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
         dimension = gameOfLife.getDimension();
-        return this;
     }
 
     private int getWaitTime(String[] params) {
-        return Stream.of(params)
-                .filter(param -> param.startsWith(OPT_WAIT))
-                .map(param -> Integer.parseInt(param.substring(OPT_WAIT.length())))
-                .findFirst()
-                .orElse(WAIT_TIME);
+        for (final String param : params) {
+            if (param.startsWith(OPT_WAIT)) {
+                return Integer.parseInt(param.substring(OPT_WAIT.length()));
+            }
+        }
+        return WAIT_TIME;
     }
 
     private boolean isAutomaton(String[] params) {
@@ -166,18 +163,31 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        IntStream.range(0, dimension.getY())
-                .forEach(y -> {
-                    paintRow(fillCell.apply(graphics, y));
-                    paintRow(drawBorder.apply(graphics, y));
-                });
+        for (int y = 0; y < dimension.getY(); y++) {
+            paintRow(graphics, y);
+        }
     }
 
-    private final BiFunction<Graphics, Integer, Consumer<Integer>> fillCell =
-            (graphics, y) -> x -> {
-                graphics.setColor(getColor(x, y));
-                graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
-            };
+    private void paintRow(Graphics graphics, int y) {
+        for (int x = 0; x < dimension.getX(); x++) {
+            paintCell(graphics, x, y);
+        }
+    }
+
+    private void paintCell(Graphics graphics, int x, int y) {
+        fillCell(graphics, x, y);
+        drawBorder(graphics, x, y);
+    }
+
+    private void fillCell(Graphics graphics, int x, int y) {
+        graphics.setColor(getColor(x, y));
+        graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+    }
+
+    private void drawBorder(Graphics graphics, int x, int y) {
+        graphics.setColor(getForeground());
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
+    }
 
     private Color getColor(int x, int y) {
         return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
@@ -193,17 +203,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int getCellPosition(int index) {
         return index * cellSize;
-    }
-
-    private final BiFunction<Graphics, Integer, Consumer<Integer>> drawBorder =
-            (graphics, y) -> x -> {
-                graphics.setColor(getForeground());
-                graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-            };
-
-    private void paintRow(Consumer<Integer> actor) {
-        IntStream.range(0, dimension.getX())
-                .forEach(actor::accept);
     }
 
     private void waitAWhile() {

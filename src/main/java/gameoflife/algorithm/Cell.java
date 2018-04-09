@@ -1,8 +1,7 @@
 package gameoflife.algorithm;
 
-import java.util.Optional;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cell implements Comparable<Cell> {
     private final int x, y;
@@ -21,33 +20,30 @@ public class Cell implements Comparable<Cell> {
         return y;
     }
 
-    Stream<Cell> getNeighbours() {
-        return IntStream.rangeClosed(getY() - 1, getY() + 1)
-                .mapToObj(this::getNeighboursByRow)
-                .flatMap(s -> s);
-    }
+    List<Cell> getNeighbours() {
+        final List<Cell> list = new ArrayList<>();
 
-    private Stream<Cell> getNeighboursByRow(int y) {
-        return IntStream.rangeClosed(getX() - 1, getX() + 1)
-                .mapToObj(x -> new Cell(x, y))
-                .filter(this::isNotThis);
+        for (int y = getY() - 1; y <= getY() + 1; y++) {
+            for (int x = getX() - 1; x <= getX() + 1; x++) {
+                if (x != getX() || y != getY()) {
+                    list.add(new Cell(x, y));
+                }
+            }
+        }
+        return list;
     }
 
     boolean isNeighbour(Cell that) {
-        return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
-    }
-
-    private boolean isNotThis(Cell that) {
-        return !equals(that);
+        return !equals(that) && Math.abs(x - that.getX()) <= 1 && Math.abs(y - that.getY()) <= 1;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return Optional.ofNullable(obj)
-                .filter(Cell.class::isInstance)
-                .map(that -> (Cell)that)
-                .filter(that -> getX() == that.getX() && getY() == that.getY())
-                .isPresent();
+        if (obj instanceof Cell) {
+            final Cell that = (Cell)obj;
+            return getX() == that.getX() && getY() == that.getY();
+        }
+        return false;
     }
 
     @Override
@@ -66,8 +62,7 @@ public class Cell implements Comparable<Cell> {
     }
 
     private String getString() {
-        return Optional.ofNullable(string)
-               .orElseGet(() -> string = getString(x, y));
+        return string == null ? string = getString(x, y) : string;
     }
 
     static String getString(int x, int y) {
