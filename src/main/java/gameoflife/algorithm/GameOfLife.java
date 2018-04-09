@@ -182,7 +182,7 @@ public class GameOfLife {
 
     private Boundary getBoundaryFromString(String values) {
         final String[] indices = values.split(INDICES_DELIMITER);
-        return new Boundary(Integer.parseInt(indices[0]), Integer.parseInt(indices[1]));
+        return new Boundary(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 
     private Cell getCellFromString(String values) {
