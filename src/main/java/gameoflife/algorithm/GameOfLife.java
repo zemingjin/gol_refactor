@@ -47,7 +47,7 @@ public class GameOfLife {
     /**
      *
      * @param seeds the first line contains the size info, such as "#P width|height".
-     *              the rest is in the format of ".....OO.O" where the capital 'O' indicate live cell(s).
+     *              the rest is in the format of ".....OO.O" where the capital 'O's indicate live cell(s).
      * @return this
      */
     public GameOfLife seedGame(String[] seeds) {
@@ -85,7 +85,7 @@ public class GameOfLife {
     }
 
     private boolean isLiveCell(char c) {
-        return c == LIVE_CELL;
+        return LIVE_CELL == c;
     }
 
     public boolean isLiveCell(int x, int y) {
