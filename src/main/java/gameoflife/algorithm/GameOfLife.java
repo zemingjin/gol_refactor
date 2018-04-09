@@ -128,20 +128,24 @@ public class GameOfLife {
         return list;
     }
 
+    private List<Cell> getReproductionCells() {
+        final List<Cell> list = new ArrayList<>();
+
+        for (final Cell cell : getNeighbouringDeadCells()) {
+            if (isReproducingCell(cell)) {
+                list.add(cell);
+            }
+        }
+        return list;
+    }
+
     private boolean isNextGenerationCell(Cell cell) {
         final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
         return 2 <= numberOfNeighbours && numberOfNeighbours <= 3;
     }
 
-    private List<Cell> getReproductionCells() {
-        final List<Cell> list = new ArrayList<>();
-
-        for (final Cell cell : getNeighbouringDeadCells()) {
-            if (boundary.isInBound(cell) && getNumberOfLiveNeighbours(cell) == 3) {
-                list.add(cell);
-            }
-        }
-        return list;
+    private boolean isReproducingCell(Cell cell) {
+        return getNumberOfLiveNeighbours(cell) == 3;
     }
 
     private long getNumberOfLiveNeighbours(Cell that) {
