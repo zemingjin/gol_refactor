@@ -1,16 +1,16 @@
-package gameoflife.app;
+package refactor.app;
 
-import gameoflife.helper.IOHelper;
+import refactor.helper.IOHelper;
 
 import java.util.logging.Logger;
 
-class GameOfLifeUITest extends GameOfLifeUI {
+class RefactorUITest extends RefactorUI {
     private static final int ITERATIONS = 50;
-    private static final Logger LOG = Logger.getLogger(GameOfLifeUITest.class.getName());
+    private static final Logger LOG = Logger.getLogger(RefactorUITest.class.getName());
 
     private int iterations = ITERATIONS;
 
-    private GameOfLifeUITest(String[] params) {
+    private RefactorUITest(String[] params) {
         super(params);
     }
 
@@ -21,7 +21,7 @@ class GameOfLifeUITest extends GameOfLifeUI {
 
     public static void main(String[] params) {
         final long time = System.currentTimeMillis();
-        new GameOfLifeUITest(params).run();
+        new RefactorUITest(params).run();
         LOG.info("Total time: " + IOHelper.format(System.currentTimeMillis() - time));
     }
 }

@@ -1,4 +1,4 @@
-package gameoflife.helper;
+package refactor.helper;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

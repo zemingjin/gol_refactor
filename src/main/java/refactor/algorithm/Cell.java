@@ -1,4 +1,4 @@
-package gameoflife.algorithm;
+package refactor.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package gameoflife.app;
+package refactor.app;
 
-import gameoflife.algorithm.Boundary;
-import gameoflife.algorithm.GameOfLife;
-import gameoflife.helper.IOHelper;
+import refactor.algorithm.Boundary;
+import refactor.algorithm.Refactor;
+import refactor.helper.IOHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,15 +12,15 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
+public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private static final int WAIT_TIME = 100;
     private static final int MAX_CELL_SIZE = 100;
     private static final int MIN_CELL_SIZE = 6;
     private static final String OPT_STEP = "-s";
     private static final String OPT_WAIT = "-w";
-    private static final Logger LOG = Logger.getLogger(GameOfLifeUI.class.getName());
+    private static final Logger LOG = Logger.getLogger(RefactorUI.class.getName());
 
-    private final GameOfLife gameOfLife = new GameOfLife();
+    private final Refactor gameOfLife = new Refactor();
     private final JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
@@ -31,7 +31,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private int iteration;
     private int waitTime;
 
-    GameOfLifeUI(String[] params) {
+    RefactorUI(String[] params) {
         if (params.length > 0) {
             setup(params);
         }
@@ -238,6 +238,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     public static void main(String[] params) {
-        new GameOfLifeUI(params).run();
+        new RefactorUI(params).run();
     }
 }

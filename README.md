@@ -12,7 +12,7 @@ The format of the seed file could be like the followings:
 the grid size is 5x5 and 'O' - the capital 'o' - indicates a living cell.
 
 execute: **mvn package assembly:single** - the executable jar would be created under the target directory, 
-named in the form of 'gameoflife-[version]-jar-with-dependencies.jar'.
+named in the form of 'refactor-[version]-jar-with-dependencies.jar'.
 
 This implementation emphasizes the non-grid approach. Only one list of active cells is maintained.
 

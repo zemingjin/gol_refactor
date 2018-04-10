@@ -1,4 +1,4 @@
-package gameoflife.algorithm;
+package refactor.algorithm;
 
 public class Boundary extends Cell {
     Boundary(int x, int y) {

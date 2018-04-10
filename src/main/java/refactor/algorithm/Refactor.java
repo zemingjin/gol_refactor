@@ -1,10 +1,10 @@
-package gameoflife.algorithm;
+package refactor.algorithm;
 
 import org.apache.commons.collections4.ListUtils;
 
 import java.util.*;
 
-public class GameOfLife {
+public class Refactor {
     private static final char LIVE_CELL = 'O';
     private static final String INDICES_DELIMITER = "\\|";
 
@@ -17,7 +17,7 @@ public class GameOfLife {
      * @param boundary the given boundary in the format of "width|height".
      * @return this
      */
-    GameOfLife setBoundary(String boundary) {
+    Refactor setBoundary(String boundary) {
         this.boundary = getBoundaryFromString(boundary);
         return this;
     }
@@ -27,7 +27,7 @@ public class GameOfLife {
      * @param seeds the given seeds in the format of "1|1, 1|2, 1|3"
      * @return self
      */
-    GameOfLife seedGame(String seeds) {
+    Refactor seedGame(String seeds) {
         setLiveCellsWithMap(seedLiveCells(seeds));
         return this;
     }
@@ -50,7 +50,7 @@ public class GameOfLife {
      *              the rest is in the format of ".....OO.O" where the capital 'O's indicate live cell(s).
      * @return this
      */
-    public GameOfLife seedGame(String[] seeds) {
+    public Refactor seedGame(String[] seeds) {
         this.boundary =  getBoundaryFromString(getBoundaryFromHeader(seeds[0]));
         setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
@@ -70,7 +70,7 @@ public class GameOfLife {
     }
 
     private List<Cell> getRowOfCells(int y, String line) {
-        List<Cell> list = new ArrayList<>();
+        final List<Cell> list = new ArrayList<>();
 
         for (int x = 0; x < Math.min(line.length(), boundary.getX()); x++) {
             if (isLiveCell(line.charAt(x))) {

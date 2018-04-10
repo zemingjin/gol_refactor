@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.expedia.www</groupId>
-    <artifactId>gameoflife</artifactId>
+    <artifactId>refactor</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -116,7 +116,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>gameoflife.app.GameOfLifeUI</mainClass>
+                            <mainClass>refactor.app.RefactorUI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

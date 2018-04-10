@@ -1,4 +1,4 @@
-package gameoflife.helper;
+package refactor.helper;
 
 import org.junit.Test;
 
