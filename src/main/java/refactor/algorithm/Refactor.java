@@ -18,6 +18,9 @@ public class Refactor {
      * @return this
      */
     Refactor setBoundary(String boundary) {
+        if (Objects.isNull(boundary)) {
+            throw new RuntimeException("Invalid data: null boundary");
+        }
         this.boundary = getBoundaryFromString(boundary);
         return this;
     }
@@ -28,6 +31,9 @@ public class Refactor {
      * @return self
      */
     Refactor seedGame(String seeds) {
+        if (Objects.isNull(seeds) || seeds.isEmpty()) {
+            throw new RuntimeException(String.format("Invalid seeds: '%s'", seeds));
+        }
         setLiveCellsWithMap(seedLiveCells(seeds));
         return this;
     }
