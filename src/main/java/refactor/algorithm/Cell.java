@@ -24,10 +24,17 @@ public class Cell implements Comparable<Cell> {
         final List<Cell> list = new ArrayList<>();
 
         for (int y = getY() - 1; y <= getY() + 1; y++) {
-            for (int x = getX() - 1; x <= getX() + 1; x++) {
-                if (x != getX() || y != getY()) {
-                    list.add(new Cell(x, y));
-                }
+            list.addAll(getRowNeighbours(y));
+        }
+        return list;
+    }
+
+    private List<Cell> getRowNeighbours(int y) {
+        final List<Cell> list = new ArrayList<>();
+
+        for (int x = getX() - 1; x <= getX() + 1; x++) {
+            if (x != getX() || y != getY()) {
+                list.add(new Cell(x, y));
             }
         }
         return list;
