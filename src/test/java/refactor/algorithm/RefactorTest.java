@@ -69,7 +69,7 @@ public class RefactorTest {
     @Test
     public void testGetMaxIndex() {
         assertEquals(new Cell(5, 5), new Refactor()
-                .setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 8|8").getDimension());
+                .setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 8|8").getBoundary());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class RefactorTest {
 
     private void test(Refactor gameOfLife) {
         gameOfLife.evolve();
-        final Cell boundary = gameOfLife.getDimension();
+        final Cell boundary = gameOfLife.getBoundary();
         IntStream.range(0, boundary.getY())
                 .forEach(y -> testRow(gameOfLife, y, boundary.getX()));
     }

@@ -27,7 +27,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private int evolveToggle = 1;
     private boolean automaton = true;
     private String path;
-    private Boundary dimension;
+    private Boundary boundary;
     private int iteration;
     private int waitTime;
 
@@ -45,7 +45,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
         gameOfLife.seedGame(IOHelper.loadSeeds(path));
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
-        dimension = gameOfLife.getDimension();
+        boundary = gameOfLife.getBoundary();
     }
 
     private int getWaitTime(String[] params) {
@@ -97,8 +97,8 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private void setupFrame() {
         setCellSize(calculateCellSize());
 
-        final int width = calculatePanelSize(dimension.getX());
-        final int height = calculatePanelSize(dimension.getY());
+        final int width = calculatePanelSize(boundary.getX());
+        final int height = calculatePanelSize(boundary.getY());
 
         setSize(width, height);
         setFocusable(true);
@@ -113,8 +113,8 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     private int calculateCellSize() {
         final Dimension screenSize = getScreenSize();
-        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, dimension.getY()),
-                                          calculateCellSize(screenSize.width, dimension.getX())),
+        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, boundary.getY()),
+                                          calculateCellSize(screenSize.width, boundary.getX())),
                                  MAX_CELL_SIZE),
                         MIN_CELL_SIZE);
     }
@@ -163,13 +163,13 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        for (int y = 0; y < dimension.getY(); y++) {
+        for (int y = 0; y < boundary.getY(); y++) {
             paintRow(graphics, y);
         }
     }
 
     private void paintRow(Graphics graphics, int y) {
-        for (int x = 0; x < dimension.getX(); x++) {
+        for (int x = 0; x < boundary.getX(); x++) {
             paintCell(graphics, x, y);
         }
     }

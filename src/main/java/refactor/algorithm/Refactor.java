@@ -86,7 +86,7 @@ public class Refactor {
         return list;
     }
 
-    public Boundary getDimension() {
+    public Boundary getBoundary() {
         return boundary;
     }
 
