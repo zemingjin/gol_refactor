@@ -162,7 +162,7 @@ public class Refactor {
     private long getNumberOfLiveNeighbours(Cell that) {
         long count = 0;
         for (final Cell cell : getLiveCells()) {
-            if (cell.isNeighbour(that)) {
+            if (that.isNeighbour(cell)) {
                 count++;
             }
         }
