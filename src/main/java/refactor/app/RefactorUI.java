@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,44 +163,31 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        final Function<Integer, Consumer<Integer>> fill = fillCell.apply(graphics);
-        final Function<Integer, Consumer<Integer>> draw = drawBorder.apply(graphics);
-
         for (int y = 0; y < boundary.getY(); y++) {
-            paintRow(fill.apply(y));
-            paintRow(draw.apply(y));
+            paintRow(graphics, y);
         }
     }
 
-    private void paintRow(Consumer<Integer> worker) {
+    private void paintRow(Graphics graphics, int y) {
         for (int x = 0; x < boundary.getX(); x++) {
-            worker.accept(x);
+            paintCell(graphics, x, y);
         }
     }
 
-    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell = graphics -> y -> x -> {
+    private void paintCell(Graphics graphics, int x, int y) {
+        fillCell(graphics, x, y);
+        drawBorder(graphics, x, y);
+    }
+
+    private void fillCell(Graphics graphics, int x, int y) {
         graphics.setColor(getColor(x, y));
         graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
-    };
+    }
 
-    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder =
-        new Function<Graphics, Function<Integer, Consumer<Integer>>>() {
-            @Override
-            public Function<Integer, Consumer<Integer>> apply(Graphics graphics) {
-                return new Function<Integer, Consumer<Integer>>() {
-                    @Override
-                    public Consumer<Integer> apply(Integer y) {
-                        return new Consumer<Integer>() {
-                            @Override
-                            public void accept(Integer x) {
-                                graphics.setColor(getForeground());
-                                graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-                            }
-                        };
-                    }
-                };
-            }
-        };
+    private void drawBorder(Graphics graphics, int x, int y) {
+        graphics.setColor(getForeground());
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
+    }
 
     private Color getColor(int x, int y) {
         return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
