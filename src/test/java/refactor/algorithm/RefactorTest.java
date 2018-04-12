@@ -3,7 +3,9 @@ package refactor.algorithm;
 import refactor.helper.IOHelper;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
@@ -38,35 +40,33 @@ public class RefactorTest {
     public void testBlinker() {
         final Refactor gameOfLife = new Refactor().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
 
-        assertEquals("{0|1=0|1, 1|1=1|1, 2|1=2|1}", gameOfLife.evolve().toString());
-        assertEquals("{1|0=1|0, 1|1=1|1, 1|2=1|2}", gameOfLife.evolve().toString());
+        assertEquals("[0|1, 1|1, 2|1]", gameOfLife.evolve().values().toString());
+        assertEquals("[1|0, 1|1, 1|2]", gameOfLife.evolve().values().toString());
     }
 
     @Test
     public void testBloker() {
         final Refactor gameOfLife = new Refactor().setBoundary("3|3").seedGame("1|1, 1|2, 2|1, 2|2");
 
-        assertEquals("{1|1=1|1, 1|2=1|2, 2|1=2|1, 2|2=2|2}", gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", gameOfLife.evolve().values().toString());
     }
 
     @Test
     public void testToad() {
         final Refactor gameOfLife = new Refactor().setBoundary("4|4").seedGame("2|2, 2|3, 3|1, 3|2, 3|3");
 
-        assertEquals("{2|1=2|1, 3|1=3|1, 2|3=2|3, 3|3=3|3}", gameOfLife.evolve().toString());
-        assertEquals("{}", gameOfLife.evolve().toString());
+        assertEquals("[2|1, 3|1, 2|3, 3|3]", gameOfLife.evolve().values().toString());
+        assertEquals("[]", gameOfLife.evolve().values().toString());
     }
 
     @Test
     public void testBeacon() {
         final Refactor gameOfLife = new Refactor().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
 
-        assertEquals("{1|1=1|1, 1|2=1|2, 2|1=2|1, 2|2=2|2, 3|3=3|3, 3|4=3|4, 4|3=4|3, 4|4=4|4}",
-                     gameOfLife.evolve().toString());
-        assertEquals("{1|1=1|1, 1|2=1|2, 2|1=2|1, 3|4=3|4, 4|3=4|3, 4|4=4|4}",
-                     gameOfLife.evolve().toString());
-        assertEquals("{1|1=1|1, 1|2=1|2, 2|1=2|1, 2|2=2|2, 3|3=3|3, 3|4=3|4, 4|3=4|3, 4|4=4|4}",
-                     gameOfLife.evolve().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.evolve().values().toString());
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(gameOfLife.evolve().values()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]",
+                     gameOfLife.evolve().values().toString());
     }
 
     @Test
@@ -105,6 +105,12 @@ public class RefactorTest {
     private void testRow(Refactor gameOfLife, int y, int max) {
         IntStream.range(0, max)
                 .forEach(x -> gameOfLife.isLiveCell(x, y));
+    }
+
+    private Collection<Cell> sort(Collection<Cell> list) {
+        return list.stream()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
 }
