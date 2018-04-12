@@ -33,8 +33,7 @@ public class Refactor {
         if (Objects.isNull(seeds) || seeds.isEmpty()) {
             throw new RuntimeException(String.format("Invalid seeds: '%s'", seeds));
         }
-        setLiveCells(seedLiveCells(seeds));
-        return this;
+        return setLiveCells(seedLiveCells(seeds));
     }
 
     private Map<String, Cell> seedLiveCells(String seeds) {
@@ -111,12 +110,14 @@ public class Refactor {
         return liveCells.values();
     }
 
-    private Map<String, Cell> setLiveCells(Map<String, Cell> liveCells) {
-        return this.liveCells = liveCells;
+    private Refactor setLiveCells(Map<String, Cell> liveCells) {
+        this.liveCells = liveCells;
+        return this;
     }
 
     public Map<String, Cell> evolve() {
-        return setLiveCells(tick());
+        setLiveCells(tick());
+        return liveCells;
     }
 
     private Map<String, Cell> tick() {
