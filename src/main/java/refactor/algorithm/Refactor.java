@@ -21,8 +21,7 @@ public class Refactor {
         if (Objects.isNull(boundary)) {
             throw new RuntimeException("Invalid data: null boundary");
         }
-        this.boundary = getBoundaryFromString(boundary);
-        return this;
+        return setBoundary(getBoundaryFromString(boundary));
     }
 
     /**
@@ -90,6 +89,11 @@ public class Refactor {
 
     public Boundary getBoundary() {
         return boundary;
+    }
+
+    private Refactor setBoundary(Boundary boundary) {
+        this.boundary = boundary;
+        return this;
     }
 
     private boolean isLiveCell(char c) {
