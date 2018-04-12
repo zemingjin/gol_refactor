@@ -7,6 +7,7 @@ import java.util.*;
 public class Refactor {
     private static final char LIVE_CELL = 'O';
     private static final String INDICES_DELIMITER = "\\|";
+    private static final String CELL_DELIMITER = ", ";
 
     private Boundary boundary;
     private Map<String, Cell> liveCells;
@@ -40,7 +41,7 @@ public class Refactor {
     private Map<String, Cell> seedLiveCells(String seeds) {
         final Map<String, Cell> map = new HashMap<>();
 
-        for (final String elements : seeds.split(", ")) {
+        for (final String elements : seeds.split(CELL_DELIMITER)) {
             final Cell cell = getCellFromString(elements);
             if (boundary.isInBound(cell)) {
                 map.put(cell.toString(), cell);
