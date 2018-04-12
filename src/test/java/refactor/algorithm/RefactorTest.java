@@ -40,22 +40,22 @@ public class RefactorTest {
     public void testBlinker() {
         final Refactor gameOfLife = new Refactor().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
 
-        assertEquals("[0|1, 1|1, 2|1]", gameOfLife.evolve().values().toString());
-        assertEquals("[1|0, 1|1, 1|2]", gameOfLife.evolve().values().toString());
+        assertEquals("[0|1, 1|1, 2|1]", sort(gameOfLife.evolve().values()).toString());
+        assertEquals("[1|0, 1|1, 1|2]", sort(gameOfLife.evolve().values()).toString());
     }
 
     @Test
     public void testBloker() {
         final Refactor gameOfLife = new Refactor().setBoundary("3|3").seedGame("1|1, 1|2, 2|1, 2|2");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2]", gameOfLife.evolve().values().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(gameOfLife.evolve().values()).toString());
     }
 
     @Test
     public void testToad() {
         final Refactor gameOfLife = new Refactor().setBoundary("4|4").seedGame("2|2, 2|3, 3|1, 3|2, 3|3");
 
-        assertEquals("[2|1, 3|1, 2|3, 3|3]", gameOfLife.evolve().values().toString());
+        assertEquals("[2|1, 2|3, 3|1, 3|3]", sort(gameOfLife.evolve().values()).toString());
         assertEquals("[]", gameOfLife.evolve().values().toString());
     }
 
@@ -63,10 +63,10 @@ public class RefactorTest {
     public void testBeacon() {
         final Refactor gameOfLife = new Refactor().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.evolve().values().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.evolve().values()).toString());
         assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(gameOfLife.evolve().values()).toString());
         assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]",
-                     gameOfLife.evolve().values().toString());
+                     sort(gameOfLife.evolve().values()).toString());
     }
 
     @Test
