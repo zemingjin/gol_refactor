@@ -55,7 +55,7 @@ public class Refactor {
      * @return this
      */
     public Refactor seedGame(String[] seeds) {
-        this.boundary =  getBoundaryFromString(getBoundaryFromHeader(seeds[0]));
+        setBoundary(getBoundaryFromString(getBoundaryFromHeader(seeds[0])));
         setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
