@@ -9,8 +9,7 @@ public class Refactor {
     private static final String INDICES_DELIMITER = "\\|";
 
     private Boundary boundary;
-    private List<Cell> liveCells = new ArrayList<>();
-    private Map<String, Cell> liveCellsMap;
+    private Map<String, Cell> liveCells;
 
     /**
      * This method is only called by tests
@@ -34,20 +33,20 @@ public class Refactor {
         if (Objects.isNull(seeds) || seeds.isEmpty()) {
             throw new RuntimeException(String.format("Invalid seeds: '%s'", seeds));
         }
-        setLiveCellsWithMap(seedLiveCells(seeds));
+        setLiveCells(seedLiveCells(seeds));
         return this;
     }
 
-    private List<Cell> seedLiveCells(String seeds) {
-        final List<Cell> list = new ArrayList<>();
+    private Map<String, Cell> seedLiveCells(String seeds) {
+        final Map<String, Cell> map = new HashMap<>();
 
         for (final String elements : seeds.split(", ")) {
             final Cell cell = getCellFromString(elements);
             if (boundary.isInBound(cell)) {
-                list.add(cell);
+                map.put(cell.toString(), cell);
             }
         }
-        return list;
+        return map;
     }
 
     /**
@@ -58,7 +57,7 @@ public class Refactor {
      */
     public Refactor seedGame(String[] seeds) {
         this.boundary =  getBoundaryFromString(getBoundaryFromHeader(seeds[0]));
-        setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
+        setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
 
@@ -66,13 +65,15 @@ public class Refactor {
         return seed.split(" ")[1];
     }
 
-    private List<Cell> seedLiveCells(String[] seeds) {
-        final List<Cell> list = new ArrayList<>();
+    private Map<String, Cell> seedLiveCells(String[] seeds) {
+        final Map<String, Cell> map = new HashMap<>();
 
         for (int y = 0; y < Math.min(seeds.length, boundary.getY()); y++) {
-            list.addAll(getRowOfCells(y, seeds[y]));
+            for (final Cell cell : getRowOfCells(y, seeds[y])) {
+                map.put(cell.toString(), cell);
+            }
         }
-        return list;
+        return map;
     }
 
     private List<Cell> getRowOfCells(int y, String line) {
@@ -95,37 +96,31 @@ public class Refactor {
     }
 
     public boolean isLiveCell(int x, int y) {
-        return liveCellsMap.get(Cell.getString(x, y)) != null;
+        return liveCells.get(Cell.getString(x, y)) != null;
     }
 
-    List<Cell> getLiveCells() {
+    Collection<Cell> getLiveCells() {
         if (liveCells.isEmpty()) {
             throw new RuntimeException("No more living cells");
         }
-        return liveCells;
+        return liveCells.values();
     }
 
-    private List<Cell> setLiveCellsWithMap(List<Cell> liveCells) {
-        this.liveCells = liveCells;
-        liveCellsMap = getLiveCellsMap(liveCells);
-        return liveCells;
+    private Map<String, Cell> setLiveCells(Map<String, Cell> liveCells) {
+        return this.liveCells = liveCells;
     }
 
-    private Map<String, Cell> getLiveCellsMap(List<Cell> liveCells) {
+    public Map<String, Cell> evolve() {
+        return setLiveCells(tick());
+    }
+
+    private Map<String, Cell> tick() {
         final Map<String, Cell> map = new HashMap<>();
 
-        for (final Cell cell : liveCells) {
+        for (final Cell cell : ListUtils.union(getNextGenerationCells(), getReproductionCells())) {
             map.put(cell.toString(), cell);
         }
         return map;
-    }
-
-    public List<Cell> evolve() {
-        return setLiveCellsWithMap(tick());
-    }
-
-    private List<Cell> tick() {
-        return ListUtils.union(getNextGenerationCells(), getReproductionCells());
     }
 
     private List<Cell> getNextGenerationCells() {
