@@ -48,6 +48,17 @@ public class Refactor {
         return map;
     }
 
+    Cell findCellWithLeastWeight() {
+        Cell leastWeight = null;
+
+        for (Cell cell : getLiveCells()) {
+            if (leastWeight == null || leastWeight.getWeight() > cell.getWeight()) {
+                leastWeight = cell;
+            }
+        }
+        return leastWeight;
+    }
+
     /**
      *
      * @param seeds the first line contains the size info, such as "#P width|height".

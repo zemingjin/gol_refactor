@@ -40,6 +40,10 @@ public class Cell implements Comparable<Cell> {
         return list;
     }
 
+    int getWeight() {
+        return x + y;
+    }
+
     boolean isNeighbour(Cell that) {
         return !equals(that) && Math.abs(x - that.getX()) <= 1 && Math.abs(y - that.getY()) <= 1;
     }

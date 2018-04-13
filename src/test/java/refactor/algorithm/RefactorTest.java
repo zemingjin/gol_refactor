@@ -86,6 +86,13 @@ public class RefactorTest {
     }
 
     @Test
+    public void testGetLeastWeight() {
+        final Refactor refactor = new Refactor().setBoundary("5|5").seedGame("1|2, 2|1, 3|4, 4|3, 4|4, 5|5, 1|1");
+
+        assertEquals("1|1", refactor.findCellWithLeastWeight().toString());
+    }
+
+    @Test
     public void testPerformance() {
         final Refactor gameOfLife = new Refactor().seedGame(IOHelper.loadSeeds(PERF_SEEDS));
         final long time = System.currentTimeMillis();
