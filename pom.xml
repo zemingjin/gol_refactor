@@ -8,16 +8,6 @@
     <artifactId>refactor</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <scala.major.version>2</scala.major.version>
-        <scala.minor.version>12</scala.minor.version>
-        <scala.maintenance.version>2</scala.maintenance.version>
-        <scala.major.minor.version>${scala.major.version}.${scala.minor.version}</scala.major.minor.version>
-        <scala-library.version>${scala.major.minor.version}.${scala.maintenance.version}</scala-library.version>
-        <scalatest.version>3.0.3</scalatest.version>
-        <scala.lang.scope>test</scala.lang.scope>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -30,34 +20,6 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala-library.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scalactic</groupId>
-            <artifactId>scalactic_2.12</artifactId>
-            <version>${scalatest.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scala.major.minor.version}</artifactId>
-            <version>${scalatest.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- required by scalatest-maven-plugin to generate HTML report -->
-        <dependency>
-            <groupId>org.pegdown</groupId>
-            <artifactId>pegdown</artifactId>
-            <version>1.4.2</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <reporting>
@@ -160,96 +122,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <scalaCompatVersion>${scala.major.minor.version}</scalaCompatVersion>
-                    <jvmArgs>
-                        <jvmArg>-Xms512m</jvmArg>
-                        <jvmArg>-Xmx2048m</jvmArg>
-                    </jvmArgs>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
-                <version>2.0.0</version>
-                <configuration>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                    <junitxml>.</junitxml>
-                    <filereports>WDF TestSuite.txt</filereports>
-                    <htmlreporters>${project.build.directory}/scalatest/html</htmlreporters>
-                    <systemProperties>
-                        <application.environment>dev</application.environment>
-                        <application.name>${project.name}</application.name>
-                        <application.home>.</application.home>
-                    </systemProperties>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>none</phase>
-                        <id>default-cli</id>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-Dapplication.name=${project.name}</argument>
-                                <argument>-Dapplication.home=.</argument>
-                                <argument>-Dapplication.environment=dev</argument>
-                                <argument>-Dspring.profiles.active=dev</argument>
-                                <argument>-jar</argument>
-                                <argument>${project.build.directory}/${project.build.finalName}.${project.packaging}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 </project>
