@@ -49,10 +49,13 @@ public class Refactor {
     }
 
     Cell findCellWithLeastWeight() {
-
-        return getLiveCells().stream()
-                .min(Comparator.comparingInt(Cell::getWeight))
-                .orElse(null);
+        Cell min = null;
+        for (Cell cell : getLiveCells()) {
+            if (min == null || min.getWeight() > cell.getWeight()) {
+                min = cell;
+            }
+        }
+        return min;
     }
 
     /**

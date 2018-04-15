@@ -1,0 +1,3 @@
+This contains all of google_checks.xml from maven-checkstyle-plugin v2.17 other than CustomImportOrder check
+Also, LineLength for java genrules.files has been set to 120 which is almost the java default in all IDE's
+

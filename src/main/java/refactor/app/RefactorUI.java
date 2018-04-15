@@ -226,7 +226,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
             continueFlag = false;
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             automaton = e.isControlDown();
-            evolveToggle = (evolveToggle < 2) ? evolveToggle + 1 : 0;
+            evolveToggle = evolveToggle < 2 ? evolveToggle + 1 : 0;
             e.consume();
             result = true;
         }
