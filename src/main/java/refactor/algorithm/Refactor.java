@@ -51,7 +51,7 @@ public class Refactor {
     Cell findCellWithLeastWeight() {
         Cell leastWeight = null;
 
-        for (Cell cell : getLiveCells()) {
+        for (final Cell cell : getLiveCells()) {
             if (leastWeight == null || leastWeight.getWeight() > cell.getWeight()) {
                 leastWeight = cell;
             }
