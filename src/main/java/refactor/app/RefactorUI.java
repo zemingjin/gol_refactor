@@ -4,9 +4,17 @@ import refactor.algorithm.Boundary;
 import refactor.algorithm.Refactor;
 import refactor.helper.IOHelper;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.WindowConstants;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
+import java.awt.KeyEventPostProcessor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Toolkit;
+import java.awt.Insets;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -158,7 +166,8 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private void evolve() {
         gameOfLife.evolve();
         evolveToggle++;
-        window.setTitle(String.format("%s - #%d", path, iteration++));
+        window.setTitle(String.format("%s - #%d", path, iteration));
+        iteration++;
     }
 
     @Override
