@@ -12,6 +12,13 @@ public class Refactor {
     private Boundary boundary;
     private Map<String, Cell> liveCells;
 
+    public Refactor() {
+    }
+
+    private Refactor(Map<String, Cell> liveCells) {
+        setLiveCells(liveCells);
+    }
+
     /**
      * This method is only called by tests
      * @param boundary the given boundary in the format of "width|height".
@@ -125,18 +132,13 @@ public class Refactor {
         return this;
     }
 
-    public Map<String, Cell> evolve() {
-        setLiveCells(tick());
-        return liveCells;
-    }
-
-    private Map<String, Cell> tick() {
+    public Refactor tick() {
         final Map<String, Cell> map = new HashMap<>();
 
         for (final Cell cell : ListUtils.union(getNextGenerationCells(), getReproductionCells())) {
             map.put(cell.toString(), cell);
         }
-        return map;
+        return new Refactor(map).setBoundary(boundary);
     }
 
     private List<Cell> getNextGenerationCells() {
@@ -172,8 +174,8 @@ public class Refactor {
 
     private long getNumberOfLiveNeighbours(Cell that) {
         long count = 0;
-        for (final Cell cell : getLiveCells()) {
-            if (that.isNeighbour(cell)) {
+        for (final Cell cell : that.getNeighbours()) {
+            if (isLiveCell(cell.getX(), cell.getY())) {
                 count++;
             }
         }
@@ -185,7 +187,7 @@ public class Refactor {
 
         for (final Cell cell : getLiveCells()) {
             for (final Cell neighbour : cell.getNeighbours()) {
-                if (boundary.isInBound(neighbour) && isDeadCell(neighbour) && !list.contains(neighbour)) {
+                if (isDeadCell(neighbour) && !list.contains(neighbour)) {
                     list.add(neighbour);
                 }
             }

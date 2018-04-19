@@ -32,41 +32,49 @@ public class RefactorTest {
     public void testGetDeadCells() {
         final Refactor refactor = new Refactor().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
 
-        assertEquals(6, refactor.getNeighbouringDeadCells().size());
-        assertEquals("[0|0, 2|0, 0|1, 2|1, 0|2, 2|2]", refactor.getNeighbouringDeadCells().toString());
+        assertEquals(12, refactor.getNeighbouringDeadCells().size());
+        assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
+                     refactor.getNeighbouringDeadCells().toString());
     }
 
     @Test
     public void testBlinker() {
-        final Refactor refactor = new Refactor().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
+        Refactor refactor = new Refactor().setBoundary("3|3").seedGame("1|0, 1|1, 1|2");
 
-        assertEquals("[0|1, 1|1, 2|1]", sort(refactor.evolve().values()).toString());
-        assertEquals("[1|0, 1|1, 1|2]", sort(refactor.evolve().values()).toString());
+        refactor = refactor.tick();
+        assertEquals("[0|1, 1|1, 2|1]", sort(refactor.getLiveCells()).toString());
+        refactor = refactor.tick();
+        assertEquals("[1|0, 1|1, 1|2]", sort(refactor.getLiveCells()).toString());
     }
 
     @Test
     public void testBloker() {
         final Refactor refactor = new Refactor().setBoundary("3|3").seedGame("1|1, 1|2, 2|1, 2|2");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(refactor.evolve().values()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(refactor.tick().getLiveCells()).toString());
     }
 
     @Test
     public void testToad() {
-        final Refactor refactor = new Refactor().setBoundary("4|4").seedGame("2|2, 2|3, 3|1, 3|2, 3|3");
+        Refactor refactor = new Refactor().setBoundary("4|4").seedGame("2|2, 2|3, 3|1, 3|2, 3|3");
 
-        assertEquals("[2|1, 2|3, 3|1, 3|3]", sort(refactor.evolve().values()).toString());
-        assertEquals("[]", refactor.evolve().values().toString());
+        refactor = refactor.tick();
+        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(refactor.getLiveCells()).toString());
+        refactor = refactor.tick();
+        assertEquals("[3|1, 3|3, 4|2]", sort(refactor.getLiveCells()).toString());
+
     }
 
     @Test
     public void testBeacon() {
-        final Refactor refactor = new Refactor().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
+        Refactor refactor = new Refactor().setBoundary("5|5").seedGame("1|1, 1|2, 2|1, 3|4, 4|3, 4|4");
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.evolve().values()).toString());
-        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(refactor.evolve().values()).toString());
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]",
-                     sort(refactor.evolve().values()).toString());
+        refactor = refactor.tick();
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.getLiveCells()).toString());
+        refactor = refactor.tick();
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(refactor.getLiveCells()).toString());
+        refactor = refactor.tick();
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.getLiveCells()).toString());
     }
 
     @Test
@@ -102,8 +110,8 @@ public class RefactorTest {
         LOG.info("Finished in " + IOHelper.format(System.currentTimeMillis() - time));
     }
 
-    private void test(Refactor refactor) {
-        refactor.evolve();
+    private void test(Refactor input) {
+        final Refactor refactor = input.tick();
         final Cell boundary = refactor.getBoundary();
         IntStream.range(0, boundary.getY())
                 .forEach(y -> testRow(refactor, y, boundary.getX()));

@@ -28,7 +28,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private static final String OPT_WAIT = "-w";
     private static final Logger LOG = Logger.getLogger(RefactorUI.class.getName());
 
-    private final Refactor gameOfLife = new Refactor();
+    private Refactor refactor = new Refactor();
     private final JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
@@ -39,7 +39,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private int iteration;
     private int waitTime;
 
-    RefactorUI(String[] params) {
+    public RefactorUI(String[] params) {
         if (params.length > 0) {
             setup(params);
         }
@@ -50,10 +50,10 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     private void setup(String[] params) {
         path = params[0];
-        gameOfLife.seedGame(IOHelper.loadSeeds(path));
+        refactor.seedGame(IOHelper.loadSeeds(path));
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
-        boundary = gameOfLife.getBoundary();
+        boundary = refactor.getBoundary();
     }
 
     private int getWaitTime(String[] params) {
@@ -63,6 +63,10 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
             }
         }
         return WAIT_TIME;
+    }
+
+    public Refactor getRefactor() {
+        return refactor;
     }
 
     private boolean isAutomaton(String[] params) {
@@ -164,7 +168,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void evolve() {
-        gameOfLife.evolve();
+        refactor = refactor.tick();
         evolveToggle++;
         window.setTitle(String.format("%s - #%d", path, iteration));
         iteration++;
@@ -199,7 +203,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private Color getColor(int x, int y) {
-        return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
+        return refactor.isLiveCell(x, y) ? getForeground() : getBackground();
     }
 
     private int getFillPosition(int index) {
