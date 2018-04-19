@@ -2,18 +2,21 @@ package refactor.algorithm;
 
 import refactor.app.RefactorUI;
 
+import java.util.logging.Logger;
+
 public class RefactorPerformance {
     private static final int ITERATIONS = 500;
+    private static final Logger LOG = Logger.getLogger(RefactorPerformance.class.getName());
 
     public static void main(String[] params) {
         Refactor refactor = new RefactorUI(params).getRefactor();
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
 
-        System.out.println("Started...");
+        LOG.info("Started...");
         for (int i = 0; i < ITERATIONS; i++) {
             refactor = refactor.tick();
         }
-        System.out.println(format(System.currentTimeMillis() - time));
+        LOG.info(format(System.currentTimeMillis() - time));
     }
 
     private static String format(long time) {
