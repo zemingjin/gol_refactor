@@ -63,7 +63,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <targetJdk>10</targetJdk>
+                    <targetJdk>1.8</targetJdk>
                     <includeTests>true</includeTests>
                     <skip>false</skip>
                     <sourceEncoding>UTF-8</sourceEncoding>
@@ -84,8 +84,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
-                    <source>10</source>
-                    <target>10</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
