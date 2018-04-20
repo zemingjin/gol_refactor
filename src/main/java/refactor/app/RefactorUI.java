@@ -132,7 +132,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private int calculateCellSize(int screenSize, int numberOfCells) {
-        return screenSize * 3 / 4 / numberOfCells;
+        return screenSize * 9 / 10 / numberOfCells;
     }
 
     private int calculatePanelSize(int position) {
@@ -219,12 +219,14 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void waitAWhile() {
-        try {
-            synchronized (this) {
-                wait(waitTime);
+        if (waitTime > 0) {
+            try {
+                synchronized (this) {
+                    wait(waitTime);
+                }
+            } catch (InterruptedException ex) {
+                LOG.log(Level.SEVERE, ex.getMessage(), ex);
             }
-        } catch (InterruptedException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
