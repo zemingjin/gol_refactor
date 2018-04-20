@@ -20,7 +20,7 @@ class RefactorUITest extends RefactorUI {
     }
 
     public static void main(String[] params) {
-        final var time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         new RefactorUITest(params).run();
         LOG.info("Total time: " + IOHelper.format(System.currentTimeMillis() - time));
     }
