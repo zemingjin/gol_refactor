@@ -176,13 +176,13 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        for (int y = 0; y < boundary.getY(); y++) {
+        for (int y = 0; y < boundary.y; y++) {
             paintRow(graphics, y);
         }
     }
 
     private void paintRow(Graphics graphics, int y) {
-        for (int x = 0; x < boundary.getX(); x++) {
+        for (int x = 0; x < boundary.x; x++) {
             paintCell(graphics, x, y);
         }
     }

@@ -1,11 +1,11 @@
 package refactor.algorithm;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cell extends Point implements Comparable<Cell> {
+public class Cell implements Comparable<Cell> {
     private final String string;
+    public int x, y;
 
     Cell(int x, int y) {
         this.x = x;
@@ -16,7 +16,7 @@ public class Cell extends Point implements Comparable<Cell> {
     List<Cell> getNeighbours() {
         final List<Cell> list = new ArrayList<>();
 
-        for (int y = super.y - 1; y <= super.y + 1; y++) {
+        for (int y = this.y - 1; y <= this.y + 1; y++) {
             list.addAll(getRowNeighbours(y));
         }
         return list;
@@ -25,7 +25,7 @@ public class Cell extends Point implements Comparable<Cell> {
     private List<Cell> getRowNeighbours(int y) {
         final List<Cell> list = new ArrayList<>();
 
-        for (int x = super.x - 1; x <= super.x + 1; x++) {
+        for (int x = this.x - 1; x <= this.x + 1; x++) {
             if (x != this.x || y != this.y) {
                 list.add(new Cell(x, y));
             }
@@ -39,6 +39,17 @@ public class Cell extends Point implements Comparable<Cell> {
 
     boolean isNeighbour(Cell that) {
         return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Cell) {
+            Cell that = (Cell)obj;
+            return x == that.x && y == that.y;
+        }
+        return false;
     }
 
     @Override
@@ -57,6 +68,6 @@ public class Cell extends Point implements Comparable<Cell> {
     }
 
     static String getString(int x, int y) {
-        return String.format("%d|%d", x, y);
+        return x + "|" + y;
     }
 }
