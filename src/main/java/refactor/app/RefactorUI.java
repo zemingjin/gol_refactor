@@ -1,8 +1,7 @@
 package refactor.app;
 
-import refactor.algorithm.Boundary;
 import refactor.algorithm.Refactor;
-import refactor.helper.IOHelper;
+import refactor.helper.SeedHelper;
 
 import javax.swing.WindowConstants;
 import javax.swing.JComponent;
@@ -15,62 +14,38 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.Insets;
 import java.awt.Color;
-import java.util.Arrays;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RefactorUI extends JComponent implements KeyEventPostProcessor {
-    private static final int WAIT_TIME = 100;
     private static final int MAX_CELL_SIZE = 100;
     private static final int MIN_CELL_SIZE = 6;
-    private static final String OPT_STEP = "-s";
-    private static final String OPT_WAIT = "-w";
     private static final Logger LOG = Logger.getLogger(RefactorUI.class.getName());
 
-    private Refactor refactor = new Refactor();
+    private Refactor refactor;
     private final JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
     private int evolveToggle = 1;
-    private boolean automaton = true;
+    private boolean automaton;
     private String path;
     private Boundary boundary;
     private int iteration;
     private int waitTime;
 
     public RefactorUI(String[] params) {
-        if (params.length > 0) {
-            setup(params);
-        }
-        else {
-            throw new RuntimeException("Missing seeds");
-        }
-    }
+        Configurations configurations = new Configurations(params);
 
-    private void setup(String[] params) {
-        path = params[0];
-        refactor.seedGame(IOHelper.loadSeeds(path));
-        boundary = refactor.getBoundary();
-        automaton = isAutomaton(params);
-        waitTime = getWaitTime(params);
-    }
-
-    private int getWaitTime(String[] params) {
-        for (final String param : params) {
-            if (param.startsWith(OPT_WAIT)) {
-                return Integer.parseInt(param.substring(OPT_WAIT.length()));
-            }
-        }
-        return WAIT_TIME;
+        path = configurations.getFilePath();
+        refactor= new Refactor(SeedHelper.getLiveCellsMap(configurations.getSeeds()));
+        boundary = configurations.getBoundary();
+        automaton = configurations.isAutomaton();
+        waitTime = configurations.getWaitTime();
     }
 
     public Refactor getRefactor() {
         return refactor;
-    }
-
-    private boolean isAutomaton(String[] params) {
-        return !Arrays.asList(params).contains(OPT_STEP);
     }
 
     public boolean isContinueFlag() {

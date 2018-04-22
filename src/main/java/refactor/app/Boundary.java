@@ -1,7 +1,9 @@
-package refactor.algorithm;
+package refactor.app;
+
+import refactor.algorithm.Cell;
 
 public class Boundary extends Cell {
-    Boundary(int x, int y) {
+    public Boundary(int x, int y) {
         super(x, y);
     }
 

@@ -7,7 +7,7 @@ public class Cell implements Comparable<Cell> {
     private final String string;
     public int x, y;
 
-    Cell(int x, int y) {
+    public Cell(int x, int y) {
         this.x = x;
         this.y = y;
         string = toString(x, y);
