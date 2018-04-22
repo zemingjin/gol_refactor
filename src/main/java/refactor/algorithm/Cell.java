@@ -1,29 +1,22 @@
 package refactor.algorithm;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cell implements Comparable<Cell> {
-    private final int x, y;
-    private String string;
+public class Cell extends Point implements Comparable<Cell> {
+    private final String string;
 
     Cell(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+        string = Cell.getString(x, y);
     }
 
     List<Cell> getNeighbours() {
         final List<Cell> list = new ArrayList<>();
 
-        for (int y = getY() - 1; y <= getY() + 1; y++) {
+        for (int y = super.y - 1; y <= super.y + 1; y++) {
             list.addAll(getRowNeighbours(y));
         }
         return list;
@@ -32,8 +25,8 @@ public class Cell implements Comparable<Cell> {
     private List<Cell> getRowNeighbours(int y) {
         final List<Cell> list = new ArrayList<>();
 
-        for (int x = getX() - 1; x <= getX() + 1; x++) {
-            if (x != getX() || y != getY()) {
+        for (int x = super.x - 1; x <= super.x + 1; x++) {
+            if (x != this.x || y != this.y) {
                 list.add(new Cell(x, y));
             }
         }
@@ -45,35 +38,22 @@ public class Cell implements Comparable<Cell> {
     }
 
     boolean isNeighbour(Cell that) {
-        return !equals(that) && Math.abs(x - that.getX()) <= 1 && Math.abs(y - that.getY()) <= 1;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Cell) {
-            final Cell that = (Cell)obj;
-            return getX() == that.getX() && getY() == that.getY();
-        }
-        return false;
+        return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
     }
 
     @Override
     public int hashCode() {
-        return getString().hashCode();
+        return string.hashCode();
     }
 
     @Override
     public String toString() {
-        return getString();
+        return string;
     }
 
     @Override
     public int compareTo(Cell that) {
         return toString().compareTo(that.toString());
-    }
-
-    private String getString() {
-        return string == null ? string = getString(x, y) : string;
     }
 
     static String getString(int x, int y) {

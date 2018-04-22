@@ -113,8 +113,8 @@ public class RefactorTest {
     private void test(Refactor input) {
         final Refactor refactor = input.tick();
         final Cell boundary = refactor.getBoundary();
-        IntStream.range(0, boundary.getY())
-                .forEach(y -> testRow(refactor, y, boundary.getX()));
+        IntStream.range(0, boundary.y)
+                .forEach(y -> testRow(refactor, y, boundary.x));
     }
 
     private void testRow(Refactor refactor, int y, int max) {
