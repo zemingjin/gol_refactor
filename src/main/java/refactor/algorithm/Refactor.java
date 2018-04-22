@@ -80,7 +80,7 @@ public class Refactor {
 
     private boolean isNextGenerationCell(Cell cell) {
         final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
-        return 2 <= numberOfNeighbours && numberOfNeighbours <= 3;
+        return numberOfNeighbours == 2 || numberOfNeighbours == 3;
     }
 
     private boolean isReproducingCell(Cell cell) {
