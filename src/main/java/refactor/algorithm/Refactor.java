@@ -54,9 +54,7 @@ public class Refactor {
 
         for (final String elements : seeds.split(CELL_DELIMITER)) {
             final Cell cell = getCellFromString(elements);
-            if (boundary.isInBound(cell)) {
-                map.put(cell.toString(), cell);
-            }
+            map.put(cell.toString(), cell);
         }
         return map;
     }
@@ -90,7 +88,7 @@ public class Refactor {
     private Map<String, Cell> seedLiveCells(String[] seeds) {
         final Map<String, Cell> map = new HashMap<>();
 
-        for (int y = 0; y < Math.min(seeds.length, boundary.getY()); y++) {
+        for (int y = 0; y < seeds.length; y++) {
             for (final Cell cell : getRowOfCells(y, seeds[y])) {
                 map.put(cell.toString(), cell);
             }
@@ -101,7 +99,7 @@ public class Refactor {
     private List<Cell> getRowOfCells(int y, String line) {
         final List<Cell> list = new ArrayList<>();
 
-        for (int x = 0; x < Math.min(line.length(), boundary.getX()); x++) {
+        for (int x = 0; x < line.length(); x++) {
             if (isLiveCell(line.charAt(x))) {
                 list.add(new Cell(x, y));
             }

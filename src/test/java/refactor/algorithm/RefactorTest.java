@@ -90,7 +90,7 @@ public class RefactorTest {
         assertTrue(refactor.isLiveCell(1, 1));
         assertTrue(refactor.isLiveCell(4, 3));
         assertFalse(refactor.isLiveCell(1, 4));
-        assertFalse(refactor.isLiveCell(5, 5));
+        assertTrue(refactor.isLiveCell(5, 5));
     }
 
     @Test

@@ -51,9 +51,9 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private void setup(String[] params) {
         path = params[0];
         refactor.seedGame(IOHelper.loadSeeds(path));
+        boundary = refactor.getBoundary();
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
-        boundary = refactor.getBoundary();
     }
 
     private int getWaitTime(String[] params) {
