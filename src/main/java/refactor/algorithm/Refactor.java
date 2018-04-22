@@ -5,8 +5,10 @@ import org.apache.commons.collections4.ListUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Refactor {
     private Map<String, Cell> liveCells;
@@ -97,17 +99,17 @@ public class Refactor {
         return count;
     }
 
-    List<Cell> getNeighbouringDeadCells() {
-        final List<Cell> list = new ArrayList<>();
+    Set<Cell> getNeighbouringDeadCells() {
+        final Set<Cell> set = new LinkedHashSet<>();
 
         for (final Cell cell : getLiveCells()) {
             for (final Cell neighbour : cell.getNeighbours()) {
-                if (isDeadCell(neighbour) && !list.contains(neighbour)) {
-                    list.add(neighbour);
+                if (isDeadCell(neighbour)) {
+                    set.add(neighbour);
                 }
             }
         }
-        return list;
+        return set;
     }
 
     private boolean isDeadCell(Cell cell) {
