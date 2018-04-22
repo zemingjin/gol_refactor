@@ -123,7 +123,11 @@ public class Refactor {
     }
 
     public boolean isLiveCell(int x, int y) {
-        return liveCells.get(Cell.getString(x, y)) != null;
+        return isLiveCell(Cell.getString(x, y));
+    }
+
+    private boolean isLiveCell(String key) {
+        return liveCells.get(key) != null;
     }
 
     Collection<Cell> getLiveCells() {
@@ -181,7 +185,7 @@ public class Refactor {
     private long getNumberOfLiveNeighbours(Cell that) {
         long count = 0;
         for (final Cell cell : that.getNeighbours()) {
-            if (isLiveCell(cell.getX(), cell.getY())) {
+            if (isLiveCell(cell.toString())) {
                 count++;
             }
         }
@@ -202,7 +206,7 @@ public class Refactor {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.getX(), cell.getY());
+        return !isLiveCell(cell.toString());
     }
 
     private Boundary getBoundaryFromString(String values) {
