@@ -121,7 +121,7 @@ public class Refactor {
     }
 
     public boolean isLiveCell(int x, int y) {
-        return isLiveCell(Cell.getString(x, y));
+        return isLiveCell(Cell.toString(x, y));
     }
 
     private boolean isLiveCell(String key) {

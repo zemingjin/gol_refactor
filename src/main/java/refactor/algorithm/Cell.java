@@ -10,7 +10,7 @@ public class Cell implements Comparable<Cell> {
     Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        string = Cell.getString(x, y);
+        string = toString(x, y);
     }
 
     List<Cell> getNeighbours() {
@@ -35,10 +35,6 @@ public class Cell implements Comparable<Cell> {
 
     int getWeight() {
         return x + y;
-    }
-
-    boolean isNeighbour(Cell that) {
-        return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
     }
 
     @Override
@@ -67,7 +63,7 @@ public class Cell implements Comparable<Cell> {
         return toString().compareTo(that.toString());
     }
 
-    static String getString(int x, int y) {
+    static String toString(int x, int y) {
         return x + "|" + y;
     }
 }
