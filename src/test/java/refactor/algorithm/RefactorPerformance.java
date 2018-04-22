@@ -7,9 +7,10 @@ import java.util.logging.Logger;
 public class RefactorPerformance {
     private static final int ITERATIONS = 500;
     private static final Logger LOG = Logger.getLogger(RefactorPerformance.class.getName());
+    private static final String[] DEF_PARAMS = { "src/main/resources/sidecar_gun.seed" };
 
     public static void main(String[] params) {
-        Refactor refactor = new RefactorUI(params).getRefactor();
+        Refactor refactor = new RefactorUI(params.length > 0 ? params :DEF_PARAMS).getRefactor();
         final long time = System.currentTimeMillis();
 
         LOG.info("Started...");
