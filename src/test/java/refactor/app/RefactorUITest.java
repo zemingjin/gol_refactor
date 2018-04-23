@@ -21,7 +21,11 @@ class RefactorUITest extends RefactorUI {
 
     public static void main(String[] params) {
         final long time = System.currentTimeMillis();
-        new RefactorUITest(params).run();
+        new RefactorUITest(check(params)).run();
         LOG.info("Total time: " + IOHelper.format(System.currentTimeMillis() - time));
+    }
+
+    private static String[] check(String[] params) {
+        return params.length > 0 ? params : new String[] { "src/main/resources/sidecar_gun.seed" };
     }
 }
