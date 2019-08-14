@@ -34,12 +34,12 @@ Good programmers write code that humans can understand."
 2. [Naming: Good naming is a process, not a single step]
 (http://arlobelshee.com/good-naming-is-a-process-not-a-single-step/)
 3. [IntelliJ: Refactoring](https://www.jetbrains.com/help/idea/2016.1/refactoring-source-code.html)
- 
 
-#Test Application
+
+# Test Application
 This project is an implementation of Conway's Game of Life with a very crude UI in Java. 
 
-##Seed File Format
+## Seed File Format
 The format of the seed file could be like the followings:
 ```
 #P 5|5
@@ -51,14 +51,14 @@ The format of the seed file could be like the followings:
 ```
 the grid size is 5x5 and 'O' - the capital 'o' - indicates a living cell.
 
-##Build
+## Build
 execute: **mvn package assembly:single** - the executable jar would be created under the target directory, 
 named in the form of 'refactor-[version]-jar-with-dependencies.jar'.
 
 This implementation emphasizes the non-grid approach. Only one list of active cells is maintained.
 
-##Running the Application
-###Script syntext to run the UI app
+## Running the Application
+### Script syntext to run the UI app
 gol [seed file path] [-s] [-w[n]]
 * **seed file path** - the complete path of the seed file such as 'src/main/resources/p138.seed'.
 * **-s** - start with stepped evolution.  Space key should be used to advance to next generation.
@@ -67,10 +67,8 @@ faster, chose a smaller number, such as '-w50'.
 The script is expected to be run in the project's home directory, and an executable jar was created prior by 
 executing **mvn package assembly:single**.
 
-###Keyboard Commands
+### Keyboard Commands
 * **Ctrl + Space** - toggle between stepped or continued evolutions.
 * **Space** - switch into stepped evolution when in continued mode; or trigger a new generation when in
  stepped mode.
 * **Esc** - exit the app.
-
-
