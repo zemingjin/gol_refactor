@@ -1,14 +1,11 @@
 package refactor.algorithm;
 
 import org.apache.commons.collections4.ListUtils;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Refactor {
     private Map<String, Cell> liveCells;
@@ -21,13 +18,9 @@ public class Refactor {
     }
 
     Cell findCellWithLeastWeight() {
-        Cell min = null;
-        for (Cell cell : getLiveCells()) {
-            if (min == null || min.getWeight() > cell.getWeight()) {
-                min = cell;
-            }
-        }
-        return min;
+        return getLiveCells().stream()
+                .min(Comparator.comparingInt(Cell::getWeight))
+                .orElse(null);
     }
 
     public boolean isLiveCell(int x, int y) {
@@ -50,66 +43,40 @@ public class Refactor {
     }
 
     public Refactor tick() {
-        final Map<String, Cell> map = new HashMap<>();
+        return new Refactor(getMap());
+    }
 
-        for (final Cell cell : ListUtils.union(getNextGenerationCells(), getReproductionCells())) {
-            map.put(cell.toString(), cell);
-        }
-        return new Refactor(map);
+    @NotNull
+    private Map<String, Cell> getMap() {
+        return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
+                .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     private List<Cell> getNextGenerationCells() {
-        final List<Cell> list = new ArrayList<>();
-
-        for (final Cell cell : getLiveCells()) {
-            if (isNextGenerationCell(cell)) {
-                list.add(cell);
-            }
-        }
-        return list;
+        return filterList(getLiveCells(), n -> n == 2 || n == 3);
     }
 
     private List<Cell> getReproductionCells() {
-        final List<Cell> list = new ArrayList<>();
-
-        for (final Cell cell : getNeighbouringDeadCells()) {
-            if (isReproducingCell(cell)) {
-                list.add(cell);
-            }
-        }
-        return list;
+        return filterList(getNeighbouringDeadCells(), n -> n == 3);
     }
 
-    private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
-        return numberOfNeighbours == 2 || numberOfNeighbours == 3;
-    }
-
-    private boolean isReproducingCell(Cell cell) {
-        return getNumberOfLiveNeighbours(cell) == 3;
+    private List<Cell> filterList(Collection<Cell> list, Predicate<Long> filter) {
+        return list.stream()
+                .filter(c -> filter.test(getNumberOfLiveNeighbours(c)))
+                .collect(Collectors.toList());
     }
 
     private long getNumberOfLiveNeighbours(Cell that) {
-        long count = 0;
-        for (final Cell cell : that.getNeighbours()) {
-            if (isLiveCell(cell.toString())) {
-                count++;
-            }
-        }
-        return count;
+        return that.getNeighbours().stream()
+                .filter(cell -> isLiveCell(cell.toString()))
+                .count();
     }
 
     Set<Cell> getNeighbouringDeadCells() {
-        final Set<Cell> set = new LinkedHashSet<>();
-
-        for (final Cell cell : getLiveCells()) {
-            for (final Cell neighbour : cell.getNeighbours()) {
-                if (isDeadCell(neighbour)) {
-                    set.add(neighbour);
-                }
-            }
-        }
-        return set;
+        return getLiveCells().stream()
+                .flatMap(cell -> cell.getNeighbours().stream())
+                .filter(this::isDeadCell)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private boolean isDeadCell(Cell cell) {
