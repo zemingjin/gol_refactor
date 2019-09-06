@@ -15,17 +15,17 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(this.y - 1, this.y + 1)
+        return IntStream.rangeClosed(y - 1, y + 1)
                 .mapToObj(this::getRowNeighbours)
                 .flatMap(List::stream)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    private List<Cell> getRowNeighbours(int y) {
-        return IntStream.rangeClosed(this.x - 1, this.x + 1)
-                .filter(x1 -> x1 != this.x || y != this.y)
-                .mapToObj(x1 -> new Cell(x1, y))
+    private List<Cell> getRowNeighbours(int row) {
+        return IntStream.rangeClosed(x - 1, x + 1)
+                .filter(x1 -> x1 != x || row != this.y)
+                .mapToObj(x1 -> new Cell(x1, row))
                 .collect(Collectors.toList());
     }
 
@@ -34,11 +34,11 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+    public boolean equals(Object other) {
+        if (other == this) {
             return true;
-        } else if (obj instanceof Cell) {
-            Cell that = (Cell)obj;
+        } else if (other instanceof Cell) {
+            Cell that = (Cell)other;
             return x == that.x && y == that.y;
         }
         return false;
@@ -55,8 +55,8 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public int compareTo(Cell that) {
-        return toString().compareTo(that.toString());
+    public int compareTo(Cell other) {
+        return toString().compareTo(other.toString());
     }
 
     static String toString(int x, int y) {
