@@ -4,14 +4,15 @@ import org.junit.Test;
 import refactor.helper.SeedHelper;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
 public class RefactorTest {
     @Test(expected = RuntimeException.class)
-    public void testInit() {
-        new Refactor().getLiveCells();
+    public void testException() {
+        new Refactor(Collections.emptyMap()).getLiveCells();
     }
 
     @Test

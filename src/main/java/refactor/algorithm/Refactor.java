@@ -8,13 +8,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Refactor {
-    private Map<String, Cell> liveCells;
+    private static final Predicate<Long> isReproducting = n -> n == 3;
+    private static final Predicate<Long> isNextGeneration = isReproducting.or(n -> n == 2);
 
-    Refactor() {
-    }
+    private final Map<String, Cell> liveCells;
 
     public Refactor(Map<String, Cell> liveCells) {
-        setLiveCells(liveCells);
+        this.liveCells = liveCells;
     }
 
     Cell findCellWithLeastWeight() {
@@ -38,31 +38,27 @@ public class Refactor {
         return liveCells.values();
     }
 
-    private void setLiveCells(Map<String, Cell> liveCells) {
-        this.liveCells = liveCells;
-    }
-
     public Refactor tick() {
-        return new Refactor(getMap());
+        return new Refactor(getNextMap());
     }
 
     @NotNull
-    private Map<String, Cell> getMap() {
+    private Map<String, Cell> getNextMap() {
         return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
                 .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     private List<Cell> getNextGenerationCells() {
-        return filterList(getLiveCells(), n -> n == 2 || n == 3);
+        return filterCells(getLiveCells(), isNextGeneration);
     }
 
     private List<Cell> getReproductionCells() {
-        return filterList(getNeighbouringDeadCells(), n -> n == 3);
+        return filterCells(getNeighbouringDeadCells(), isReproducting);
     }
 
-    private List<Cell> filterList(Collection<Cell> list, Predicate<Long> filter) {
+    private List<Cell> filterCells(Collection<Cell> list, Predicate<Long> condition) {
         return list.stream()
-                .filter(c -> filter.test(getNumberOfLiveNeighbours(c)))
+                .filter(c -> condition.test(getNumberOfLiveNeighbours(c)))
                 .collect(Collectors.toList());
     }
 
