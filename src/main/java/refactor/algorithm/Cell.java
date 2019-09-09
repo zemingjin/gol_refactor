@@ -1,12 +1,11 @@
 package refactor.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Cell implements Comparable<Cell> {
     private final String string;
-    public final int x, y;
+    public int x, y;
 
     public Cell(int x, int y) {
         this.x = x;
@@ -15,18 +14,23 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(y - 1, y + 1)
-                .mapToObj(this::getRowNeighbours)
-                .flatMap(List::stream)
-                .distinct()
-                .collect(Collectors.toList());
+        final List<Cell> list = new ArrayList<>();
+
+        for (int y = this.y - 1; y <= this.y + 1; y++) {
+            list.addAll(getRowNeighbours(y));
+        }
+        return list;
     }
 
-    private List<Cell> getRowNeighbours(int row) {
-        return IntStream.rangeClosed(x - 1, x + 1)
-                .filter(x1 -> x1 != x || row != this.y)
-                .mapToObj(x1 -> new Cell(x1, row))
-                .collect(Collectors.toList());
+    private List<Cell> getRowNeighbours(int y) {
+        final List<Cell> list = new ArrayList<>();
+
+        for (int x = this.x - 1; x <= this.x + 1; x++) {
+            if (x != this.x || y != this.y) {
+                list.add(new Cell(x, y));
+            }
+        }
+        return list;
     }
 
     int getWeight() {
@@ -34,11 +38,11 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
-        } else if (other instanceof Cell) {
-            Cell that = (Cell)other;
+        } else if (obj instanceof Cell) {
+            Cell that = (Cell)obj;
             return x == that.x && y == that.y;
         }
         return false;
@@ -55,8 +59,8 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public int compareTo(Cell other) {
-        return toString().compareTo(other.toString());
+    public int compareTo(Cell that) {
+        return toString().compareTo(that.toString());
     }
 
     static String toString(int x, int y) {
