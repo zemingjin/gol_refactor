@@ -16,16 +16,16 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(this.y - 1, this.y + 1)
+        return IntStream.rangeClosed(y - 1, y + 1)
                 .mapToObj(this::getRowNeighbours)
                 .flatMap(s -> s)
                 .collect(Collectors.toList());
     }
 
-    private Stream<Cell> getRowNeighbours(int y) {
-        return IntStream.rangeClosed(this.x - 1, this.x + 1)
-                .filter(x1 -> x1 != this.x || y != this.y)
-                .mapToObj(x1 -> new Cell(x1, y));
+    private Stream<Cell> getRowNeighbours(int row) {
+        return IntStream.rangeClosed(x - 1, x + 1)
+                .filter(x1 -> x1 != x || row != this.y)
+                .mapToObj(x1 -> new Cell(x1, row));
     }
 
     int getWeight() {
