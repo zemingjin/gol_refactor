@@ -38,11 +38,11 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+    public boolean equals(Object other) {
+        if (other == this) {
             return true;
-        } else if (obj instanceof Cell) {
-            Cell that = (Cell)obj;
+        } else if (other instanceof Cell) {
+            Cell that = (Cell)other;
             return x == that.x && y == that.y;
         }
         return false;
@@ -59,8 +59,8 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public int compareTo(Cell that) {
-        return toString().compareTo(that.toString());
+    public int compareTo(Cell other) {
+        return toString().compareTo(other.toString());
     }
 
     static String toString(int x, int y) {
