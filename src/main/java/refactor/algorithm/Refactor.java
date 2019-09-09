@@ -8,7 +8,7 @@ public class Refactor {
     private final Map<String, Cell> livingCells;
 
     Refactor() {
-        this.livingCells = Collections.emptyMap();
+        livingCells = Collections.emptyMap();
     }
 
     public Refactor(Map<String, Cell> livingCells) {
