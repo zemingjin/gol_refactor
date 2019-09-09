@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cell implements Comparable<Cell> {
-    private final String string;
-    public int x, y;
+    final String string;
+    public final int x, y;
 
     public Cell(int x, int y) {
         this.x = x;
@@ -60,7 +60,7 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public int compareTo(Cell that) {
-        return toString().compareTo(that.toString());
+        return string.compareTo(that.string);
     }
 
     static String toString(int x, int y) {
