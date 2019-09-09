@@ -24,12 +24,16 @@ public class Cell implements Comparable<Cell> {
 
     private Stream<Cell> getRowNeighbours(int row) {
         return IntStream.rangeClosed(x - 1, x + 1)
-                .filter(x1 -> x1 != x || row != this.y)
+                .filter(x1 -> !equals(x1, row))
                 .mapToObj(x1 -> new Cell(x1, row));
     }
 
     int getWeight() {
         return x + y;
+    }
+
+    private boolean equals(int column, int row) {
+        return x == column && y == row;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class Cell implements Comparable<Cell> {
             return true;
         } else if (other instanceof Cell) {
             Cell that = (Cell)other;
-            return x == that.x && y == that.y;
+            return equals(that.x, that.y);
         } else
             return false;
     }
