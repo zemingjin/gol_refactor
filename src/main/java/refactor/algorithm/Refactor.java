@@ -2,27 +2,22 @@ package refactor.algorithm;
 
 import org.apache.commons.collections4.ListUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Refactor {
-    private Map<String, Cell> liveCells;
+    private final Map<String, Cell> livingCells;
 
     Refactor() {
+        livingCells = Collections.emptyMap();
     }
 
-    public Refactor(Map<String, Cell> liveCells) {
-        setLiveCells(liveCells);
+    public Refactor(Map<String, Cell> livingCells) {
+        this.livingCells = livingCells;
     }
 
     Cell findCellWithLeastWeight() {
         Cell min = null;
-        for (Cell cell : getLiveCells()) {
+        for (Cell cell : getLivingCells()) {
             if (min == null || min.getWeight() > cell.getWeight()) {
                 min = cell;
             }
@@ -30,23 +25,19 @@ public class Refactor {
         return min;
     }
 
-    public boolean isLiveCell(int x, int y) {
-        return isLiveCell(Cell.toString(x, y));
+    public boolean isLivingCell(int x, int y) {
+        return isLivingCell(Cell.toString(x, y));
     }
 
-    private boolean isLiveCell(String key) {
-        return liveCells.get(key) != null;
+    private boolean isLivingCell(String key) {
+        return livingCells.get(key) != null;
     }
 
-    Collection<Cell> getLiveCells() {
-        if (liveCells.isEmpty()) {
+    Collection<Cell> getLivingCells() {
+        if (livingCells.isEmpty()) {
             throw new RuntimeException("No more living cells");
         }
-        return liveCells.values();
-    }
-
-    private void setLiveCells(Map<String, Cell> liveCells) {
-        this.liveCells = liveCells;
+        return livingCells.values();
     }
 
     public Refactor tick() {
@@ -61,7 +52,7 @@ public class Refactor {
     private List<Cell> getNextGenerationCells() {
         final List<Cell> list = new ArrayList<>();
 
-        for (final Cell cell : getLiveCells()) {
+        for (final Cell cell : getLivingCells()) {
             if (isNextGenerationCell(cell)) {
                 list.add(cell);
             }
@@ -92,7 +83,7 @@ public class Refactor {
     private long getNumberOfLiveNeighbours(Cell that) {
         long count = 0;
         for (final Cell cell : that.getNeighbours()) {
-            if (isLiveCell(cell.toString())) {
+            if (isLivingCell(cell.toString())) {
                 count++;
             }
         }
@@ -102,7 +93,7 @@ public class Refactor {
     Set<Cell> getNeighbouringDeadCells() {
         final Set<Cell> set = new LinkedHashSet<>();
 
-        for (final Cell cell : getLiveCells()) {
+        for (final Cell cell : getLivingCells()) {
             for (final Cell neighbour : cell.getNeighbours()) {
                 if (isDeadCell(neighbour)) {
                     set.add(neighbour);
@@ -113,6 +104,6 @@ public class Refactor {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.toString());
+        return !isLivingCell(cell.toString());
     }
 }

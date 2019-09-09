@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Cell implements Comparable<Cell> {
     private final String string;
-    public int x, y;
+    public final int x, y;
 
     public Cell(int x, int y) {
         this.x = x;

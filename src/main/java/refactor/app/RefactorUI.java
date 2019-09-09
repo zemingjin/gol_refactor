@@ -178,7 +178,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private Color getColor(int x, int y) {
-        return refactor.isLiveCell(x, y) ? getForeground() : getBackground();
+        return refactor.isLivingCell(x, y) ? getForeground() : getBackground();
     }
 
     private int getFillPosition(int index) {
