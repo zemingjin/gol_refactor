@@ -1,7 +1,9 @@
 package refactor.algorithm;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
     final String string;
@@ -14,23 +16,16 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        final List<Cell> list = new ArrayList<>();
-
-        for (int y = this.y - 1; y <= this.y + 1; y++) {
-            list.addAll(getRowNeighbours(y));
-        }
-        return list;
+        return IntStream.rangeClosed(this.y - 1, this.y + 1)
+                .mapToObj(this::getRowNeighbours)
+                .flatMap(s -> s)
+                .collect(Collectors.toList());
     }
 
-    private List<Cell> getRowNeighbours(int y) {
-        final List<Cell> list = new ArrayList<>();
-
-        for (int x = this.x - 1; x <= this.x + 1; x++) {
-            if (x != this.x || y != this.y) {
-                list.add(new Cell(x, y));
-            }
-        }
-        return list;
+    private Stream<Cell> getRowNeighbours(int y) {
+        return IntStream.rangeClosed(this.x - 1, this.x + 1)
+                .filter(x1 -> x1 != this.x || y != this.y)
+                .mapToObj(x1 -> new Cell(x1, y));
     }
 
     int getWeight() {
