@@ -39,8 +39,8 @@ public class Cell implements Comparable<Cell> {
         } else if (other instanceof Cell) {
             Cell that = (Cell)other;
             return x == that.x && y == that.y;
-        }
-        return false;
+        } else
+            return false;
     }
 
     @Override

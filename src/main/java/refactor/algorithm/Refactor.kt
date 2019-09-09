@@ -34,8 +34,8 @@ public class Refactor {
     Collection<Cell> getLivingCells() {
         if (livingCells.isEmpty()) {
             throw new RuntimeException("No more living cells");
-        }
-        return livingCells.values();
+        } else
+            return livingCells.values();
     }
 
     public Refactor tick() {
@@ -68,7 +68,6 @@ public class Refactor {
     }
 
     Set<Cell> getNeighbouringDeadCells() {
-
         return getLivingCells().stream()
                 .flatMap(cell -> cell.getNeighbours().stream())
                 .filter(this::isDeadCell)
