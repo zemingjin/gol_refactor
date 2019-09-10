@@ -24,8 +24,8 @@ public class Cell implements Comparable<Cell> {
 
     private Stream<Cell> getRowNeighbours(int row) {
         return IntStream.rangeClosed(x - 1, x + 1)
-                .filter(x1 -> !equals(x1, row))
-                .mapToObj(x1 -> new Cell(x1, row));
+                .filter(col -> !equals(col, row))
+                .mapToObj(col -> new Cell(col, row));
     }
 
     int getWeight() {
