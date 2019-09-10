@@ -1,7 +1,6 @@
 package refactor.helper;
 
 import refactor.algorithm.Refactor;
-import refactor.algorithm.Refactor;
 
 import java.util.Optional;
 
@@ -11,7 +10,7 @@ public class GameOfLifeBuilder {
                 .map(IOHelper::loadSeeds)
                 .map(SeedHelper::getLiveCellsMap)
                 .map(Refactor::new)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Invalid source file path"));
     }
 
     private static String getPath(String[] params, String defPath) {

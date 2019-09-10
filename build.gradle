@@ -16,10 +16,17 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
     maven {
-        url = 'https://artylab.expedia.biz:443/public-maven-virtual/'
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    each {
+//        it.options.compilerArgs.add('--enable-preview')
     }
 }
 
@@ -35,8 +42,7 @@ apply plugin: 'kotlin'
 
 group = 'com.expedia.www'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = '1.8'
 
 publishing {
     publications {
@@ -47,7 +53,7 @@ publishing {
 }
 
 test {
-    jvmArgs '--enable-preview'
+//    jvmArgs '--enable-preview'
     testLogging {
         showStandardStreams = true
     }
