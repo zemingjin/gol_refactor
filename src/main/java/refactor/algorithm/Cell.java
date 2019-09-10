@@ -16,18 +16,18 @@ public class Cell implements Comparable<Cell> {
     List<Cell> getNeighbours() {
         final List<Cell> list = new ArrayList<>();
 
-        for (int y = this.y - 1; y <= this.y + 1; y++) {
-            list.addAll(getRowNeighbours(y));
+        for (int row = y - 1; row <= y + 1; row++) {
+            list.addAll(getRowNeighbours(row));
         }
         return list;
     }
 
-    private List<Cell> getRowNeighbours(int y) {
+    private List<Cell> getRowNeighbours(int row) {
         final List<Cell> list = new ArrayList<>();
 
-        for (int x = this.x - 1; x <= this.x + 1; x++) {
-            if (x != this.x || y != this.y) {
-                list.add(new Cell(x, y));
+        for (int column = x - 1; column <= x + 1; column++) {
+            if (column != x || row != y) {
+                list.add(new Cell(column, row));
             }
         }
         return list;
@@ -44,8 +44,9 @@ public class Cell implements Comparable<Cell> {
         } else if (other instanceof Cell) {
             Cell that = (Cell)other;
             return x == that.x && y == that.y;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override

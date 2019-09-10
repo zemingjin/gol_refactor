@@ -9,9 +9,9 @@ public class RefactorPerformance {
     public static void main(String[] params) {
         System.out.println(String.format("Testing %s in %d times...", DEF_PARAMS, ITERATIONS));
         Refactor refactor = RefactorBuilder.build(params, DEF_PARAMS);
-        final long time = System.currentTimeMillis();
 
         System.out.println("Started...");
+        final long time = System.currentTimeMillis();
         for (int i = 0; i < ITERATIONS; i++) {
             refactor = refactor.tick();
         }
