@@ -1,6 +1,6 @@
 package refactor.algorithm;
 
-import refactor.helper.GameOfLifeBuilder;
+import refactor.helper.RefactorBuilder;
 
 public class RefactorPerformance {
     private static final int ITERATIONS = 500;
@@ -9,7 +9,7 @@ public class RefactorPerformance {
     public static void main(String[] params) {
         System.out.println(String.format("Testing %s in %d times...", DEF_PARAMS, ITERATIONS));
 
-        Refactor refactor = GameOfLifeBuilder.build(params, DEF_PARAMS);
+        Refactor refactor = RefactorBuilder.build(params, DEF_PARAMS);
 
         System.out.println("Started...");
         final long time = System.currentTimeMillis();
