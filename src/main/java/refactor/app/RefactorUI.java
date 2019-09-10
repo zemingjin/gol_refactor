@@ -84,7 +84,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private void setupFrame() {
         setCellSize(calculateCellSize());
 
-        final int width = calculatePanelSize(boundary.x);
+        final int width = calculatePanelSize(boundary.y);
         final int height = calculatePanelSize(boundary.y);
 
         setSize(width, height);
