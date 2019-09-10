@@ -10,7 +10,7 @@ public class RefactorBuilder {
                 .map(IOHelper::loadSeeds)
                 .map(SeedHelper::getLiveCellsMap)
                 .map(Refactor::new)
-                .orElseThrow(() -> new RuntimeException("Invalid seed file."));
+                .orElseThrow(() -> new RuntimeException("Invalid source file path"));
     }
 
     private static String getPath(String[] params, String defPath) {
