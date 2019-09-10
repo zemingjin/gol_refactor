@@ -15,6 +15,10 @@ public class Cell implements Comparable<Cell> {
         string = toString(x, y);
     }
 
+    int getWeight() {
+        return x + y;
+    }
+
     List<Cell> getNeighbours() {
         return IntStream.rangeClosed(y - 1, y + 1)
                 .mapToObj(this::getRowNeighbours)
@@ -26,10 +30,6 @@ public class Cell implements Comparable<Cell> {
         return IntStream.rangeClosed(x - 1, x + 1)
                 .filter(col -> !equals(col, row))
                 .mapToObj(col -> new Cell(col, row));
-    }
-
-    int getWeight() {
-        return x + y;
     }
 
     private boolean equals(int column, int row) {
