@@ -1,23 +1,22 @@
 package refactor.algorithm;
 
-import refactor.app.RefactorUI;
-
-import java.util.logging.Logger;
+import refactor.helper.GameOfLifeBuilder;
 
 public class RefactorPerformance {
     private static final int ITERATIONS = 500;
-    private static final Logger LOG = Logger.getLogger(RefactorPerformance.class.getName());
-    private static final String[] DEF_PARAMS = { "src/main/resources/sidecar_gun.seed" };
+    private static final String DEF_PARAMS = "src/main/resources/sidecar_gun.seed";
 
     public static void main(String[] params) {
-        Refactor refactor = new RefactorUI(params.length > 0 ? params :DEF_PARAMS).getRefactor();
-        final long time = System.currentTimeMillis();
+        System.out.println(String.format("Testing %s in %d times...", DEF_PARAMS, ITERATIONS));
 
-        LOG.info("Started...");
+        Refactor refactor = GameOfLifeBuilder.build(params, DEF_PARAMS);
+
+        System.out.println("Started...");
+        final long time = System.currentTimeMillis();
         for (int i = 0; i < ITERATIONS; i++) {
             refactor = refactor.tick();
         }
-        LOG.info(format(System.currentTimeMillis() - time));
+        System.out.println(format(System.currentTimeMillis() - time));
     }
 
     private static String format(long time) {
