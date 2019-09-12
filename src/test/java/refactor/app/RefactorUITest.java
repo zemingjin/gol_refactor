@@ -26,6 +26,6 @@ class RefactorUITest extends RefactorUI {
     }
 
     private static String[] check(String[] params) {
-        return params.length > 0 ? params : new String[] { "src/main/resources/sidecar_gun.seed" };
+        return params.length > 0 ? params : new String[] { "src/main/resources/halfmax.seed" };
     }
 }
