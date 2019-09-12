@@ -24,7 +24,7 @@ public class Refactor {
     }
 
     public boolean isLivingCell(int x, int y) {
-        return isLivingCell(Cell.toString(x, y));
+        return isLivingCell(Cell.toName(x, y));
     }
 
     private boolean isLivingCell(String key) {
@@ -63,7 +63,7 @@ public class Refactor {
 
     private long getNumberOfLiveNeighbours(Cell that) {
         return that.getNeighbours().stream()
-                .filter(cell -> isLivingCell(cell.getString()))
+                .filter(cell -> isLivingCell(cell.getName()))
                 .count();
     }
 
@@ -75,6 +75,6 @@ public class Refactor {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLivingCell(cell.getString());
+        return !isLivingCell(cell.getName());
     }
 }

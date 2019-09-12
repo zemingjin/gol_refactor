@@ -6,17 +6,17 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
-    private String string;
+    private String name;
     private final int x, y;
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        string = toString(x, y);
+        name = toName(x, y);
     }
 
-    public String getString() {
-        return string;
+    String getName() {
+        return name;
     }
 
     public int getX() {
@@ -61,20 +61,20 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public int hashCode() {
-        return string.hashCode();
+        return name.hashCode();
     }
 
     @Override
     public String toString() {
-        return string;
+        return name;
     }
 
     @Override
     public int compareTo(Cell other) {
-        return string.compareTo(other.string);
+        return name.compareTo(other.name);
     }
 
-    static String toString(int x, int y) {
+    static String toName(int x, int y) {
         return x + "|" + y;
     }
 }
