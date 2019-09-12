@@ -72,15 +72,15 @@ public class Refactor {
     }
 
     private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
+        final long numberOfNeighbours = getNumberOfLivingNeighbours(cell);
         return numberOfNeighbours == 2 || numberOfNeighbours == 3;
     }
 
     private boolean isReproducingCell(Cell cell) {
-        return getNumberOfLiveNeighbours(cell) == 3;
+        return getNumberOfLivingNeighbours(cell) == 3;
     }
 
-    private long getNumberOfLiveNeighbours(Cell that) {
+    private long getNumberOfLivingNeighbours(Cell that) {
         long count = 0;
         for (final Cell cell : that.getNeighbours()) {
             if (isLivingCell(cell.toString())) {
