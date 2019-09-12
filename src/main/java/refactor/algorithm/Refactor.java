@@ -43,7 +43,7 @@ public class Refactor {
     public Refactor tick() {
         final Map<String, Cell> map = new HashMap<>();
 
-        for (final Cell cell : ListUtils.union(getNextGenerationCells(), getReproductionCells())) {
+        for (final Cell cell : ListUtils.union(getNextGenerationCells(), getReproducibleCells())) {
             map.put(cell.toString(), cell);
         }
         return new Refactor(map);
@@ -60,7 +60,7 @@ public class Refactor {
         return list;
     }
 
-    private List<Cell> getReproductionCells() {
+    private List<Cell> getReproducibleCells() {
         final List<Cell> list = new ArrayList<>();
 
         for (final Cell cell : getNeighbouringDeadCells()) {
