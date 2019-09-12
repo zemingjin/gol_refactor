@@ -44,6 +44,7 @@ public class Refactor {
 
     private Map<String, Cell> toNextMap() {
         return ListUtils.union(getNextGenerationCells(), getReproductionCells()).stream()
+                .distinct()
                 .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 

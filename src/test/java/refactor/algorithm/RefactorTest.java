@@ -3,9 +3,6 @@ package refactor.algorithm;
 import org.junit.Test;
 import refactor.helper.SeedHelper;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 import static org.junit.Assert.*;
 
 public class RefactorTest {
@@ -27,8 +24,8 @@ public class RefactorTest {
         final Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|0, 1|1, 1|2"));
 
         assertEquals(12, refactor.getNeighbouringDeadCells().size());
-        assertEquals("[0|-1, 0|0, 0|1, 0|2, 0|3, 1|-1, 1|3, 2|-1, 2|0, 2|1, 2|2, 2|3]",
-                     sort(refactor.getNeighbouringDeadCells()).toString());
+        assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
+                     refactor.getNeighbouringDeadCells().toString());
     }
 
     @Test
@@ -36,16 +33,16 @@ public class RefactorTest {
         Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|0, 1|1, 1|2"));
 
         refactor = refactor.tick();
-        assertEquals("[0|1, 1|1, 2|1]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[0|1, 1|1, 2|1]", refactor.getLivingCells().toString());
         refactor = refactor.tick();
-        assertEquals("[1|0, 1|1, 1|2]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[1|0, 1|1, 1|2]", refactor.getLivingCells().toString());
     }
 
     @Test
     public void testBloker() {
         final Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|1, 1|2, 2|1, 2|2"));
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(refactor.tick().getLivingCells()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", refactor.tick().getLivingCells().toString());
     }
 
     @Test
@@ -53,9 +50,9 @@ public class RefactorTest {
         Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("2|2, 2|3, 3|1, 3|2, 3|3"));
 
         refactor = refactor.tick();
-        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[2|1, 3|1, 2|3, 3|3, 4|2]", refactor.getLivingCells().toString());
         refactor = refactor.tick();
-        assertEquals("[3|1, 3|3, 4|2]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[3|1, 3|3, 4|2]", refactor.getLivingCells().toString());
 
     }
 
@@ -64,11 +61,11 @@ public class RefactorTest {
         Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|1, 1|2, 2|1, 3|4, 4|3, 4|4"));
 
         refactor = refactor.tick();
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", refactor.getLivingCells().toString());
         refactor = refactor.tick();
-        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", refactor.getLivingCells().toString());
         refactor = refactor.tick();
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.getLivingCells()).toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", refactor.getLivingCells().toString());
     }
 
     @Test
@@ -86,11 +83,5 @@ public class RefactorTest {
         final Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|2, 2|1, 3|4, 4|3, 4|4, 5|5, 1|1"));
 
         assertEquals("1|1", refactor.findCellWithLeastWeight().toString());
-    }
-
-    private Collection<Cell> sort(Collection<Cell> list) {
-        return list.stream()
-                .sorted()
-                .collect(Collectors.toList());
     }
 }
