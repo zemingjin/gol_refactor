@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
-    final String string;
+    private final String string;
     public final int x, y;
 
     public Cell(int x, int y) {
@@ -45,6 +45,10 @@ public class Cell implements Comparable<Cell> {
             return equals(that.x, that.y);
         } else
             return false;
+    }
+
+    boolean isLivingCell() {
+        return LivingCells.isLivingCell(string);
     }
 
     @Override

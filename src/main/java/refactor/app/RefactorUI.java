@@ -1,5 +1,7 @@
 package refactor.app;
 
+import refactor.algorithm.Cell;
+import refactor.algorithm.LivingCells;
 import refactor.algorithm.Refactor;
 import refactor.helper.SeedHelper;
 
@@ -178,7 +180,7 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private Color getColor(int x, int y) {
-        return refactor.isLivingCell(x, y) ? getForeground() : getBackground();
+        return LivingCells.isLivingCell(x, y) ? getForeground() : getBackground();
     }
 
     private int getFillPosition(int index) {
