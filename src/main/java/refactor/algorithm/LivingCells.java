@@ -22,7 +22,7 @@ public class LivingCells {
         }
     }
 
-    static void setLivingCells(Map<String, Cell> livingCells) {
-        LivingCells.livingCells = livingCells;
+    static void setLivingCells(Map<String, Cell> value) {
+        LivingCells.livingCells = value;
     }
 }
