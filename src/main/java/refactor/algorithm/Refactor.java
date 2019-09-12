@@ -7,19 +7,35 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Refactor {
+    private final Map<String, Cell> livingCells;
 
     Refactor() {
-        LivingCells.setLivingCells(Collections.emptyMap());
+        livingCells = Collections.emptyMap();
     }
 
     public Refactor(Map<String, Cell> livingCells) {
-        LivingCells.setLivingCells(livingCells);
+        this.livingCells = livingCells;
     }
 
     Cell findCellWithLeastWeight() {
-        return LivingCells.getLivingCells().stream()
+        return getLivingCells().stream()
                 .min(Comparator.comparingInt(Cell::getWeight))
                 .orElse(null);
+    }
+
+    public boolean isLivingCell(int x, int y) {
+        return isLivingCell(Cell.toString(x, y));
+    }
+
+    private boolean isLivingCell(String key) {
+        return livingCells.get(key) != null;
+    }
+
+    Collection<Cell> getLivingCells() {
+        if (livingCells.isEmpty()) {
+            throw new RuntimeException("No more living cells");
+        } else
+            return livingCells.values();
     }
 
     public Refactor tick() {
@@ -32,7 +48,7 @@ public class Refactor {
     }
 
     private List<Cell> getNextGenerationCells() {
-        return getFilteredCells(LivingCells.getLivingCells(), n -> n == 2 || n == 3);
+        return getFilteredCells(getLivingCells(), n -> n == 2 || n == 3);
     }
 
     private List<Cell> getReproductionCells() {
@@ -47,18 +63,18 @@ public class Refactor {
 
     private long getNumberOfLiveNeighbours(Cell that) {
         return that.getNeighbours().stream()
-                .filter(Cell::isLivingCell)
+                .filter(cell -> isLivingCell(cell.string))
                 .count();
     }
 
     Set<Cell> getNeighbouringDeadCells() {
-        return LivingCells.getLivingCells().stream()
+        return getLivingCells().stream()
                 .flatMap(cell -> cell.getNeighbours().stream())
                 .filter(this::isDeadCell)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !cell.isLivingCell();
+        return !isLivingCell(cell.string);
     }
 }
