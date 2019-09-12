@@ -84,8 +84,8 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private void setupFrame() {
         setCellSize(calculateCellSize());
 
-        final int width = calculatePanelSize(boundary.x);
-        final int height = calculatePanelSize(boundary.y);
+        final int width = calculatePanelSize(boundary.getX());
+        final int height = calculatePanelSize(boundary.getY());
 
         setSize(width, height);
         setFocusable(true);
@@ -100,8 +100,8 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     private int calculateCellSize() {
         final Dimension screenSize = getScreenSize();
-        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, boundary.y),
-                                          calculateCellSize(screenSize.width, boundary.x)),
+        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, boundary.getY()),
+                                          calculateCellSize(screenSize.width, boundary.getX())),
                                  MAX_CELL_SIZE),
                         MIN_CELL_SIZE);
     }
@@ -151,13 +151,13 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        for (int y = 0; y < boundary.y; y++) {
+        for (int y = 0; y < boundary.getY(); y++) {
             paintRow(graphics, y);
         }
     }
 
     private void paintRow(Graphics graphics, int y) {
-        for (int x = 0; x < boundary.x; x++) {
+        for (int x = 0; x < boundary.getX(); x++) {
             paintCell(graphics, x, y);
         }
     }

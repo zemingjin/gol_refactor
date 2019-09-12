@@ -63,7 +63,7 @@ public class Refactor {
 
     private long getNumberOfLiveNeighbours(Cell that) {
         return that.getNeighbours().stream()
-                .filter(cell -> isLivingCell(cell.string))
+                .filter(cell -> isLivingCell(cell.getString()))
                 .count();
     }
 
@@ -75,6 +75,6 @@ public class Refactor {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLivingCell(cell.string);
+        return !isLivingCell(cell.getString());
     }
 }

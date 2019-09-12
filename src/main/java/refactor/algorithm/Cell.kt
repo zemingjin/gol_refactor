@@ -6,13 +6,25 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
-    final String string;
-    public final int x, y;
+    private String string;
+    private final int x, y;
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
         string = toString(x, y);
+    }
+
+    public String getString() {
+        return string;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     int getWeight() {

@@ -8,7 +8,7 @@ public class Boundary extends Cell {
     }
 
     boolean isInBound(Cell that) {
-        return checkBoundary(that.x, x) && checkBoundary(that.y, y);
+        return checkBoundary(that.getX(), getY()) && checkBoundary(that.getY(), getY());
     }
 
     private static boolean checkBoundary(int value, int boundary) {
