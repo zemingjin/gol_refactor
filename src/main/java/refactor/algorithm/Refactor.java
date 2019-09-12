@@ -26,7 +26,7 @@ public class Refactor {
     }
 
     public boolean isLivingCell(int x, int y) {
-        return isLivingCell(Cell.toString(x, y));
+        return isLivingCell(Cell.toName(x, y));
     }
 
     private boolean isLivingCell(String key) {

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cell implements Comparable<Cell> {
-    private final String string;
+    private final String name;
     public final int x, y;
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        string = toString(x, y);
+        name = toName(x, y);
     }
 
     List<Cell> getNeighbours() {
@@ -51,12 +51,12 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public int hashCode() {
-        return string.hashCode();
+        return name.hashCode();
     }
 
     @Override
     public String toString() {
-        return string;
+        return name;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Cell implements Comparable<Cell> {
         return toString().compareTo(other.toString());
     }
 
-    static String toString(int x, int y) {
+    static String toName(int x, int y) {
         return x + "|" + y;
     }
 }
