@@ -1,4 +1,3 @@
-
 .DS_Store
 *.iml
 *.ipr
@@ -7,3 +6,4 @@ target/
 build/
 .gradle/
 .idea/
+/out/
