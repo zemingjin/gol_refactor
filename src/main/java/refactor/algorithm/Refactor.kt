@@ -56,9 +56,9 @@ public class Refactor {
         return getFilteredCells(getNeighbouringDeadCells(), n -> n == 3);
     }
 
-    private List<Cell> getFilteredCells(Collection<Cell> cells, Predicate<Long> isNotFilter) {
+    private List<Cell> getFilteredCells(Collection<Cell> cells, Predicate<Long> isValidCell) {
         return cells.stream()
-                .filter(cell -> isNotFilter.test(getNumberOfLiveNeighbours(cell)))
+                .filter(cell -> isValidCell.test(getNumberOfLiveNeighbours(cell)))
                 .collect(Collectors.toList());
     }
 
