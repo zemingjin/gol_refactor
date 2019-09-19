@@ -3,6 +3,8 @@ package refactor.algorithm;
 import org.junit.Test;
 import refactor.helper.SeedHelper;
 
+import java.util.*;
+
 import static org.junit.Assert.*;
 
 public class RefactorTest {
@@ -33,9 +35,9 @@ public class RefactorTest {
         Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|0, 1|1, 1|2"));
 
         refactor = refactor.tick();
-        assertEquals("[0|1, 1|1, 2|1]", refactor.getLivingCells().toString());
+        assertEquals("[0|1, 1|1, 2|1]", sort(refactor.getLivingCells()).toString());
         refactor = refactor.tick();
-        assertEquals("[1|0, 1|1, 1|2]", refactor.getLivingCells().toString());
+        assertEquals("[1|0, 1|1, 1|2]", sort(refactor.getLivingCells()).toString());
     }
 
     @Test
@@ -50,7 +52,7 @@ public class RefactorTest {
         Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("2|2, 2|3, 3|1, 3|2, 3|3"));
 
         refactor = refactor.tick();
-        assertEquals("[2|1, 3|1, 2|3, 3|3, 4|2]", refactor.getLivingCells().toString());
+        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(refactor.getLivingCells()).toString());
         refactor = refactor.tick();
         assertEquals("[3|1, 3|3, 4|2]", refactor.getLivingCells().toString());
 
@@ -61,11 +63,11 @@ public class RefactorTest {
         Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|1, 1|2, 2|1, 3|4, 4|3, 4|4"));
 
         refactor = refactor.tick();
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", refactor.getLivingCells().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.getLivingCells()).toString());
         refactor = refactor.tick();
         assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", refactor.getLivingCells().toString());
         refactor = refactor.tick();
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", refactor.getLivingCells().toString());
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(refactor.getLivingCells()).toString());
     }
 
     @Test
@@ -84,4 +86,11 @@ public class RefactorTest {
 
         assertEquals("1|1", refactor.findCellWithLeastWeight().toString());
     }
+
+    private Collection<Cell> sort(Collection<Cell> list) {
+        List<Cell> mutableList = new ArrayList<>(list);
+        mutableList.sort(Comparator.comparing(Cell::toString));
+        return mutableList;
+    }
+
 }
