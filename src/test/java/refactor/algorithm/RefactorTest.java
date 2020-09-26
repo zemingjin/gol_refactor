@@ -26,9 +26,9 @@ public class RefactorTest {
     public void testGetDeadCells() {
         final Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|0, 1|1, 1|2"));
 
-        assertEquals(12, refactor.getNeighbouringDeadCells().size());
+        assertEquals(12, refactor.getNeighbouringDeadCells().count());
         assertEquals("[0|-1, 0|0, 0|1, 0|2, 0|3, 1|-1, 1|3, 2|-1, 2|0, 2|1, 2|2, 2|3]",
-                     sort(refactor.getNeighbouringDeadCells()).toString());
+                     sort(refactor.getNeighbouringDeadCells().collect(Collectors.toSet())).toString());
     }
 
     @Test

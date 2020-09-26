@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Refactor {
     private final Map<String, Cell> livingCells;
@@ -43,30 +44,28 @@ public class Refactor {
 
     @NotNull
     private Map<String, Cell> getNextMap() {
-        return ListUtils.union(getNextGenerationCells(), getReproducibleCells()).stream()
+        return Stream.concat(getNextGenerationCells(), getReproducibleCells())
                 .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
-    private List<Cell> getNextGenerationCells() {
-        return getFilteredCells(getLivingCells(), n -> n == 2 || n == 3);
+    private Stream<Cell> getNextGenerationCells() {
+        return getFilteredCells(getLivingCells().stream(), n -> n == 2 || n == 3);
     }
 
-    private List<Cell> getReproducibleCells() {
+    private Stream<Cell> getReproducibleCells() {
         return getFilteredCells(getNeighbouringDeadCells(), n -> n == 3);
     }
 
-    private List<Cell> getFilteredCells(Collection<Cell> list, Predicate<Long> filter) {
-        return list.stream()
-                .filter(cell -> filter.test(getNumberOfLivingNeighbours(cell)))
-                .collect(Collectors.toList());
+    private Stream<Cell> getFilteredCells(Stream<Cell> list, Predicate<Long> filter) {
+        return list.filter(cell -> filter.test(getNumberOfLivingNeighbours(cell)));
     }
 
     private long getNumberOfLivingNeighbours(Cell that) {
         return that.getNeighbours().stream().filter(cell -> isLivingCell(cell.toString())).count();
     }
 
-    Set<Cell> getNeighbouringDeadCells() {
-        return getLivingCells().stream().flatMap(cell -> cell.getNeighbours().stream()).filter(this::isDeadCell).collect(Collectors.toCollection(LinkedHashSet::new));
+    Stream<Cell> getNeighbouringDeadCells() {
+        return getLivingCells().stream().flatMap(Cell::getNeighbors).filter(this::isDeadCell).distinct();
     }
 
     private boolean isDeadCell(Cell cell) {

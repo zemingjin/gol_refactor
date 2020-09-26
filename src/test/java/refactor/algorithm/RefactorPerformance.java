@@ -7,7 +7,7 @@ public class RefactorPerformance {
     private static final String DEF_PARAMS = "src/main/resources/sidecar_gun.seed";
 
     public static void main(String[] params) {
-        System.out.println(String.format("Testing %s in %d times...", DEF_PARAMS, ITERATIONS));
+        System.out.printf("Testing %s in %d times...%n", DEF_PARAMS, ITERATIONS);
         Refactor refactor = RefactorBuilder.build(params, DEF_PARAMS);
 
         System.out.println("Started...");

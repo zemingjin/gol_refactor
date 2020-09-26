@@ -1,9 +1,11 @@
 package refactor.algorithm;
 
-import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
     private final String name;
@@ -16,17 +18,20 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(y - 1, y + 1)
-                .mapToObj(this::getRowNeighbours)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        return getNeighbors().collect(Collectors.toList());
     }
 
-    private List<Cell> getRowNeighbours(int row) {
+    @NotNull
+    Stream<Cell> getNeighbors() {
+        return IntStream.rangeClosed(y - 1, y + 1)
+                .mapToObj(this::getRowNeighbours)
+                .flatMap(stream -> stream);
+    }
+
+    private Stream<Cell> getRowNeighbours(int row) {
         return IntStream.rangeClosed(x - 1, x + 1)
                 .filter(column -> column != x || row != y)
-                .mapToObj(column -> new Cell(column, row))
-                .collect(Collectors.toList());
+                .mapToObj(column -> new Cell(column, row));
     }
 
     int getWeight() {
