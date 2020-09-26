@@ -29,10 +29,10 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private boolean continueFlag = true;
     private int evolveToggle = 1;
     private boolean automaton;
-    private String path;
-    private Boundary boundary;
+    private final String path;
+    private final Boundary boundary;
     private int iteration;
-    private int waitTime;
+    private final int waitTime;
 
     public RefactorUI(String[] params) {
         Configurations configurations = new Configurations(params);
@@ -151,6 +151,10 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
+        paintRows(graphics);
+    }
+
+    private void paintRows(Graphics graphics) {
         for (int y = 0; y < boundary.getY(); y++) {
             paintRow(graphics, y);
         }

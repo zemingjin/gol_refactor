@@ -10,7 +10,7 @@ public class Cell implements Comparable<Cell> {
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        name = toName(x, y);
+        name = toName(getX(), getY());
     }
 
     List<Cell> getNeighbours() {
@@ -51,7 +51,7 @@ public class Cell implements Comparable<Cell> {
             return true;
         } else if (other instanceof Cell) {
             Cell that = (Cell)other;
-            return x == that.x && y == that.y;
+            return x == that.getX() && y == that.getY();
         } else {
             return false;
         }

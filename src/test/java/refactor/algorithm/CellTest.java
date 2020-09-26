@@ -14,4 +14,14 @@ public class CellTest {
         assertEquals("[-1|-1, 0|-1, 1|-1, -1|0, 1|0, -1|1, 0|1, 1|1]",
                      new Cell(0, 0).getNeighbours().toString());
     }
+
+    @Test
+    public void testEquals() {
+        Cell cell = new Cell(1, 1);
+
+        assertEquals(cell, cell);
+        assertEquals(cell, new Cell(1, 1));
+        assertNotEquals(cell, null);
+        assertNotEquals(cell, new Cell(1, 2));
+    }
 }
