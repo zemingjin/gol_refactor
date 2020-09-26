@@ -14,9 +14,13 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.Insets;
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 public class RefactorUI extends JComponent implements KeyEventPostProcessor {
     private static final int MAX_CELL_SIZE = 100;
@@ -151,35 +155,28 @@ public class RefactorUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        paintRows(graphics);
+        PAINTS.forEach(paint -> paintRows(paint.apply(graphics)));
     }
 
-    private void paintRows(Graphics graphics) {
-        for (int y = 0; y < boundary.getY(); y++) {
-            paintRow(graphics, y);
-        }
+    private void paintRows(Function<Integer, Consumer<Integer>> paint) {
+        IntStream.range(0, boundary.getY()).forEach(y -> paintRow(paint.apply(y)));
     }
 
-    private void paintRow(Graphics graphics, int y) {
-        for (int x = 0; x < boundary.getX(); x++) {
-            paintCell(graphics, x, y);
-        }
+    private void paintRow(Consumer<Integer> paint) {
+        IntStream.range(0, boundary.getX()).forEach(paint::accept);
     }
 
-    private void paintCell(Graphics graphics, int x, int y) {
-        fillCell(graphics, x, y);
-        drawBorder(graphics, x, y);
-    }
-
-    private void fillCell(Graphics graphics, int x, int y) {
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell = graphics -> y -> x -> {
         graphics.setColor(getColor(x, y));
         graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
-    }
+    };
 
-    private void drawBorder(Graphics graphics, int x, int y) {
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder = graphics -> y -> x -> {
         graphics.setColor(getForeground());
         graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-    }
+    };
+
+    private final List<Function<Graphics, Function<Integer, Consumer<Integer>>>> PAINTS = Arrays.asList(fillCell, drawBorder);
 
     private Color getColor(int x, int y) {
         return refactor.isLivingCell(x, y) ? Color.BLACK : Color.WHITE;
