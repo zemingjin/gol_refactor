@@ -1,6 +1,7 @@
 package refactor.algorithm;
 
 import org.apache.commons.collections4.ListUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -41,12 +42,17 @@ public class Refactor {
     }
 
     public Refactor tick() {
+        return new Refactor(getNextMap());
+    }
+
+    @NotNull
+    private Map<String, Cell> getNextMap() {
         final Map<String, Cell> map = new HashMap<>();
 
         for (final Cell cell : ListUtils.union(getNextGenerationCells(), getReproducibleCells())) {
             map.put(cell.toString(), cell);
         }
-        return new Refactor(map);
+        return map;
     }
 
     private List<Cell> getNextGenerationCells() {
