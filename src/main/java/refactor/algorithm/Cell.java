@@ -1,10 +1,13 @@
 package refactor.algorithm;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Cell implements Comparable<Cell> {
-    private final String name;
+    final String name;
     private final int x, y;
 
     public Cell(int x, int y) {
@@ -14,27 +17,16 @@ public class Cell implements Comparable<Cell> {
     }
 
     List<Cell> getNeighbours() {
-        final List<Cell> list = new ArrayList<>();
-
-        for (int row = y - 1; row <= y + 1; row++) {
-            list.addAll(getRowNeighbours(row));
-        }
-        return list;
+        return IntStream.rangeClosed(y - 1, y + 1)
+                .mapToObj(this::getRowNeighbours)
+                .flatMap(it -> it)
+                .collect(Collectors.toList());
     }
 
-    private List<Cell> getRowNeighbours(int row) {
-        final List<Cell> list = new ArrayList<>();
-
-        for (int column = x - 1; column <= x + 1; column++) {
-            if (column != x || row != y) {
-                list.add(new Cell(column, row));
-            }
-        }
-        return list;
-    }
-
-    int getWeight() {
-        return x + y;
+    private Stream<Cell> getRowNeighbours(int row) {
+        return IntStream.rangeClosed(x - 1, x + 1)
+                .filter(column -> column != x || row != y)
+                .mapToObj(column -> new Cell(column, row));
     }
 
     public int getX() {
@@ -47,14 +39,11 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        } else if (other instanceof Cell) {
-            Cell that = (Cell)other;
-            return x == that.getX() && y == that.getY();
-        } else {
-            return false;
-        }
+        return Optional.ofNullable(other)
+                .filter(Cell.class::isInstance)
+                .map(Cell.class::cast)
+                .map(that -> x == that.getX() && y == that.getY())
+                .orElse(false);
     }
 
     @Override

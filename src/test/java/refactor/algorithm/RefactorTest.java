@@ -6,7 +6,9 @@ import refactor.helper.SeedHelper;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class RefactorTest {
     @Test(expected = RuntimeException.class)
@@ -19,7 +21,7 @@ public class RefactorTest {
         final Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|1, 1|2, 1|3"));
 
         assertEquals(3, refactor.getLivingCells().size());
-        assertEquals("[1|1, 1|2, 1|3]", refactor.getLivingCells().toString());
+        assertEquals("[1|1, 1|2, 1|3]", sort(refactor.getLivingCells()).toString());
     }
 
     @Test
@@ -81,17 +83,8 @@ public class RefactorTest {
         assertTrue(refactor.isLivingCell(5, 5));
     }
 
-    @Test
-    public void testGetLeastWeight() {
-        final Refactor refactor = new Refactor(SeedHelper.getLiveCellsMap("1|2, 2|1, 3|4, 4|3, 4|4, 5|5, 1|1"));
-
-        assertEquals("1|1", refactor.findCellWithLeastWeight().toString());
-    }
-
     private Collection<Cell> sort(Collection<Cell> list) {
-        return list.stream()
-                .sorted()
-                .collect(Collectors.toList());
+         return list.stream().sorted().collect(Collectors.toList());
     }
 
 }
