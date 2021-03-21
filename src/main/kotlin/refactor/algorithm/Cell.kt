@@ -1,67 +1,19 @@
-package refactor.algorithm;
+package refactor.algorithm
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
+    @JvmField
+    val name = toName(x, y)
+    val neighbours: List<Cell> get() = (y - 1..y + 1).flatMap { it.rowNeighbours }
 
-public class Cell implements Comparable<Cell> {
-    final String name;
-    private final int x, y;
+    private val Int.rowNeighbours get() = (x - 1..x + 1).filter { it != x || this != y }.map { Cell(it, this) }
 
-    public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
-        name = toName(getX(), getY());
-    }
+    override fun equals(other: Any?) = other is Cell && x == other.x && y == other.y
+    override fun hashCode() = name.hashCode()
+    override fun toString() = name
+    override fun compareTo(other: Cell) = name.compareTo(other.name)
 
-    List<Cell> getNeighbours() {
-        return IntStream.rangeClosed(y - 1, y + 1)
-                .mapToObj(this::getRowNeighbours)
-                .flatMap(it -> it)
-                .collect(Collectors.toList());
-    }
-
-    private Stream<Cell> getRowNeighbours(int row) {
-        return IntStream.rangeClosed(x - 1, x + 1)
-                .filter(column -> column != x || row != y)
-                .mapToObj(column -> new Cell(column, row));
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return Optional.ofNullable(other)
-                .filter(Cell.class::isInstance)
-                .map(Cell.class::cast)
-                .map(that -> x == that.getX() && y == that.getY())
-                .orElse(false);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    @Override
-    public int compareTo(Cell other) {
-        return toString().compareTo(other.toString());
-    }
-
-    static String toName(int x, int y) {
-        return x + "|" + y;
+    companion object {
+        @JvmStatic
+        fun toName(x: Int, y: Int) = "$x|$y"
     }
 }

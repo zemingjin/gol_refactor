@@ -1,81 +1,18 @@
-package refactor.algorithm;
+package refactor.algorithm
 
-import org.apache.commons.collections4.ListUtils;
-import org.jetbrains.annotations.NotNull;
+import refactor.algorithm.Cell.Companion.toName
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+class Refactor(private val livingCellsMap: Map<String, Cell>) {
+    fun isLivingCell(x: Int, y: Int) = toName(x, y).isLivingCell
+    val livingCells get() = livingCellsMap.values
+    fun tick() = Refactor(nextMap)
+    val neighbouringDeadCells get() = livingCells.flatMap{ it.neighbours }.filter{ it.isDeadCell }.distinct()
 
-public class Refactor {
-    private final Map<String, Cell> livingCells;
-
-    Refactor() {
-        livingCells = Collections.emptyMap();
-    }
-
-    public Refactor(Map<String, Cell> livingCells) {
-        this.livingCells = livingCells;
-    }
-
-    public boolean isLivingCell(int x, int y) {
-        return isLivingCell(Cell.toName(x, y));
-    }
-
-    private boolean isLivingCell(String key) {
-        return livingCells.get(key) != null;
-    }
-
-    Collection<Cell> getLivingCells() {
-        if (livingCells.isEmpty()) {
-            throw new RuntimeException("No more living cells");
-        }
-        return livingCells.values();
-    }
-
-    public Refactor tick() {
-        return new Refactor(getNextMap());
-    }
-
-    @NotNull
-    private Map<String, Cell> getNextMap() {
-        return ListUtils.union(getNextGenerationCells(), getReproducibleCells()).stream()
-                .collect(Collectors.toMap(Cell::toString, cell -> cell, (a, b) -> b));
-    }
-
-    private List<Cell> getNextGenerationCells() {
-        return getFilteredCells(getLivingCells(), n -> n == 2 || n == 3);
-    }
-
-    private List<Cell> getReproducibleCells() {
-        return getFilteredCells(getNeighbouringDeadCells(), n -> n == 3);
-    }
-
-    private List<Cell> getFilteredCells(Collection<Cell> cells, Predicate<Long> test) {
-        return cells.stream()
-                .filter(it -> test.test(getNumberOfLivingNeighbours(it)))
-                .collect(Collectors.toList());
-    }
-
-    private long getNumberOfLivingNeighbours(Cell that) {
-        return that.getNeighbours().stream()
-                .filter(cell -> isLivingCell(cell.name))
-                .count();
-    }
-
-    List<Cell> getNeighbouringDeadCells() {
-        return getLivingCells().stream()
-                .map(Cell::getNeighbours)
-                .flatMap(List::stream)
-                .filter(this::isDeadCell)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    private boolean isDeadCell(Cell cell) {
-        return !isLivingCell(cell.toString());
-    }
+    private val String.isLivingCell get() = livingCellsMap[this] is Cell
+    private val nextMap get() = (nextGenerationCells + reproducibleCells).map{(it.name to it)}.toMap()
+    private val nextGenerationCells get() = livingCells.getFilteredCells{ it in 2..3 }
+    private val reproducibleCells get() = neighbouringDeadCells.getFilteredCells{ it == 3 }
+    private fun Collection<Cell>.getFilteredCells(test: (Int) -> Boolean) = filter { test(it.numberOfLivingNeighbours) }
+    private val Cell.numberOfLivingNeighbours get() = neighbours.filter { it.name.isLivingCell }.count()
+    private val Cell.isDeadCell get() = !name.isLivingCell
 }
